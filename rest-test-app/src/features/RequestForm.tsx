@@ -1,7 +1,9 @@
 // src/features/RequestForm.tsx
 import React from 'react'
-import { KeyValuePairInput } from '../components/KeyValuePairInput'
 import { type KeyValuePair, type Parameter } from '../types'
+
+import { KeyValuePairInput } from '../components/KeyValuePairInput'
+import { FileInput } from '../components/FileInput'
 
 interface RequestFormProps {
   method: string
@@ -146,7 +148,12 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             {params.map((param) =>
               'file' in param ? (
                 // Lógica para input de arquivo
-                <div key={param.id}> {/* Implementar componente FileInput similar a KeyValuePairInput */} </div>
+                <FileInput
+                  key={param.id}
+                  item={param}
+                  updateItem={(updated) => setParams(params.map((p) => (p.id === updated.id ? updated : p)))}
+                  removeItem={() => setParams(params.filter((p) => p.id !== param.id))}
+                />
               ) : (
                 <KeyValuePairInput
                   key={param.id}

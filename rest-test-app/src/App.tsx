@@ -3,13 +3,13 @@ import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
 import { RequestForm } from './features/RequestForm.tsx'
 import { ResponseDisplay } from './features/ResponseDisplay'
-import { type KeyValuePair, type Parameter, type ApiResponse } from './types'
+import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState } from './types'
 
 function App() {
   // Estado para os campos do formulário
   const [method, setMethod] = useState('GET')
   const [url, setUrl] = useState('https://httpbin.org/get')
-  const [auth, setAuth] = useState<KeyValuePair | null>(null)
+  const [auth, setAuth] = useState<AuthState>({ type: 'none' })
   const [headers, setHeaders] = useState<KeyValuePair[]>([])
   const [params, setParams] = useState<Parameter[]>([])
 
@@ -55,13 +55,17 @@ function App() {
       if (h.key) requestHeaders[h.key] = h.value
     })
 
+    if (auth.type === 'bearer' && auth.token) {
+      requestHeaders['Authorization'] = `Bearer ${auth.token}`
+    }
+
     try {
       const result = await axios({
         method: method,
         url: url,
         headers: requestHeaders,
         data: data,
-        auth: auth ? { username: auth.key, password: auth.value } : undefined,
+        auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
         // Para GET com parâmetros (alternativa)
         // params: method === 'GET' ? Object.fromEntries(params.filter(p => 'value' in p).map(p => [p.key, p.value])) : undefined,
       })

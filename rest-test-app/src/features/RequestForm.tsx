@@ -1,17 +1,17 @@
 // src/features/RequestForm.tsx
 import React from 'react'
-import { type KeyValuePair, type Parameter } from '../types'
-
-import { KeyValuePairInput } from '../components/KeyValuePairInput'
+// CORRIGIDO: Adicionado AuthType e KeyValuePairInput às importações
+import { type KeyValuePair, type Parameter, type AuthState, type AuthType } from '../types'
 import { FileInput } from '../components/FileInput'
+import { KeyValuePairInput } from '../components/KeyValuePairInput'
 
 interface RequestFormProps {
   method: string
   setMethod: (method: string) => void
   url: string
   setUrl: (url: string) => void
-  auth: KeyValuePair | null
-  setAuth: (auth: KeyValuePair | null) => void
+  auth: AuthState
+  setAuth: (auth: AuthState) => void
   headers: KeyValuePair[]
   setHeaders: (headers: KeyValuePair[]) => void
   params: Parameter[]
@@ -44,6 +44,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
   const addFileParam = () => {
     setParams([...params, { id: crypto.randomUUID(), key: '', file: null }])
+  }
+
+  const handleAuthTypeChange = (type: AuthType) => {
+    setAuth({ type })
   }
 
   return (
@@ -97,24 +101,46 @@ export const RequestForm: React.FC<RequestFormProps> = ({
         {/* --- Authentication --- */}
         <div className='mt-4'>
           <h3 className='text-lg font-medium text-gray-700 mb-2'>Autenticação</h3>
-          {auth ? (
-            <KeyValuePairInput
-              item={auth}
-              updateItem={(updated) => setAuth(updated)}
-              removeItem={() => setAuth(null)}
-              keyPlaceholder='Username'
-              valuePlaceholder='Password'
-              isPassword
-            />
-          ) : (
-            <button
-              type='button'
-              onClick={() => setAuth({ id: 'auth', key: '', value: '' })}
-              className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600'
+          <div className='flex items-center gap-4 p-2 border rounded-lg bg-gray-50'>
+            <select
+              value={auth.type}
+              onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
+              className='p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'
             >
-              Adicionar Autenticação
-            </button>
-          )}
+              <option value='none'>Nenhuma</option>
+              <option value='basic'>Basic Auth</option>
+              <option value='bearer'>Bearer Token</option>
+            </select>
+
+            {auth.type === 'basic' && (
+              <>
+                <input
+                  type='text'
+                  placeholder='Username'
+                  value={auth.username || ''}
+                  onChange={(e) => setAuth({ ...auth, username: e.target.value })}
+                  className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+                />
+                <input
+                  type='password'
+                  placeholder='Password'
+                  value={auth.password || ''}
+                  onChange={(e) => setAuth({ ...auth, password: e.target.value })}
+                  className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+                />
+              </>
+            )}
+
+            {auth.type === 'bearer' && (
+              <input
+                type='text'
+                placeholder='Bearer Token'
+                value={auth.token || ''}
+                onChange={(e) => setAuth({ ...auth, token: e.target.value })}
+                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+              />
+            )}
+          </div>
         </div>
 
         {/* --- Headers --- */}
@@ -125,7 +151,9 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               <KeyValuePairInput
                 key={header.id}
                 item={header}
-                updateItem={(updated) => setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))}
+                updateItem={(updated: KeyValuePair) =>
+                  setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))
+                }
                 removeItem={() => setHeaders(headers.filter((h) => h.id !== header.id))}
                 keyPlaceholder='Header'
                 valuePlaceholder='Valor'
@@ -158,7 +186,9 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 <KeyValuePairInput
                   key={param.id}
                   item={param}
-                  updateItem={(updated) => setParams(params.map((p) => (p.id === updated.id ? updated : p)))}
+                  updateItem={(updated: KeyValuePair) =>
+                    setParams(params.map((p) => (p.id === updated.id ? updated : p)))
+                  }
                   removeItem={() => setParams(params.filter((p) => p.id !== param.id))}
                   keyPlaceholder='Parâmetro'
                   valuePlaceholder='Valor'

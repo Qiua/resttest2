@@ -1,4 +1,5 @@
 // src/types/index.ts
+
 export interface KeyValuePair {
   id: string
   key: string
@@ -12,6 +13,15 @@ export interface FileParameter {
 }
 
 export type Parameter = KeyValuePair | FileParameter
+
+export type AuthType = 'none' | 'basic' | 'bearer'
+
+export interface AuthState {
+  type: AuthType
+  username?: string
+  password?: string
+  token?: string
+}
 
 export interface ApiResponse {
   status: number

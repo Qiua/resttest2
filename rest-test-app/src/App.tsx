@@ -1,32 +1,29 @@
 // src/App.tsx
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
-import { RequestForm } from './features/RequestForm.tsx'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState } from './types'
 
 function App() {
-  // Estado para os campos do formulário
+  // Todo o seu estado e a função handleSubmit permanecem exatamente iguais.
   const [method, setMethod] = useState('GET')
   const [url, setUrl] = useState('https://httpbin.org/get')
   const [auth, setAuth] = useState<AuthState>({ type: 'none' })
   const [headers, setHeaders] = useState<KeyValuePair[]>([])
   const [params, setParams] = useState<Parameter[]>([])
-
-  // Estado para a resposta da API
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async () => {
+    // A lógica de submit não muda
     setLoading(true)
     setError(null)
     setResponse(null)
-
     const hasFiles = params.some((p) => 'file' in p && p.file)
     let data: FormData | URLSearchParams | undefined
-
-    // Constrói os dados da requisição
     if (method !== 'GET' && method !== 'HEAD') {
       if (hasFiles) {
         const formData = new FormData()
@@ -48,17 +45,13 @@ function App() {
         data = searchParams
       }
     }
-
-    // Constrói os headers
     const requestHeaders: Record<string, string> = {}
     headers.forEach((h) => {
       if (h.key) requestHeaders[h.key] = h.value
     })
-
     if (auth.type === 'bearer' && auth.token) {
       requestHeaders['Authorization'] = `Bearer ${auth.token}`
     }
-
     try {
       const result = await axios({
         method: method,
@@ -66,10 +59,7 @@ function App() {
         headers: requestHeaders,
         data: data,
         auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
-        // Para GET com parâmetros (alternativa)
-        // params: method === 'GET' ? Object.fromEntries(params.filter(p => 'value' in p).map(p => [p.key, p.value])) : undefined,
       })
-
       setResponse({
         status: result.status,
         statusText: result.statusText,
@@ -99,34 +89,45 @@ function App() {
   }
 
   return (
-    <div className='bg-gray-100 min-h-screen font-sans'>
+    // MUDANÇA PRINCIPAL: Usando CSS Grid para o layout da página.
+    // h-screen -> Garante que o container ocupe toda a altura da tela.
+    // grid grid-rows-[auto_1fr] -> Define 2 linhas: a primeira ('auto') com a altura do seu conteúdo (o nav),
+    // e a segunda ('1fr') para ocupar todo o resto do espaço.
+    <div className='h-screen grid grid-rows-[auto_1fr] bg-gray-100 font-sans'>
+      {/* A nav agora é o primeiro item do grid. */}
       <nav className='bg-gray-800 text-white p-4 shadow-md'>
         <div className='container mx-auto'>
-          <h1 className='text-xl font-bold'>REST test test... Refatorado!</h1>
+          <h1 className='text-xl font-bold'>REST Test 2.0</h1>
         </div>
       </nav>
 
-      <main className='container mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <div>
-          <RequestForm
-            method={method}
-            setMethod={setMethod}
-            url={url}
-            setUrl={setUrl}
-            auth={auth}
-            setAuth={setAuth}
-            headers={headers}
-            setHeaders={setHeaders}
-            params={params}
-            setParams={setParams}
-            onSubmit={handleSubmit}
-            loading={loading}
-          />
-        </div>
+      {/* O main é o segundo item do grid, que se estica. */}
+      {/* min-h-0 é importante para que o conteúdo interno com scroll funcione bem. */}
+      <main className='p-2 min-h-0'>
+        <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-md h-full'>
+          <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
+            <RequestForm
+              method={method}
+              setMethod={setMethod}
+              url={url}
+              setUrl={setUrl}
+              auth={auth}
+              setAuth={setAuth}
+              headers={headers}
+              setHeaders={setHeaders}
+              params={params}
+              setParams={setParams}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
+          </Panel>
 
-        <div>
-          <ResponseDisplay response={response} loading={loading} error={error} />
-        </div>
+          <PanelResizeHandle className='h-2 bg-gray-200 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors' />
+
+          <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
+            <ResponseDisplay response={response} loading={loading} error={error} />
+          </Panel>
+        </PanelGroup>
       </main>
     </div>
   )

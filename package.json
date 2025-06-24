@@ -1,7 +1,10 @@
 {
   "name": "rest-test-app",
   "private": true,
-  "version": "0.0.0",
+  "description": "A React application for testing REST APIs with a focus on TypeScript and Tailwind CSS.",
+  "author": "Andrey Aires",
+  "license": "GPL-3.0-or-later",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

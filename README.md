@@ -87,6 +87,6 @@ Se você tem uma sugestão para melhorar o projeto, por favor, faça um fork do 
 
 ## 📄 Licença
 
-Distribuído sob a Licença MIT. Veja `LICENSE.txt` para mais informações.
+Distribuído sob a Licença GPL-3.0-or-later. Veja `LICENSE.txt` para mais informações.
 
 ---

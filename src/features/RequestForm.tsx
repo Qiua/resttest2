@@ -97,6 +97,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             <option value='none'>Nenhuma</option>
             <option value='basic'>Basic Auth</option>
             <option value='bearer'>Bearer Token</option>
+            <option value='api-key'>API Key</option>
           </select>
           {auth.type === 'basic' && (
             <>
@@ -124,6 +125,24 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               onChange={(e) => setAuth({ ...auth, token: e.target.value })}
               className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
             />
+          )}
+          {auth.type === 'api-key' && (
+            <>
+              <input
+                type='text'
+                placeholder='Nome do Header (ex: X-API-Key)'
+                value={auth.apiKeyHeader || ''}
+                onChange={(e) => setAuth({ ...auth, apiKeyHeader: e.target.value })}
+                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+              />
+              <input
+                type='text'
+                placeholder='Valor da API Key'
+                value={auth.apiKeyValue || ''}
+                onChange={(e) => setAuth({ ...auth, apiKeyValue: e.target.value })}
+                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+              />
+            </>
           )}
         </div>
       ),

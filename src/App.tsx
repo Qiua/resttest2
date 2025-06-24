@@ -52,6 +52,9 @@ function App() {
     if (auth.type === 'bearer' && auth.token) {
       requestHeaders['Authorization'] = `Bearer ${auth.token}`
     }
+    if (auth.type === 'api-key' && auth.apiKeyHeader && auth.apiKeyValue) {
+      requestHeaders[auth.apiKeyHeader] = auth.apiKeyValue
+    }
     try {
       const result = await axios({
         method: method,

@@ -33,8 +33,8 @@ export type Parameter = KeyValuePair | FileParameter
 
 // Representa o estado de autenticação, que pode ser Basic Auth, Bearer Token ou API Key
 export type AuthType = 'none' | 'basic' | 'bearer' | 'api-key'
-// Representa o tipo de corpo da requisição, que pode ser nenhum, JSON, XML, texto ou form-data
-export type BodyType = 'none' | 'json' | 'xml' | 'text' | 'form-data'
+// Representa o tipo de corpo da requisição, que pode ser form-data, JSON, XML, ou texto
+export type BodyType = 'form-data' | 'json' | 'xml' | 'text'
 
 export interface BodyState {
   type: BodyType
@@ -73,4 +73,33 @@ export interface RequestState {
 export interface SavedRequest extends RequestState {
   id: string
   name: string
+  collectionId?: string // ID da collection que contém esta requisição
+}
+
+// Representa uma collection de requisições
+export interface Collection {
+  id: string
+  name: string
+  description?: string
+  color?: string
+  requests: SavedRequest[]
+  createdAt: string
+  updatedAt: string
+}
+
+// Representa um workspace que contém collections
+export interface Workspace {
+  id: string
+  name: string
+  description?: string
+  collections: Collection[]
+  createdAt: string
+  updatedAt: string
+}
+
+// Estado do sidebar
+export interface SidebarState {
+  isOpen: boolean
+  activeWorkspace?: string
+  expandedCollections: string[]
 }

@@ -23,6 +23,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { SavedRequests } from './features/SavedRequests'
+import { Sidebar } from './components/Sidebar'
 import {
   type KeyValuePair,
   type Parameter,
@@ -30,6 +31,8 @@ import {
   type AuthState,
   type SavedRequest,
   type BodyState,
+  type Workspace,
+  type Collection,
 } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 
@@ -47,11 +50,163 @@ function App() {
   // Estado do Corpo da Requisição
   const [body, setBody] = useState<BodyState>({ type: 'form-data', content: '' })
 
-  // Estado das Requisições Salvas
+  // Estado das Requisições Salvas (mantido para compatibilidade)
   const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
+
+  // Estado dos Workspaces e Collections
+  const [workspaces, setWorkspaces] = useLocalStorage<Workspace[]>('workspaces', [
+    {
+      id: 'default',
+      name: 'Meu Workspace',
+      description: 'Workspace padrão',
+      collections: [
+        {
+          id: 'default-collection',
+          name: 'Primeira Collection',
+          description: 'Collection de exemplo',
+          requests: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ])
+
+  // Estado da Sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
+
+  // Funções para manipular workspaces e collections
+  const handleWorkspaceSelect = (workspaceId: string) => {
+    setActiveWorkspace(workspaceId)
+  }
+
+  const handleNewCollection = (workspaceId: string) => {
+    const name = prompt('Nome da nova collection:')
+    if (!name?.trim()) return
+
+    const newCollection: Collection = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      description: '',
+      requests: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === workspaceId
+          ? {
+              ...workspace,
+              collections: [...workspace.collections, newCollection],
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+  }
+
+  const handleNewRequest = (collectionId?: string) => {
+    const name = prompt('Nome da nova requisição:')
+    if (!name?.trim()) return
+
+    // Se não foi especificada uma collection, usa a primeira disponível
+    const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
+    if (!targetWorkspace || targetWorkspace.collections.length === 0) {
+      alert('Crie uma collection primeiro!')
+      return
+    }
+
+    const targetCollectionId = collectionId || targetWorkspace.collections[0].id
+
+    const newRequest: SavedRequest = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      method: 'GET',
+      url: 'https://httpbin.org/get',
+      auth: { type: 'none' },
+      headers: [],
+      params: [],
+      body: { type: 'form-data', content: '' },
+      collectionId: targetCollectionId,
+    }
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === activeWorkspace
+          ? {
+              ...workspace,
+              collections: workspace.collections.map((collection) =>
+                collection.id === targetCollectionId
+                  ? {
+                      ...collection,
+                      requests: [...collection.requests, newRequest],
+                      updatedAt: new Date().toISOString(),
+                    }
+                  : collection
+              ),
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+  }
+
+  const handleRequestSelect = (request: SavedRequest) => {
+    setMethod(request.method)
+    setUrl(request.url)
+    setAuth(request.auth)
+    setHeaders(request.headers)
+    setParams(request.params.filter((p) => 'value' in p))
+    setBody(request.body)
+  }
+
+  const handleDeleteCollection = (collectionId: string) => {
+    if (!confirm('Tem certeza que deseja deletar esta collection? Todas as requisições serão perdidas.')) {
+      return
+    }
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === activeWorkspace
+          ? {
+              ...workspace,
+              collections: workspace.collections.filter((c) => c.id !== collectionId),
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+  }
+
+  const handleDeleteRequestFromSidebar = (requestId: string) => {
+    if (!confirm('Tem certeza que deseja deletar esta requisição?')) {
+      return
+    }
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === activeWorkspace
+          ? {
+              ...workspace,
+              collections: workspace.collections.map((collection) => ({
+                ...collection,
+                requests: collection.requests.filter((r) => r.id !== requestId),
+                updatedAt: new Date().toISOString(),
+              })),
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+  }
 
   // Funções para manipular as requisições salvas
   const handleSaveRequest = (name: string) => {
+    // Salva na forma antiga para compatibilidade
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
       name,
@@ -63,6 +218,37 @@ function App() {
       body,
     }
     setSavedRequests([...savedRequests, newRequest])
+
+    // Também salva no sistema de collections
+    const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
+    if (targetWorkspace && targetWorkspace.collections.length > 0) {
+      const collectionId = targetWorkspace.collections[0].id // Usa a primeira collection
+      const requestWithCollection: SavedRequest = {
+        ...newRequest,
+        collectionId,
+      }
+
+      setWorkspaces((prev) =>
+        prev.map((workspace) =>
+          workspace.id === activeWorkspace
+            ? {
+                ...workspace,
+                collections: workspace.collections.map((collection) =>
+                  collection.id === collectionId
+                    ? {
+                        ...collection,
+                        requests: [...collection.requests, requestWithCollection],
+                        updatedAt: new Date().toISOString(),
+                      }
+                    : collection
+                ),
+                updatedAt: new Date().toISOString(),
+              }
+            : workspace
+        )
+      )
+    }
+
     alert(`Requisição '${name}' salva!`)
   }
 
@@ -229,55 +415,129 @@ function App() {
     }
   }
 
-  return (
-    <div className='h-screen flex flex-col bg-gray-50'>
-      {/* Header compacto estilo profissional */}
-      <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm'>
-        <div className='flex items-center gap-3'>
-          <h1 className='text-lg font-semibold text-gray-900'>REST Test</h1>
-          <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded'>2.0</span>
-        </div>
+  // Função para migrar requests antigos para o sistema de collections
+  const migrateOldRequests = () => {
+    const requestsToMigrate = savedRequests.filter((req) => !req.collectionId)
 
-        {/* Barra de Requests Salvos compacta */}
-        <div className='flex items-center gap-2'>
-          <SavedRequests
-            savedRequests={savedRequests}
-            onSave={handleSaveRequest}
-            onLoad={handleLoadRequest}
-            onDelete={handleDeleteRequest}
-          />
-        </div>
-      </header>
+    if (requestsToMigrate.length === 0) return
+
+    const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
+    if (!targetWorkspace || targetWorkspace.collections.length === 0) return
+
+    const targetCollectionId = targetWorkspace.collections[0].id
+
+    const migratedRequests = requestsToMigrate.map((req) => ({
+      ...req,
+      collectionId: targetCollectionId,
+    }))
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === activeWorkspace
+          ? {
+              ...workspace,
+              collections: workspace.collections.map((collection) =>
+                collection.id === targetCollectionId
+                  ? {
+                      ...collection,
+                      requests: [...collection.requests, ...migratedRequests],
+                      updatedAt: new Date().toISOString(),
+                    }
+                  : collection
+              ),
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+
+    // Remove os requests antigos ou marca como migrados
+    setSavedRequests((prev) =>
+      prev.map((req) =>
+        requestsToMigrate.find((migrated) => migrated.id === req.id)
+          ? { ...req, collectionId: targetCollectionId }
+          : req
+      )
+    )
+  }
+
+  return (
+    <div className='h-screen flex bg-gray-50'>
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+        workspaces={workspaces}
+        activeWorkspace={activeWorkspace}
+        onWorkspaceSelect={handleWorkspaceSelect}
+        onRequestSelect={handleRequestSelect}
+        onNewCollection={handleNewCollection}
+        onNewRequest={handleNewRequest}
+        onDeleteCollection={handleDeleteCollection}
+        onDeleteRequest={handleDeleteRequestFromSidebar}
+      />
 
       {/* Área Principal */}
-      <main className='flex-1 min-h-0 p-2'>
-        <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-sm border border-gray-200 h-full'>
-          <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
-            <RequestForm
-              method={method}
-              setMethod={setMethod}
-              url={url}
-              setUrl={setUrl}
-              auth={auth}
-              setAuth={setAuth}
-              headers={headers}
-              setHeaders={setHeaders}
-              params={params}
-              setParams={setParams}
-              body={body}
-              setBody={setBody}
-              onSubmit={handleSubmit}
-              loading={loading}
+      <div className='flex-1 flex flex-col min-w-0'>
+        {/* Header compacto estilo profissional */}
+        <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm'>
+          <div className='flex items-center gap-3'>
+            <h1 className='text-lg font-semibold text-gray-900'>REST Test</h1>
+            <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded'>2.0</span>
+          </div>
+
+          {/* Barra de Requests Salvos compacta */}
+          <div className='flex items-center gap-2'>
+            <SavedRequests
+              savedRequests={savedRequests}
+              onSave={handleSaveRequest}
+              onLoad={handleLoadRequest}
+              onDelete={handleDeleteRequest}
             />
-          </Panel>
-          <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
-          <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
-            <div className='h-full p-4'>
-              <ResponseDisplay response={response} loading={loading} error={error} />
-            </div>
-          </Panel>
-        </PanelGroup>
-      </main>
+
+            {/* Botão para migrar requests antigos */}
+            {savedRequests.some((req) => !req.collectionId) && (
+              <button
+                onClick={migrateOldRequests}
+                className='px-3 py-1.5 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-md hover:bg-yellow-200 transition-colors'
+                title='Migrar requests antigos para collections'
+              >
+                Migrar ({savedRequests.filter((req) => !req.collectionId).length})
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* Conteúdo Principal */}
+        <main className='flex-1 min-h-0 p-2'>
+          <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-sm border border-gray-200 h-full'>
+            <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
+              <RequestForm
+                method={method}
+                setMethod={setMethod}
+                url={url}
+                setUrl={setUrl}
+                auth={auth}
+                setAuth={setAuth}
+                headers={headers}
+                setHeaders={setHeaders}
+                params={params}
+                setParams={setParams}
+                body={body}
+                setBody={setBody}
+                onSubmit={handleSubmit}
+                loading={loading}
+              />
+            </Panel>
+            <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
+            <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
+              <div className='h-full p-4'>
+                <ResponseDisplay response={response} loading={loading} error={error} />
+              </div>
+            </Panel>
+          </PanelGroup>
+        </main>
+      </div>
     </div>
   )
 }

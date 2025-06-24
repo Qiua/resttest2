@@ -2,9 +2,14 @@
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+
+// Nossos componentes e tipos
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
-import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState } from './types'
+import { SavedRequests } from './features/SavedRequests'
+
+import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState, type SavedRequest } from './types'
+import { useLocalStorage } from './hooks/useLocalStorage'
 
 function App() {
   // Todo o seu estado e a função handleSubmit permanecem exatamente iguais.
@@ -16,6 +21,41 @@ function App() {
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
+
+  const handleSaveRequest = (name: string) => {
+    const newRequest: SavedRequest = {
+      id: crypto.randomUUID(),
+      name,
+      method,
+      url,
+      auth,
+      headers,
+      params,
+    }
+    setSavedRequests([...savedRequests, newRequest])
+    alert(`Requisição '${name}' salva!`)
+  }
+
+  const handleLoadRequest = (id: string) => {
+    const requestToLoad = savedRequests.find((req) => req.id === id)
+    if (requestToLoad) {
+      setMethod(requestToLoad.method)
+      setUrl(requestToLoad.url)
+      setAuth(requestToLoad.auth)
+      setHeaders(requestToLoad.headers)
+      // ATENÇÃO: Carregar arquivos não é possível por segurança do navegador.
+      // Vamos filtrar os parâmetros de arquivo ao carregar.
+      setParams(requestToLoad.params.filter((p) => 'value' in p))
+      alert(`Requisição '${requestToLoad.name}' carregada!`)
+    }
+  }
+
+  const handleDeleteRequest = (id: string) => {
+    setSavedRequests(savedRequests.filter((req) => req.id !== id))
+    alert('Requisição deletada.')
+  }
 
   const handleSubmit = async () => {
     // A lógica de submit não muda
@@ -109,20 +149,22 @@ function App() {
   }
 
   return (
-    // MUDANÇA PRINCIPAL: Usando CSS Grid para o layout da página.
-    // h-screen -> Garante que o container ocupe toda a altura da tela.
-    // grid grid-rows-[auto_1fr] -> Define 2 linhas: a primeira ('auto') com a altura do seu conteúdo (o nav),
-    // e a segunda ('1fr') para ocupar todo o resto do espaço.
     <div className='h-screen grid grid-rows-[auto_1fr] bg-gray-100 font-sans'>
-      {/* A nav agora é o primeiro item do grid. */}
       <nav className='bg-gray-800 text-white p-4 shadow-md'>
         <div className='container mx-auto'>
           <h1 className='text-xl font-bold'>REST Test 2.0</h1>
         </div>
       </nav>
 
-      {/* O main é o segundo item do grid, que se estica. */}
-      {/* min-h-0 é importante para que o conteúdo interno com scroll funcione bem. */}
+      <div className='p-2'>
+        <SavedRequests
+          savedRequests={savedRequests}
+          onSave={handleSaveRequest}
+          onLoad={handleLoadRequest}
+          onDelete={handleDeleteRequest}
+        />
+      </div>
+
       <main className='p-2 min-h-0'>
         <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-md h-full'>
           <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>

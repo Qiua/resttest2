@@ -238,61 +238,82 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: 'Autenticação',
       content: (
-        <div className='flex items-center gap-4 p-2 border rounded-lg bg-gray-50'>
-          <select
-            value={auth.type}
-            onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
-            className='p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'
-          >
-            <option value='none'>Nenhuma</option>
-            <option value='basic'>Basic Auth</option>
-            <option value='bearer'>Bearer Token</option>
-            <option value='api-key'>API Key</option>
-          </select>
+        <div className='space-y-4'>
+          <div className='flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50'>
+            <label className='text-sm font-medium text-gray-700 min-w-[80px]'>Tipo:</label>
+            <select
+              value={auth.type}
+              onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
+              className='px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'
+            >
+              <option value='none'>Nenhuma autenticação</option>
+              <option value='basic'>Basic Auth</option>
+              <option value='bearer'>Bearer Token</option>
+              <option value='api-key'>API Key</option>
+            </select>
+          </div>
+
           {auth.type === 'basic' && (
-            <>
-              <input
-                type='text'
-                placeholder='Username'
-                value={auth.username || ''}
-                onChange={(e) => setAuth({ ...auth, username: e.target.value })}
-                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
-              />
-              <input
-                type='password'
-                placeholder='Password'
-                value={auth.password || ''}
-                onChange={(e) => setAuth({ ...auth, password: e.target.value })}
-                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
-              />
-            </>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>Username</label>
+                <input
+                  type='text'
+                  placeholder='Digite o username'
+                  value={auth.username || ''}
+                  onChange={(e) => setAuth({ ...auth, username: e.target.value })}
+                  className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>Password</label>
+                <input
+                  type='password'
+                  placeholder='Digite a senha'
+                  value={auth.password || ''}
+                  onChange={(e) => setAuth({ ...auth, password: e.target.value })}
+                  className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
+            </div>
           )}
+
           {auth.type === 'bearer' && (
-            <input
-              type='text'
-              placeholder='Bearer Token'
-              value={auth.token || ''}
-              onChange={(e) => setAuth({ ...auth, token: e.target.value })}
-              className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
-            />
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Bearer Token</label>
+              <input
+                type='text'
+                placeholder='Digite o token Bearer'
+                value={auth.token || ''}
+                onChange={(e) => setAuth({ ...auth, token: e.target.value })}
+                className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+              />
+            </div>
           )}
+
           {auth.type === 'api-key' && (
-            <>
-              <input
-                type='text'
-                placeholder='Nome do Header (ex: X-API-Key)'
-                value={auth.apiKeyHeader || ''}
-                onChange={(e) => setAuth({ ...auth, apiKeyHeader: e.target.value })}
-                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
-              />
-              <input
-                type='text'
-                placeholder='Valor da API Key'
-                value={auth.apiKeyValue || ''}
-                onChange={(e) => setAuth({ ...auth, apiKeyValue: e.target.value })}
-                className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
-              />
-            </>
+            <div className='space-y-4'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>Nome do Header</label>
+                <input
+                  type='text'
+                  placeholder='ex: X-API-Key, Authorization'
+                  value={auth.apiKeyHeader || ''}
+                  onChange={(e) => setAuth({ ...auth, apiKeyHeader: e.target.value })}
+                  className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>Valor da API Key</label>
+                <input
+                  type='text'
+                  placeholder='Digite o valor da API Key'
+                  value={auth.apiKeyValue || ''}
+                  onChange={(e) => setAuth({ ...auth, apiKeyValue: e.target.value })}
+                  className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
+            </div>
           )}
         </div>
       ),
@@ -300,28 +321,38 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: 'Headers',
       content: (
-        <div className='space-y-2'>
-          {headers.map((header) => (
-            <KeyValuePairInput
-              key={header.id}
-              item={header}
-              updateItem={(updated: KeyValuePair) =>
-                setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))
-              }
-              removeItem={() => setHeaders(headers.filter((h) => h.id !== header.id))}
-              keyPlaceholder='Header'
-              valuePlaceholder='Valor'
-            />
-          ))}
-          <div className='mt-4'>
+        <div className='space-y-3'>
+          <div className='flex items-center justify-between'>
+            <h3 className='text-sm font-medium text-gray-700'>HTTP Headers</h3>
             <button
               type='button'
               onClick={addHeader}
-              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
+              className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
             >
-              Adicionar Header
+              + Adicionar Header
             </button>
           </div>
+
+          {headers.length === 0 ? (
+            <div className='text-center py-8 text-gray-500 text-sm border-2 border-dashed border-gray-200 rounded-lg'>
+              Nenhum header personalizado adicionado
+            </div>
+          ) : (
+            <div className='space-y-2'>
+              {headers.map((header) => (
+                <KeyValuePairInput
+                  key={header.id}
+                  item={header}
+                  updateItem={(updated: KeyValuePair) =>
+                    setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))
+                  }
+                  removeItem={() => setHeaders(headers.filter((h) => h.id !== header.id))}
+                  keyPlaceholder='Nome do Header'
+                  valuePlaceholder='Valor do Header'
+                />
+              ))}
+            </div>
+          )}
         </div>
       ),
     },
@@ -329,38 +360,45 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
   return (
     <form
-      className='space-y-4 h-full flex flex-col'
+      className='h-full flex flex-col'
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit()
       }}
     >
-      <div className='flex items-center gap-2 flex-shrink-0'>
+      {/* Barra Principal - Estilo Postman */}
+      <div className='flex items-center gap-1 p-3 bg-white border-b border-gray-200 flex-shrink-0'>
         <select
           id='httpmethod'
           value={method}
           onChange={(e) => setMethod(e.target.value)}
-          className='p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-50 font-semibold'
+          className='px-3 py-2 text-sm font-medium border border-gray-300 rounded-l-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[80px]'
         >
-          <option>GET</option> <option>POST</option> <option>PUT</option> <option>DELETE</option> <option>PATCH</option>
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>DELETE</option>
+          <option>PATCH</option>
         </select>
         <input
           type='text'
           id='urlvalue'
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'
-          placeholder='https://api.exemplo.com/dados'
+          className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+          placeholder='Digite a URL da API'
         />
         <button
           type='submit'
           disabled={loading}
-          className='px-6 py-2 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed flex-shrink-0'
+          className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-r-md border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]'
         >
-          {loading ? 'Enviando...' : 'Enviar'}
+          {loading ? 'Enviando...' : 'Send'}
         </button>
       </div>
-      <div className='flex-grow min-h-0'>
+
+      {/* Área de Abas */}
+      <div className='flex-1 min-h-0 bg-gray-50'>
         <Tabs tabs={requestTabs} />
       </div>
     </form>

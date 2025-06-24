@@ -230,25 +230,29 @@ function App() {
   }
 
   return (
-    <div className='h-screen grid grid-rows-[auto_auto_1fr] bg-gray-100 font-sans'>
-      <nav className='bg-gray-800 text-white p-4 shadow-md'>
-        <div className='container mx-auto'>
-          <h1 className='text-xl font-bold'>REST Test 2.0</h1>
+    <div className='h-screen flex flex-col bg-gray-50'>
+      {/* Header compacto estilo profissional */}
+      <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm'>
+        <div className='flex items-center gap-3'>
+          <h1 className='text-lg font-semibold text-gray-900'>REST Test</h1>
+          <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded'>2.0</span>
         </div>
-      </nav>
 
-      <div className='p-2'>
-        <SavedRequests
-          savedRequests={savedRequests}
-          onSave={handleSaveRequest}
-          onLoad={handleLoadRequest}
-          onDelete={handleDeleteRequest}
-        />
-      </div>
+        {/* Barra de Requests Salvos compacta */}
+        <div className='flex items-center gap-2'>
+          <SavedRequests
+            savedRequests={savedRequests}
+            onSave={handleSaveRequest}
+            onLoad={handleLoadRequest}
+            onDelete={handleDeleteRequest}
+          />
+        </div>
+      </header>
 
-      <main className='p-2 pt-0 min-h-0'>
-        <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-md h-full'>
-          <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
+      {/* Área Principal */}
+      <main className='flex-1 min-h-0 p-2'>
+        <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-sm border border-gray-200 h-full'>
+          <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
             <RequestForm
               method={method}
               setMethod={setMethod}
@@ -266,9 +270,11 @@ function App() {
               loading={loading}
             />
           </Panel>
-          <PanelResizeHandle className='h-2 bg-gray-200 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors' />
-          <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
-            <ResponseDisplay response={response} loading={loading} error={error} />
+          <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
+          <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
+            <div className='h-full p-4'>
+              <ResponseDisplay response={response} loading={loading} error={error} />
+            </div>
           </Panel>
         </PanelGroup>
       </main>

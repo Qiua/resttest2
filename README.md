@@ -1,6 +1,6 @@
 # REST Test 2.0 - Um Cliente de API Moderno
 
-![Screenshot da Aplicação](public/assets/demo/rest-test-2-screen-final.mp4)
+![Screenshot da Aplicação](public/assets/demo/rest-test-2-screen-final.gif)
 
 Este é um fork do maravilhoso projeto https://github.com/jeroen/resttesttest
 

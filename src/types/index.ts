@@ -33,4 +33,5 @@ export interface ApiResponse {
   statusText: string
   headers: string
   body: string
+  contentType?: string
 }

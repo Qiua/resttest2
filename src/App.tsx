@@ -63,26 +63,43 @@ function App() {
         data: data,
         auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
       })
+      const contentType = result.headers['content-type'] || ''
+      let responseBody = result.data
+
+      // Se a resposta for JSON, formata com indentação.
+      // Se não, usa o texto como está (útil para HTML ou texto puro).
+      if (contentType.includes('application/json') && typeof responseBody === 'object') {
+        responseBody = JSON.stringify(responseBody, null, 2)
+      } else if (typeof responseBody !== 'string') {
+        // Fallback para outros tipos de objeto
+        responseBody = String(responseBody)
+      }
+
       setResponse({
         status: result.status,
         statusText: result.statusText,
         headers: JSON.stringify(result.headers, null, 2),
-        body: JSON.stringify(result.data, null, 2),
+        body: responseBody,
+        contentType: contentType,
       })
     } catch (err) {
-      if (err instanceof AxiosError) {
-        if (err.response) {
-          setResponse({
-            status: err.response.status,
-            statusText: err.response.statusText,
-            headers: JSON.stringify(err.response.headers, null, 2),
-            body: JSON.stringify(err.response.data, null, 2),
-          })
-        } else if (err.request) {
-          setError('A requisição foi feita, mas nenhuma resposta foi recebida. Verifique a rede ou o CORS.')
-        } else {
-          setError(`Erro ao configurar a requisição: ${err.message}`)
+      if (err instanceof AxiosError && err.response) {
+        const contentType = err.response.headers['content-type'] || ''
+        let errorBody = err.response.data
+
+        if (contentType.includes('application/json') && typeof errorBody === 'object') {
+          errorBody = JSON.stringify(errorBody, null, 2)
+        } else if (typeof errorBody !== 'string') {
+          errorBody = String(errorBody)
         }
+
+        setResponse({
+          status: err.response.status,
+          statusText: err.response.statusText,
+          headers: JSON.stringify(err.response.headers, null, 2),
+          body: errorBody,
+          contentType: contentType,
+        })
       } else {
         setError('Ocorreu um erro inesperado.')
       }

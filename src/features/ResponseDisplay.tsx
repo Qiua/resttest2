@@ -3,6 +3,9 @@ import React from 'react'
 import type { ApiResponse } from '../types'
 import { Tabs } from '../components/Tabs'
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus as codeStyle } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
 interface ResponseDisplayProps {
   response: ApiResponse | null
   loading: boolean
@@ -34,11 +37,23 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     return <div className='p-4 text-gray-500'>A resposta da sua requisição aparecerá aqui.</div>
   }
 
+  const isJson = response?.contentType?.includes('application/json')
+
   const responseTabs = [
     {
       label: 'Corpo',
-      content: (
-        <pre className='p-2 rounded-md bg-gray-900 text-white text-sm'>
+      content: isJson ? (
+        // Se for JSON, use o SyntaxHighlighter
+        <SyntaxHighlighter
+          language='json'
+          style={codeStyle}
+          customStyle={{ margin: 0, padding: '1rem', height: '100%', borderRadius: '0.375rem' }}
+        >
+          {response.body}
+        </SyntaxHighlighter>
+      ) : (
+        // Se não for, use um <pre> simples
+        <pre className='p-4 rounded-md bg-gray-900 text-white text-sm h-full overflow-auto'>
           <code>{response.body}</code>
         </pre>
       ),

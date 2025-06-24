@@ -33,9 +33,11 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
     <div className='h-full flex flex-col'>
       <div className='border-b border-gray-200 flex-shrink-0'>
         <nav className='-mb-px flex space-x-4' aria-label='Tabs'>
+          {' '}
           {tabs.map((tab, index) => (
             <button
               key={tab.label}
+              type='button'
               onClick={() => setActiveTab(index)}
               className={`${
                 activeTab === index

@@ -23,7 +23,14 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { SavedRequests } from './features/SavedRequests'
-import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState, type SavedRequest } from './types'
+import {
+  type KeyValuePair,
+  type Parameter,
+  type ApiResponse,
+  type AuthState,
+  type SavedRequest,
+  type BodyState,
+} from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 
 function App() {
@@ -37,6 +44,8 @@ function App() {
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Estado do Corpo da Requisição
+  const [body, setBody] = useState<BodyState>({ type: 'form-data', content: '' })
 
   // Estado das Requisições Salvas
   const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
@@ -51,6 +60,7 @@ function App() {
       auth,
       headers,
       params,
+      body,
     }
     setSavedRequests([...savedRequests, newRequest])
     alert(`Requisição '${name}' salva!`)
@@ -64,6 +74,7 @@ function App() {
       setAuth(requestToLoad.auth)
       setHeaders(requestToLoad.headers)
       setParams(requestToLoad.params.filter((p) => 'value' in p))
+      setBody(requestToLoad.body)
       alert(`Requisição '${requestToLoad.name}' carregada!`)
     }
   }
@@ -78,9 +89,63 @@ function App() {
     setLoading(true)
     setError(null)
     setResponse(null)
-    const hasFiles = params.some((p) => 'file' in p && p.file)
-    let data: FormData | URLSearchParams | undefined
-    if (method !== 'GET' && method !== 'HEAD') {
+
+    const tempHeaders = new Headers()
+    let data: string | FormData | URLSearchParams | undefined
+
+    // Define o corpo da requisição com base no tipo selecionado
+    if (body.type === 'json' || body.type === 'xml' || body.type === 'text') {
+      data = body.content
+      // Define o Content-Type, a menos que o usuário já tenha definido um manualmente
+      const contentTypeMap = {
+        json: 'application/json',
+        xml: 'application/xml',
+        text: 'text/plain',
+      }
+      if (!headers.some((h) => h.key.toLowerCase() === 'content-type')) {
+        tempHeaders.set('Content-Type', contentTypeMap[body.type])
+      }
+    } else if (body.type === 'form-data') {
+      const hasFiles = params.some((p) => 'file' in p && p.file)
+      if (hasFiles) {
+        // Multipart/form-data
+        const formData = new FormData()
+        params.forEach((p) => {
+          if ('file' in p && p.file) formData.append(p.key || `file_${p.id}`, p.file)
+          else if ('value' in p) formData.append(p.key, p.value)
+        })
+        data = formData
+        // O navegador define o Content-Type para multipart automaticamente
+      } else {
+        // application/x-www-form-urlencoded
+        const searchParams = new URLSearchParams()
+        params.forEach((p) => {
+          if ('value' in p) searchParams.append(p.key, p.value)
+        })
+        data = searchParams
+        tempHeaders.set('Content-Type', 'application/x-www-form-urlencoded')
+      }
+    }
+    // Constrói os headers finais, combinando os manuais e os automáticos
+    const finalHeaders: Record<string, string> = {}
+    tempHeaders.forEach((value, key) => {
+      finalHeaders[key] = value
+    })
+    headers.forEach((h) => {
+      if (h.key) finalHeaders[h.key] = h.value
+    })
+
+    // Lógica de autorização não muda
+    if (auth.type === 'bearer' && auth.token) {
+      finalHeaders['Authorization'] = `Bearer ${auth.token}`
+    }
+    if (auth.type === 'api-key' && auth.apiKeyHeader && auth.apiKeyValue) {
+      finalHeaders[auth.apiKeyHeader] = auth.apiKeyValue
+    }
+
+    // Only apply data to non-GET/HEAD requests if it hasn't been set already
+    if (method !== 'GET' && method !== 'HEAD' && !data) {
+      const hasFiles = params.some((p) => 'file' in p && p.file)
       if (hasFiles) {
         const formData = new FormData()
         params.forEach((p) => {
@@ -195,6 +260,8 @@ function App() {
               setHeaders={setHeaders}
               params={params}
               setParams={setParams}
+              body={body}
+              setBody={setBody}
               onSubmit={handleSubmit}
               loading={loading}
             />

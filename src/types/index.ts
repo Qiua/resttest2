@@ -33,6 +33,13 @@ export type Parameter = KeyValuePair | FileParameter
 
 // Representa o estado de autenticação, que pode ser Basic Auth, Bearer Token ou API Key
 export type AuthType = 'none' | 'basic' | 'bearer' | 'api-key'
+// Representa o tipo de corpo da requisição, que pode ser nenhum, JSON, XML, texto ou form-data
+export type BodyType = 'none' | 'json' | 'xml' | 'text' | 'form-data'
+
+export interface BodyState {
+  type: BodyType
+  content: string
+}
 
 export interface AuthState {
   type: AuthType
@@ -41,7 +48,7 @@ export interface AuthState {
   password?: string
   // Para Bearer Token
   token?: string
-  // ADICIONADO: Para API Key
+  // Para API Key
   apiKeyHeader?: string
   apiKeyValue?: string
 }
@@ -60,8 +67,8 @@ export interface RequestState {
   auth: AuthState
   headers: KeyValuePair[]
   params: Parameter[]
+  body: BodyState
 }
-
 // Representa uma requisição salva, com ID e nome
 export interface SavedRequest extends RequestState {
   id: string

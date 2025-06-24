@@ -18,7 +18,14 @@
 // src/features/RequestForm.tsx
 import React from 'react'
 import { Tabs } from '../components/Tabs'
-import { type KeyValuePair, type Parameter, type AuthState, type AuthType } from '../types'
+import {
+  type KeyValuePair,
+  type Parameter,
+  type AuthState,
+  type AuthType,
+  type BodyType,
+  type BodyState,
+} from '../types'
 import { FileInput } from '../components/FileInput'
 import { KeyValuePairInput } from '../components/KeyValuePairInput'
 
@@ -33,6 +40,8 @@ interface RequestFormProps {
   setHeaders: (headers: KeyValuePair[]) => void
   params: Parameter[]
   setParams: (params: Parameter[]) => void
+  body: BodyState
+  setBody: (body: BodyState) => void
   onSubmit: () => void
   loading: boolean
 }
@@ -48,6 +57,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   setHeaders,
   params,
   setParams,
+  body,
+  setBody,
   onSubmit,
   loading,
 }) => {
@@ -99,6 +110,90 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               Adicionar Arquivo
             </button>
           </div>
+        </div>
+      ),
+    },
+    {
+      label: 'Body',
+      content: (
+        <div className='space-y-4 h-full flex flex-col'>
+          <div className='flex items-center gap-x-6 gap-y-2 flex-wrap'>
+            <div className='flex items-center'>
+              <input
+                id='body-type-none'
+                type='radio'
+                value='form-data'
+                checked={body.type === 'form-data'}
+                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
+              />
+              <label htmlFor='body-type-none' className='ml-2 block text-sm font-medium text-gray-700'>
+                Form-Data / x-www-form-urlencoded
+              </label>
+            </div>
+            <div className='flex items-center'>
+              <input
+                id='body-type-json'
+                type='radio'
+                value='json'
+                checked={body.type === 'json'}
+                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
+              />
+              <label htmlFor='body-type-json' className='ml-2 block text-sm font-medium text-gray-700'>
+                JSON
+              </label>
+            </div>
+            <div className='flex items-center'>
+              <input
+                id='body-type-text'
+                type='radio'
+                value='text'
+                checked={body.type === 'text'}
+                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
+              />
+              <label htmlFor='body-type-text' className='ml-2 block text-sm font-medium text-gray-700'>
+                Text
+              </label>
+            </div>
+            <div className='flex items-center'>
+              <input
+                id='body-type-xml'
+                type='radio'
+                value='xml'
+                checked={body.type === 'xml'}
+                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
+              />
+              <label htmlFor='body-type-xml' className='ml-2 block text-sm font-medium text-gray-700'>
+                XML
+              </label>
+            </div>
+          </div>{' '}
+          {body.type !== 'form-data' ? (
+            <div className='flex-grow'>
+              <textarea
+                value={body.content}
+                onChange={(e) => setBody({ ...body, content: e.target.value })}
+                placeholder={`Digite o conteúdo ${body.type.toUpperCase()} aqui...`}
+                className='w-full h-full resize-none outline-none font-mono text-sm border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                style={{
+                  fontSize: '0.875rem',
+                  lineHeight: '1.25rem',
+                  padding: '1rem',
+                  backgroundColor: '#1e1e1e',
+                  color: '#d4d4d4',
+                  border: '1px solid #3e3e42',
+                }}
+                spellCheck={false}
+              />
+            </div>
+          ) : (
+            <div className='p-4 bg-gray-100 rounded-md text-sm text-gray-600'>
+              <p>O corpo da requisição será construído a partir dos dados na aba **Parâmetros**.</p>
+            </div>
+          )}
         </div>
       ),
     },

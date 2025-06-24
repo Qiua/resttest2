@@ -22,7 +22,6 @@ import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
-import { SavedRequests } from './features/SavedRequests'
 import { Sidebar } from './components/Sidebar'
 import {
   type KeyValuePair,
@@ -156,12 +155,12 @@ function App() {
   }
 
   const handleRequestSelect = (request: SavedRequest) => {
-    setMethod(request.method)
-    setUrl(request.url)
-    setAuth(request.auth)
-    setHeaders(request.headers)
-    setParams(request.params.filter((p) => 'value' in p))
-    setBody(request.body)
+    setMethod(request.method || 'GET')
+    setUrl(request.url || '')
+    setAuth(request.auth || { type: 'none' })
+    setHeaders(request.headers || [])
+    setParams(request.params?.filter((p) => 'value' in p) || [])
+    setBody(request.body || { type: 'form-data', content: '' })
   }
 
   const handleDeleteCollection = (collectionId: string) => {
@@ -204,70 +203,52 @@ function App() {
     )
   }
 
-  // Funções para manipular as requisições salvas
-  const handleSaveRequest = (name: string) => {
-    // Salva na forma antiga para compatibilidade
+  // Função para salvar requisição no sistema de collections
+  const handleSaveCurrentRequest = () => {
+    const name = prompt('Nome da requisição:')
+    if (!name?.trim()) return
+
+    const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
+    if (!targetWorkspace || targetWorkspace.collections.length === 0) {
+      alert('Crie uma collection primeiro!')
+      return
+    }
+
+    const targetCollectionId = targetWorkspace.collections[0].id // Usa a primeira collection
+
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
-      name,
+      name: name.trim(),
       method,
       url,
       auth,
       headers,
       params,
       body,
+      collectionId: targetCollectionId,
     }
-    setSavedRequests([...savedRequests, newRequest])
 
-    // Também salva no sistema de collections
-    const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
-    if (targetWorkspace && targetWorkspace.collections.length > 0) {
-      const collectionId = targetWorkspace.collections[0].id // Usa a primeira collection
-      const requestWithCollection: SavedRequest = {
-        ...newRequest,
-        collectionId,
-      }
-
-      setWorkspaces((prev) =>
-        prev.map((workspace) =>
-          workspace.id === activeWorkspace
-            ? {
-                ...workspace,
-                collections: workspace.collections.map((collection) =>
-                  collection.id === collectionId
-                    ? {
-                        ...collection,
-                        requests: [...collection.requests, requestWithCollection],
-                        updatedAt: new Date().toISOString(),
-                      }
-                    : collection
-                ),
-                updatedAt: new Date().toISOString(),
-              }
-            : workspace
-        )
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === activeWorkspace
+          ? {
+              ...workspace,
+              collections: workspace.collections.map((collection) =>
+                collection.id === targetCollectionId
+                  ? {
+                      ...collection,
+                      requests: [...collection.requests, newRequest],
+                      updatedAt: new Date().toISOString(),
+                    }
+                  : collection
+              ),
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
       )
-    }
+    )
 
-    alert(`Requisição '${name}' salva!`)
-  }
-
-  const handleLoadRequest = (id: string) => {
-    const requestToLoad = savedRequests.find((req) => req.id === id)
-    if (requestToLoad) {
-      setMethod(requestToLoad.method)
-      setUrl(requestToLoad.url)
-      setAuth(requestToLoad.auth)
-      setHeaders(requestToLoad.headers)
-      setParams(requestToLoad.params.filter((p) => 'value' in p))
-      setBody(requestToLoad.body)
-      alert(`Requisição '${requestToLoad.name}' carregada!`)
-    }
-  }
-
-  const handleDeleteRequest = (id: string) => {
-    setSavedRequests(savedRequests.filter((req) => req.id !== id))
-    alert('Requisição deletada.')
+    alert(`Requisição '${name}' salva na collection!`)
   }
 
   // Função para enviar a requisição
@@ -429,6 +410,13 @@ function App() {
     const migratedRequests = requestsToMigrate.map((req) => ({
       ...req,
       collectionId: targetCollectionId,
+      // Garantir que todos os campos obrigatórios estão presentes com valores padrão
+      method: req.method || 'GET',
+      url: req.url || '',
+      auth: req.auth || { type: 'none' },
+      headers: req.headers || [],
+      params: req.params || [],
+      body: req.body || { type: 'form-data', content: '' },
     }))
 
     setWorkspaces((prev) =>
@@ -486,16 +474,8 @@ function App() {
             <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded'>2.0</span>
           </div>
 
-          {/* Barra de Requests Salvos compacta */}
+          {/* Botão para migrar requests antigos (apenas se houver) */}
           <div className='flex items-center gap-2'>
-            <SavedRequests
-              savedRequests={savedRequests}
-              onSave={handleSaveRequest}
-              onLoad={handleLoadRequest}
-              onDelete={handleDeleteRequest}
-            />
-
-            {/* Botão para migrar requests antigos */}
             {savedRequests.some((req) => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
@@ -526,6 +506,7 @@ function App() {
                 body={body}
                 setBody={setBody}
                 onSubmit={handleSubmit}
+                onSave={handleSaveCurrentRequest}
                 loading={loading}
               />
             </Panel>

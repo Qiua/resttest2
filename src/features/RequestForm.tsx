@@ -43,6 +43,7 @@ interface RequestFormProps {
   body: BodyState
   setBody: (body: BodyState) => void
   onSubmit: () => void
+  onSave?: () => void
   loading: boolean
 }
 
@@ -60,16 +61,21 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   body,
   setBody,
   onSubmit,
+  onSave,
   loading,
 }) => {
-  const addHeader = () => setHeaders([...headers, { id: crypto.randomUUID(), key: '', value: '' }])
-  const addParam = () => setParams([...params, { id: crypto.randomUUID(), key: '', value: '' }])
-  const addFileParam = () => setParams([...params, { id: crypto.randomUUID(), key: '', file: null }])
+  // Valores padrão para evitar erros de undefined
+  const safeBody = body || { type: 'form-data', content: '' }
+  const safeHeaders = headers || []
+  const safeParams = params || []
+  const addHeader = () => setHeaders([...safeHeaders, { id: crypto.randomUUID(), key: '', value: '' }])
+  const addParam = () => setParams([...safeParams, { id: crypto.randomUUID(), key: '', value: '' }])
+  const addFileParam = () => setParams([...safeParams, { id: crypto.randomUUID(), key: '', file: null }])
   const handleAuthTypeChange = (type: AuthType) => setAuth({ type })
 
   // Função para renderizar o preview do form-data baseado nos parâmetros
   const renderFormDataPreview = () => {
-    const validParams = params.filter(
+    const validParams = safeParams.filter(
       (param) => param.key && (('value' in param && param.value) || ('file' in param && param.file))
     )
 
@@ -113,22 +119,22 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       label: 'Parâmetros',
       content: (
         <div className='space-y-2'>
-          {params.map((param) =>
+          {safeParams.map((param) =>
             'file' in param ? (
               <FileInput
                 key={param.id}
                 item={param}
-                updateItem={(updated) => setParams(params.map((p) => (p.id === updated.id ? updated : p)))}
-                removeItem={() => setParams(params.filter((p) => p.id !== param.id))}
+                updateItem={(updated) => setParams(safeParams.map((p) => (p.id === updated.id ? updated : p)))}
+                removeItem={() => setParams(safeParams.filter((p) => p.id !== param.id))}
               />
             ) : (
               <KeyValuePairInput
                 key={param.id}
                 item={param}
                 updateItem={(updated: KeyValuePair) =>
-                  setParams(params.map((p) => (p.id === updated.id ? updated : p)))
+                  setParams(safeParams.map((p) => (p.id === updated.id ? updated : p)))
                 }
-                removeItem={() => setParams(params.filter((p) => p.id !== param.id))}
+                removeItem={() => setParams(safeParams.filter((p) => p.id !== param.id))}
                 keyPlaceholder='Parâmetro'
                 valuePlaceholder='Valor'
               />
@@ -163,8 +169,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 id='body-type-none'
                 type='radio'
                 value='form-data'
-                checked={body.type === 'form-data'}
-                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                checked={safeBody.type === 'form-data'}
+                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
               />
               <label htmlFor='body-type-none' className='ml-2 block text-sm font-medium text-gray-700'>
@@ -176,8 +182,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 id='body-type-json'
                 type='radio'
                 value='json'
-                checked={body.type === 'json'}
-                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                checked={safeBody.type === 'json'}
+                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
               />
               <label htmlFor='body-type-json' className='ml-2 block text-sm font-medium text-gray-700'>
@@ -189,8 +195,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 id='body-type-text'
                 type='radio'
                 value='text'
-                checked={body.type === 'text'}
-                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                checked={safeBody.type === 'text'}
+                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
               />
               <label htmlFor='body-type-text' className='ml-2 block text-sm font-medium text-gray-700'>
@@ -202,8 +208,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 id='body-type-xml'
                 type='radio'
                 value='xml'
-                checked={body.type === 'xml'}
-                onChange={(e) => setBody({ ...body, type: e.target.value as BodyType })}
+                checked={safeBody.type === 'xml'}
+                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
               />
               <label htmlFor='body-type-xml' className='ml-2 block text-sm font-medium text-gray-700'>
@@ -211,12 +217,12 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               </label>
             </div>
           </div>{' '}
-          {body.type !== 'form-data' ? (
+          {safeBody.type !== 'form-data' ? (
             <div className='flex-grow'>
               <textarea
-                value={body.content}
-                onChange={(e) => setBody({ ...body, content: e.target.value })}
-                placeholder={`Digite o conteúdo ${body.type.toUpperCase()} aqui...`}
+                value={safeBody.content}
+                onChange={(e) => setBody({ ...safeBody, content: e.target.value })}
+                placeholder={`Digite o conteúdo ${safeBody.type.toUpperCase()} aqui...`}
                 className='w-full h-full resize-none outline-none font-mono text-sm border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                 style={{
                   fontSize: '0.875rem',
@@ -388,13 +394,25 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
           placeholder='Digite a URL da API'
         />
-        <button
-          type='submit'
-          disabled={loading}
-          className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-r-md border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]'
-        >
-          {loading ? 'Enviando...' : 'Send'}
-        </button>
+        <div className='flex'>
+          <button
+            type='submit'
+            disabled={loading}
+            className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]'
+          >
+            {loading ? 'Enviando...' : 'Send'}
+          </button>
+          {onSave && (
+            <button
+              type='button'
+              onClick={onSave}
+              className='px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-l-0 border-blue-600 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              title='Salvar requisição'
+            >
+              💾
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Área de Abas */}

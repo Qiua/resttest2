@@ -43,19 +43,19 @@ export const KeyValuePairInput: React.FC<KeyValuePairInputProps> = ({
         placeholder={keyPlaceholder}
         value={item.key}
         onChange={(e) => updateItem({ ...item, key: e.target.value })}
-        className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+        className='flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
       />
       <input
         type={isPassword ? 'password' : 'text'}
         placeholder={valuePlaceholder}
         value={item.value}
         onChange={(e) => updateItem({ ...item, value: e.target.value })}
-        className='flex-grow p-2 border border-gray-300 rounded-md shadow-sm'
+        className='flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
       />
       <button
         type='button'
         onClick={removeItem}
-        className='px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600'
+        className='px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500'
       >
         &times;
       </button>

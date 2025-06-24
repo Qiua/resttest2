@@ -1,6 +1,6 @@
 # REST Test 2.0 - Um Cliente de API Moderno
 
-![Screenshot da Aplicação](public/assets/screenshot.png)
+![Screenshot da Aplicação](public/assets/demo/rest-test-2-screen-final.mp4)
 
 Este é um fork do maravilhoso projeto https://github.com/jeroen/resttesttest
 
@@ -59,8 +59,8 @@ Você precisa ter o Node.js e o npm (ou yarn/pnpm) instalados na sua máquina.
     ```
 4.  Inicie o servidor de desenvolvimento:
     `sh
-    npm run dev
-    `
+npm run dev
+`
     A aplicação estará disponível em `http://localhost:5173` (ou a porta indicada no seu terminal).
 
 ## 🗺️ Roadmap

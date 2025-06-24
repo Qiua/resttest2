@@ -2,28 +2,28 @@
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-
-// Nossos componentes e tipos
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { SavedRequests } from './features/SavedRequests'
-
 import { type KeyValuePair, type Parameter, type ApiResponse, type AuthState, type SavedRequest } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 
 function App() {
-  // Todo o seu estado e a função handleSubmit permanecem exatamente iguais.
+  // Estado da Requisição Atual
   const [method, setMethod] = useState('GET')
   const [url, setUrl] = useState('https://httpbin.org/get')
   const [auth, setAuth] = useState<AuthState>({ type: 'none' })
   const [headers, setHeaders] = useState<KeyValuePair[]>([])
   const [params, setParams] = useState<Parameter[]>([])
+  // Estado da Resposta e UI
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Estado das Requisições Salvas
   const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
 
+  // Funções para manipular as requisições salvas
   const handleSaveRequest = (name: string) => {
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
@@ -45,8 +45,6 @@ function App() {
       setUrl(requestToLoad.url)
       setAuth(requestToLoad.auth)
       setHeaders(requestToLoad.headers)
-      // ATENÇÃO: Carregar arquivos não é possível por segurança do navegador.
-      // Vamos filtrar os parâmetros de arquivo ao carregar.
       setParams(requestToLoad.params.filter((p) => 'value' in p))
       alert(`Requisição '${requestToLoad.name}' carregada!`)
     }
@@ -57,8 +55,8 @@ function App() {
     alert('Requisição deletada.')
   }
 
+  // Função para enviar a requisição
   const handleSubmit = async () => {
-    // A lógica de submit não muda
     setLoading(true)
     setError(null)
     setResponse(null)
@@ -149,7 +147,7 @@ function App() {
   }
 
   return (
-    <div className='h-screen grid grid-rows-[auto_1fr] bg-gray-100 font-sans'>
+    <div className='h-screen grid grid-rows-[auto_auto_1fr] bg-gray-100 font-sans'>
       <nav className='bg-gray-800 text-white p-4 shadow-md'>
         <div className='container mx-auto'>
           <h1 className='text-xl font-bold'>REST Test 2.0</h1>
@@ -165,7 +163,7 @@ function App() {
         />
       </div>
 
-      <main className='p-2 min-h-0'>
+      <main className='p-2 pt-0 min-h-0'>
         <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-md h-full'>
           <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
             <RequestForm
@@ -183,9 +181,7 @@ function App() {
               loading={loading}
             />
           </Panel>
-
           <PanelResizeHandle className='h-2 bg-gray-200 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors' />
-
           <Panel defaultSize={50} minSize={20} className='p-4 overflow-auto'>
             <ResponseDisplay response={response} loading={loading} error={error} />
           </Panel>

@@ -1,1 +1,8 @@
 @import 'tailwindcss';
+
+@theme {
+  --default-transition-duration: 200ms;
+}
+
+/* Configuração do modo escuro para Tailwind 4 */
+@variant dark (&:is(.dark *));

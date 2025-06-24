@@ -57,26 +57,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const getMethodColor = (method: string) => {
     switch (method.toUpperCase()) {
       case 'GET':
-        return 'text-green-600 bg-green-50'
+        return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30'
       case 'POST':
-        return 'text-blue-600 bg-blue-50'
+        return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
       case 'PUT':
-        return 'text-yellow-600 bg-yellow-50'
+        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30'
       case 'DELETE':
-        return 'text-red-600 bg-red-50'
+        return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30'
       case 'PATCH':
-        return 'text-purple-600 bg-purple-50'
+        return 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30'
       default:
-        return 'text-gray-600 bg-gray-50'
+        return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800'
     }
   }
 
   if (!isOpen) {
     return (
-      <div className='w-12 bg-gray-800 flex flex-col items-center py-4 transition-all duration-300 ease-in-out'>
+      <div className='w-12 bg-gray-800 dark:bg-gray-900 flex flex-col items-center py-4 transition-all duration-300 ease-in-out'>
         <button
           onClick={onToggle}
-          className='text-white hover:bg-gray-700 p-2 rounded-md transition-colors duration-200'
+          className='text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200'
           title='Abrir sidebar'
         >
           <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -88,14 +88,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <div className='w-80 bg-gray-50 border-r border-gray-200 flex flex-col h-full transition-all duration-300 ease-in-out'>
+    <div className='w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full transition-all duration-300 ease-in-out'>
       {/* Header do Sidebar */}
-      <div className='p-4 border-b border-gray-200 bg-white'>
+      <div className='p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'>
         <div className='flex items-center justify-between mb-3'>
-          <h2 className='text-lg font-semibold text-gray-900'>Collections</h2>
+          <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>Collections</h2>
           <button
             onClick={onToggle}
-            className='text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded'
+            className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
             title='Fechar sidebar'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -106,11 +106,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Seletor de Workspace */}
         <div className='space-y-2'>
-          <label className='text-sm font-medium text-gray-700'>Workspace</label>
+          <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>Workspace</label>
           <select
             value={activeWorkspace || ''}
             onChange={(e) => onWorkspaceSelect(e.target.value)}
-            className='w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'
+            className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
           >
             <option value=''>Selecionar workspace...</option>
             {workspaces.map((workspace) => (
@@ -129,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Botão para nova collection */}
             <button
               onClick={() => onNewCollection(activeWorkspaceData.id)}
-              className='w-full px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2'
+              className='w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors'
             >
               <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
@@ -140,9 +140,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Lista de Collections */}
             <div className='space-y-2'>
               {activeWorkspaceData.collections.length === 0 ? (
-                <div className='text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg'>
+                <div className='text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg'>
                   <svg
-                    className='w-8 h-8 mx-auto mb-2 text-gray-300'
+                    className='w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600'
                     fill='none'
                     stroke='currentColor'
                     viewBox='0 0 24 24'
@@ -161,16 +161,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 activeWorkspaceData.collections.map((collection) => (
                   <div
                     key={collection.id}
-                    className='border border-gray-200 rounded-lg bg-white hover:shadow-md'
+                    className='border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 hover:shadow-md transition-shadow'
                   >
                     {/* Header da Collection */}
                     <div
-                      className='flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50'
+                      className='flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors'
                       onClick={() => toggleCollection(collection.id)}
                     >
                       <div className='flex items-center gap-2'>
                         <svg
-                          className={`w-4 h-4 transition-transform duration-200 ${
+                          className={`w-4 h-4 transition-transform duration-200 text-gray-600 dark:text-gray-300 ${
                             expandedCollections.includes(collection.id) ? 'rotate-90' : ''
                           }`}
                           fill='none'
@@ -179,8 +179,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         >
                           <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
                         </svg>
-                        <span className='font-medium text-gray-900'>{collection.name}</span>
-                        <span className='text-xs text-gray-500'>({collection.requests.length})</span>
+                        <span className='font-medium text-gray-900 dark:text-white'>{collection.name}</span>
+                        <span className='text-xs text-gray-500 dark:text-gray-400'>({collection.requests.length})</span>
                       </div>
 
                       <div className='flex items-center gap-1'>
@@ -189,7 +189,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             e.stopPropagation()
                             onNewRequest(collection.id)
                           }}
-                          className='p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded'
+                          className='p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
                           title='Adicionar requisição'
                         >
                           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -201,7 +201,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             e.stopPropagation()
                             onDeleteCollection(collection.id)
                           }}
-                          className='p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded'
+                          className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors'
                           title='Deletar collection'
                         >
                           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -218,34 +218,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                     {/* Lista de Requisições */}
                     {expandedCollections.includes(collection.id) && (
-                      <div className='border-t border-gray-200 bg-gray-50'>
+                      <div className='border-t border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800'>
                         {collection.requests.length === 0 ? (
-                          <div className='p-4 text-center text-gray-500 text-sm'>
+                          <div className='p-4 text-center text-gray-500 dark:text-gray-400 text-sm'>
                             Nenhuma requisição nesta collection
                           </div>
                         ) : (
                           collection.requests.map((request) => (
                             <div
                               key={request.id}
-                              className='flex items-center justify-between p-3 hover:bg-white cursor-pointer border-b border-gray-200 last:border-b-0 group'
+                              className='flex items-center justify-between p-3 hover:bg-white dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0 group transition-colors'
                               onClick={() => onRequestSelect(request)}
                             >
                               <div className='flex items-center gap-3 flex-1 min-w-0'>
                                 <span
-                                  className={`px-2 py-1 text-xs font-medium rounded ${getMethodColor(
-                                    request.method
-                                  )}`}
+                                  className={`px-2 py-1 text-xs font-medium rounded ${getMethodColor(request.method)}`}
                                 >
                                   {request.method}
                                 </span>
-                                <span className='text-sm text-gray-900 truncate'>{request.name}</span>
+                                <span className='text-sm text-gray-900 dark:text-white truncate'>{request.name}</span>
                               </div>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation()
                                   onDeleteRequest(request.id)
                                 }}
-                                className='p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity'
+                                className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all'
                                 title='Deletar requisição'
                               >
                                 <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -268,8 +266,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </>
         ) : (
-          <div className='text-center py-8 text-gray-500'>
-            <svg className='w-12 h-12 mx-auto mb-4 text-gray-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+          <div className='text-center py-8 text-gray-500 dark:text-gray-400'>
+            <svg
+              className='w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
               <path
                 strokeLinecap='round'
                 strokeLinejoin='round'

@@ -15,16 +15,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { ThemeProvider } from './contexts/ThemeContext.tsx'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </StrictMode>
-)
+// src/components/ThemeToggle.tsx
+import React from 'react'
+import { useTheme } from '../hooks/useTheme'
+
+export const ThemeToggle: React.FC = () => {
+  const { theme, toggleTheme } = useTheme()
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className='px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors duration-200 border border-gray-300 dark:border-gray-600'
+      title={`Alternar para modo ${theme === 'light' ? 'escuro' : 'claro'}`}
+    >
+      {theme === 'light' ? '🌙' : '☀️'} {theme === 'light' ? 'Escuro' : 'Claro'}
+    </button>
+  )
+}

@@ -81,7 +81,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
     if (validParams.length === 0) {
       return (
-        <div className='p-4 bg-gray-100 rounded-md text-sm text-gray-600'>
+        <div className='p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300'>
           <p>
             Adicione parâmetros na aba <strong>Parâmetros</strong> para visualizar o corpo da requisição aqui.
           </p>
@@ -90,13 +90,18 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     }
 
     return (
-      <div className='p-4 bg-gray-50 rounded-md text-sm border'>
-        <h4 className='font-semibold text-gray-700 mb-3'>Preview do corpo da requisição (form-data):</h4>
+      <div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-sm border border-gray-200 dark:border-gray-600'>
+        <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-3'>
+          Preview do corpo da requisição (form-data):
+        </h4>
         <div className='space-y-2 font-mono text-xs'>
           {validParams.map((param) => (
-            <div key={param.id} className='flex items-center gap-2 p-2 bg-white rounded border'>
-              <span className='font-semibold text-blue-600 min-w-0 flex-shrink-0'>{param.key}:</span>
-              <span className='text-gray-800 break-all'>
+            <div
+              key={param.id}
+              className='flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600'
+            >
+              <span className='font-semibold text-blue-600 dark:text-blue-400 min-w-0 flex-shrink-0'>{param.key}:</span>
+              <span className='text-gray-800 dark:text-gray-200 break-all'>
                 {'file' in param && param.file
                   ? `[Arquivo: ${param.file.name} (${(param.file.size / 1024).toFixed(1)}KB)]`
                   : 'value' in param
@@ -106,7 +111,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             </div>
           ))}
         </div>
-        <div className='mt-3 pt-3 border-t text-xs text-gray-500'>
+        <div className='mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400'>
           <strong>Content-Type:</strong> multipart/form-data
         </div>
       </div>
@@ -373,12 +378,12 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       }}
     >
       {/* Barra Principal - Estilo Postman */}
-      <div className='flex items-center gap-1 p-3 bg-white border-b border-gray-200 flex-shrink-0'>
+      <div className='flex items-center gap-1 p-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0'>
         <select
           id='httpmethod'
           value={method}
           onChange={(e) => setMethod(e.target.value)}
-          className='px-3 py-2 text-sm font-medium border border-gray-300 rounded-l-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[80px]'
+          className='px-3 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[80px] text-gray-900 dark:text-white'
         >
           <option>GET</option>
           <option>POST</option>
@@ -391,7 +396,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           id='urlvalue'
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+          className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
           placeholder='Digite a URL da API'
         />
         <div className='flex'>
@@ -406,7 +411,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             <button
               type='button'
               onClick={onSave}
-              className='px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-l-0 border-blue-600 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
               title='Salvar requisição'
             >
               💾
@@ -416,7 +421,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       </div>
 
       {/* Área de Abas */}
-      <div className='flex-1 min-h-0 bg-gray-50'>
+      <div className='flex-1 min-h-0 bg-gray-50 dark:bg-gray-900'>
         <Tabs tabs={requestTabs} />
       </div>
     </form>

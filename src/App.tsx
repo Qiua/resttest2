@@ -23,6 +23,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
+import { ThemeToggle } from './components/ThemeToggle'
 import {
   type KeyValuePair,
   type Parameter,
@@ -450,7 +451,7 @@ function App() {
   }
 
   return (
-    <div className='h-screen flex bg-gray-50'>
+    <div className='h-screen flex bg-gray-50 dark:bg-gray-900'>
       {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -468,29 +469,35 @@ function App() {
       {/* Área Principal */}
       <div className='flex-1 flex flex-col min-w-0'>
         {/* Header compacto estilo profissional */}
-        <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm'>
+        <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm dark:bg-gray-800 dark:border-gray-700'>
           <div className='flex items-center gap-3'>
-            <h1 className='text-lg font-semibold text-gray-900'>REST Test</h1>
-            <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded'>2.0</span>
+            <h1 className='text-lg font-semibold text-gray-900 dark:text-white'>REST Test</h1>
+            <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300'>
+              2.0
+            </span>
           </div>
 
-          {/* Botão para migrar requests antigos (apenas se houver) */}
+          {/* Controles do Header */}
           <div className='flex items-center gap-2'>
             {savedRequests.some((req) => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
-                className='px-3 py-1.5 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-md hover:bg-yellow-200 transition-colors'
+                className='px-3 py-1.5 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors'
                 title='Migrar requests antigos para collections'
               >
                 Migrar ({savedRequests.filter((req) => !req.collectionId).length})
               </button>
             )}
+            <ThemeToggle />
           </div>
         </header>
 
         {/* Conteúdo Principal */}
         <main className='flex-1 min-h-0 p-2'>
-          <PanelGroup direction='vertical' className='bg-white rounded-lg shadow-sm border border-gray-200 h-full'>
+          <PanelGroup
+            direction='vertical'
+            className='bg-white rounded-lg shadow-sm border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700'
+          >
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
               <RequestForm
                 method={method}

@@ -30,9 +30,9 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   const [activeTab, setActiveTab] = React.useState(0)
 
   return (
-    <div className='h-full flex flex-col bg-white'>
+    <div className='h-full flex flex-col bg-white dark:bg-gray-800'>
       {/* Barra de Abas - Estilo Postman */}
-      <div className='border-b border-gray-200 bg-gray-50'>
+      <div className='border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900'>
         <nav className='flex' aria-label='Tabs'>
           {tabs.map((tab, index) => (
             <button
@@ -41,8 +41,8 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
               onClick={() => setActiveTab(index)}
               className={`${
                 activeTab === index
-                  ? 'border-b-2 border-blue-500 text-blue-600 bg-white'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
               } px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors relative`}
             >
               {tab.label}
@@ -54,7 +54,9 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
       </div>
 
       {/* Conteúdo da Aba */}
-      <div className='flex-1 min-h-0 overflow-auto p-4'>{tabs[activeTab] && tabs[activeTab].content}</div>
+      <div className='flex-1 min-h-0 overflow-auto p-4 bg-white dark:bg-gray-800'>
+        {tabs[activeTab] && tabs[activeTab].content}
+      </div>
     </div>
   )
 }

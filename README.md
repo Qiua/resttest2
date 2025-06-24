@@ -1,54 +1,92 @@
-# React + TypeScript + Vite
+# REST Test 2.0 - Um Cliente de API Moderno
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Screenshot da Aplicação](public/assets/screenshot.png)
 
-Currently, two official plugins are available:
+Este é um fork do maravilhoso projeto https://github.com/jeroen/resttesttest
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Um cliente de API web simples, rápido e moderno para fazer requisições HTTP e inspecionar respostas. Este projeto é uma refatoração completa de uma aplicação legada, agora construída com uma stack de tecnologias de ponta, incluindo React, Vite e Tailwind CSS.
 
-## Expanding the ESLint configuration
+## 🚀 Sobre o Projeto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Este projeto nasceu da necessidade de modernizar uma ferramenta interna de teste de APIs. O objetivo era criar uma base de código robusta, performática e com uma excelente experiência de desenvolvimento, pronta para futuras expansões e contribuições da comunidade open source.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### ✨ Funcionalidades Principais
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Múltiplos Métodos HTTP:** Suporte completo para GET, POST, PUT, DELETE, PATCH, e mais.
+- **Painéis Redimensionáveis:** Layout inspirado em ferramentas profissionais como Postman e Insomnia, com painéis de requisição e resposta ajustáveis.
+- **Interface com Abas:** Organize os detalhes da sua requisição (Parâmetros, Autenticação, Headers) e da resposta (Corpo, Headers) em abas intuitivas.
+- **Autenticação Flexível:** Suporte integrado para:
+  - Basic Auth
+  - Bearer Token
+  - API Key em Headers
+- **Envio de Arquivos:** Suporte para requisições `multipart/form-data`.
+- **Syntax Highlighting:** Visualização agradável e colorida para respostas em formato JSON.
+- **Salvar e Carregar Requisições:** Guarde suas requisições mais usadas no `localStorage` do navegador para reutilizá-las facilmente.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 🛠️ Construído Com
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **[React](https://reactjs.org/)** - A biblioteca para construir a interface de usuário.
+- **[TypeScript](https://www.typescriptlang.org/)** - Para um código mais seguro e manutenível.
+- **[Vite](https://vitejs.dev/)** - Ferramenta de build extremamente rápida.
+- **[Tailwind CSS](https://tailwindcss.com/)** - Framework CSS utilitário para uma estilização moderna e customizável.
+- **[Axios](https://axios-http.com/)** - Cliente HTTP para fazer as requisições.
+- **[React Resizable Panels](https://react-resizable-panels.com/)** - Para os painéis de layout redimensionáveis.
+- **[React Syntax Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)** - Para o realce de sintaxe do JSON.
+
+## 🏁 Começando
+
+Para ter uma cópia do projeto rodando localmente, siga estes passos simples.
+
+### Pré-requisitos
+
+Você precisa ter o Node.js e o npm (ou yarn/pnpm) instalados na sua máquina.
+
+- [Node.js](https://nodejs.org/)
+
+### Instalação
+
+1.  Clone o repositório:
+    ```sh
+    git clone [https://github.com/Qiua/resttesttest.git](https://github.com/Qiua/resttesttest.git)
+    ```
+2.  Navegue até a pasta do projeto:
+    ```sh
+    cd resttesttest
+    ```
+3.  Instale as dependências:
+    ```sh
+    npm install
+    ```
+4.  Inicie o servidor de desenvolvimento:
+    `sh
+    npm run dev
+    `
+    A aplicação estará disponível em `http://localhost:5173` (ou a porta indicada no seu terminal).
+
+## 🗺️ Roadmap
+
+Temos várias ideias para o futuro! Sinta-se à vontade para pegar uma delas e contribuir.
+
+- [ ] Implementar um sistema de "Coleções" para agrupar requisições.
+- [ ] Adicionar gerenciamento de "Ambientes" (ex: desenvolvimento, produção).
+- [ ] Suporte para mais tipos de autenticação (ex: OAuth 2.0).
+- [ ] Criar um histórico de requisições recentes.
+- [ ] Melhorar a visualização de outros tipos de resposta (HTML, XML).
+
+## 🤝 Contribuindo
+
+Contribuições são o que fazem a comunidade open source um lugar incrível para aprender, inspirar e criar. Qualquer contribuição que você fizer será **muito bem-vinda**.
+
+Se você tem uma sugestão para melhorar o projeto, por favor, faça um fork do repositório e crie um pull request. Você também pode simplesmente abrir uma issue com a tag "enhancement".
+
+1.  Faça um **Fork** do projeto.
+2.  Crie sua **Feature Branch** (`git checkout -b feature/FuncionalidadeIncrivel`).
+3.  Faça o **Commit** de suas mudanças (`git commit -m 'Adiciona FuncionalidadeIncrivel'`).
+4.  Faça o **Push** para a Branch (`git push origin feature/FuncionalidadeIncrivel`).
+5.  Abra um **Pull Request**.
+
+## 📄 Licença
+
+Distribuído sob a Licença MIT. Veja `LICENSE.txt` para mais informações.
+
+---

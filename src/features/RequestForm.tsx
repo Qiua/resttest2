@@ -67,6 +67,46 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   const addFileParam = () => setParams([...params, { id: crypto.randomUUID(), key: '', file: null }])
   const handleAuthTypeChange = (type: AuthType) => setAuth({ type })
 
+  // Função para renderizar o preview do form-data baseado nos parâmetros
+  const renderFormDataPreview = () => {
+    const validParams = params.filter(
+      (param) => param.key && (('value' in param && param.value) || ('file' in param && param.file))
+    )
+
+    if (validParams.length === 0) {
+      return (
+        <div className='p-4 bg-gray-100 rounded-md text-sm text-gray-600'>
+          <p>
+            Adicione parâmetros na aba <strong>Parâmetros</strong> para visualizar o corpo da requisição aqui.
+          </p>
+        </div>
+      )
+    }
+
+    return (
+      <div className='p-4 bg-gray-50 rounded-md text-sm border'>
+        <h4 className='font-semibold text-gray-700 mb-3'>Preview do corpo da requisição (form-data):</h4>
+        <div className='space-y-2 font-mono text-xs'>
+          {validParams.map((param) => (
+            <div key={param.id} className='flex items-center gap-2 p-2 bg-white rounded border'>
+              <span className='font-semibold text-blue-600 min-w-0 flex-shrink-0'>{param.key}:</span>
+              <span className='text-gray-800 break-all'>
+                {'file' in param && param.file
+                  ? `[Arquivo: ${param.file.name} (${(param.file.size / 1024).toFixed(1)}KB)]`
+                  : 'value' in param
+                  ? param.value
+                  : ''}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className='mt-3 pt-3 border-t text-xs text-gray-500'>
+          <strong>Content-Type:</strong> multipart/form-data
+        </div>
+      </div>
+    )
+  }
+
   // CORREÇÃO: O conteúdo de cada seção foi movido para a propriedade 'content' da sua respectiva aba.
   const requestTabs = [
     {
@@ -190,9 +230,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               />
             </div>
           ) : (
-            <div className='p-4 bg-gray-100 rounded-md text-sm text-gray-600'>
-              <p>O corpo da requisição será construído a partir dos dados na aba **Parâmetros**.</p>
-            </div>
+            renderFormDataPreview()
           )}
         </div>
       ),

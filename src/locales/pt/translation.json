@@ -159,5 +159,73 @@
     "select": "Selecionar idioma",
     "portuguese": "Português",
     "english": "English"
+  },
+  "importExport": {
+    "title": "Importar/Exportar",
+    "import": "Importar",
+    "export": "Exportar",
+    "importCollection": "Importar Coleção",
+    "exportCollection": "Exportar Coleção",
+    "importWorkspace": "Importar Área de Trabalho",
+    "exportWorkspace": "Exportar Área de Trabalho",
+    "exportType": "Tipo de Exportação",
+    "selectFile": "Selecionar arquivo",
+    "selectCollection": "Selecionar coleção",
+    "selectWorkspace": "Selecionar área de trabalho",
+    "formats": {
+      "postman": "Postman Collection",
+      "insomnia": "Insomnia Export",
+      "restTest": "REST Test",
+      "native": "Formato Nativo"
+    },
+    "actions": {
+      "chooseFile": "Escolher arquivo",
+      "importFile": "Importar arquivo",
+      "exportAs": "Exportar como",
+      "downloadFile": "Baixar arquivo"
+    },
+    "messages": {
+      "importSuccess": "Importação realizada com sucesso!",
+      "exportSuccess": "Exportação realizada com sucesso!",
+      "importError": "Erro ao importar arquivo",
+      "exportError": "Erro ao exportar dados",
+      "invalidFile": "Arquivo inválido ou formato não suportado",
+      "noFileSelected": "Nenhum arquivo selecionado",
+      "noCollectionSelected": "Nenhuma coleção selecionada",
+      "noWorkspaceSelected": "Nenhuma área de trabalho selecionada",
+      "fileDetected": "Formato detectado: {{format}}",
+      "importing": "Importando...",
+      "exporting": "Exportando..."
+    },
+    "descriptions": {
+      "import": "Importe coleções e requisições de outras ferramentas",
+      "export": "Exporte suas coleções para usar em outras ferramentas",
+      "workspace": "Exporte toda a área de trabalho com todas as coleções",
+      "collection": "Exporte apenas uma coleção específica",
+      "postman": "Formato padrão do Postman Collection v2.1",
+      "insomnia": "Formato de exportação do Insomnia",
+      "restTest": "Formato nativo do REST Test com todos os recursos"
+    }
+  },
+  "proxy": {
+    "settings": "Configurações de Proxy",
+    "corsWarning": "Aviso de CORS",
+    "currentUrl": "URL Atual",
+    "options": "Opções de Proxy",
+    "noProxy": "Sem Proxy",
+    "noProxyDescription": "Fazer requisições diretas (pode falhar devido a CORS)",
+    "test": "Testar",
+    "important": "Importante",
+    "developmentOnly": "Proxies são recomendados apenas para desenvolvimento",
+    "productionAdvice": "Em produção, configure CORS no servidor ou use proxy backend",
+    "privacyWarning": "Proxies públicos podem registrar suas requisições",
+    "requiresDemo": "Requer acesso de demonstração (clique no link para habilitar)",
+    "viteLocalDescription": "Proxy local configurado no Vite para desenvolvimento",
+    "corsAdvice": {
+      "mayFail": "Esta requisição pode falhar devido a restrições CORS",
+      "useProxy": "Considere usar um proxy para desenvolvimento",
+      "configureServer": "Em produção, configure CORS no servidor de destino",
+      "backendProxy": "Ou implemente um proxy server no backend"
+    }
   }
 }

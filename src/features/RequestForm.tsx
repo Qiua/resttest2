@@ -18,7 +18,7 @@
 // src/features/RequestForm.tsx
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiSave, FiPlus, FiFile, FiChevronDown } from 'react-icons/fi'
+import { FiSave, FiPlus, FiFile, FiChevronDown, FiAlertTriangle, FiSettings } from 'react-icons/fi'
 import { Tabs } from '../components/Tabs'
 import {
   type KeyValuePair,
@@ -30,6 +30,7 @@ import {
 } from '../types'
 import { FileInput } from '../components/FileInput'
 import { KeyValuePairInput } from '../components/KeyValuePairInput'
+import { mayHaveCorsIssues, type ProxyConfig } from '../utils/corsProxy'
 
 interface RequestFormProps {
   method: string
@@ -47,6 +48,8 @@ interface RequestFormProps {
   onSubmit: () => void
   onSave?: () => void
   loading: boolean
+  proxyConfig?: ProxyConfig
+  onProxySettings?: () => void
 }
 
 export const RequestForm: React.FC<RequestFormProps> = ({
@@ -65,6 +68,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   onSubmit,
   onSave,
   loading,
+  proxyConfig,
+  onProxySettings,
 }) => {
   const { t } = useTranslation()
   // Estado para controlar dropdown de métodos
@@ -501,6 +506,30 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           )}
         </div>
       </div>
+
+      {/* Aviso de CORS */}
+      {mayHaveCorsIssues(url) && proxyConfig && !proxyConfig.enabled && (
+        <div className='mx-4 mb-2 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg'>
+          <div className='flex items-start gap-3'>
+            <FiAlertTriangle className='text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0' />
+            <div className='flex-1'>
+              <p className='text-sm text-yellow-800 dark:text-yellow-200 font-medium'>{t('proxy.corsWarning')}</p>
+              <p className='text-xs text-yellow-700 dark:text-yellow-300 mt-1'>
+                Esta URL pode falhar devido a restrições CORS. Configure um proxy para resolver.
+              </p>
+            </div>
+            {onProxySettings && (
+              <button
+                onClick={onProxySettings}
+                className='flex items-center gap-1 px-2 py-1 text-xs text-yellow-700 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-100 border border-yellow-300 dark:border-yellow-600 rounded hover:bg-yellow-100 dark:hover:bg-yellow-800/50 transition-colors'
+              >
+                <FiSettings size={12} />
+                Configurar
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Área de Abas */}
       <div className='flex-1 min-h-0 bg-gray-50 dark:bg-gray-900'>

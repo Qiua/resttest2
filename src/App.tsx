@@ -19,7 +19,7 @@
 // src/App.tsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiRefreshCw } from 'react-icons/fi'
+import { FiRefreshCw, FiSettings } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
@@ -27,6 +27,8 @@ import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
 import { LanguageSelector } from './components/LanguageSelector'
+import { ImportExportModal } from './components/ImportExportModal'
+import { ProxySettings } from './components/ProxySettings'
 import {
   type KeyValuePair,
   type Parameter,
@@ -38,6 +40,7 @@ import {
   type Collection,
 } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 
 function App() {
   const { t } = useTranslation()
@@ -81,6 +84,16 @@ function App() {
   // Estado da Sidebar
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
+
+  // Estado do Modal de Importação/Exportação
+  const [importExportModalOpen, setImportExportModalOpen] = useState(false)
+
+  // Estado das Configurações de Proxy
+  const [proxySettingsOpen, setProxySettingsOpen] = useState(false)
+  const [proxyConfig, setProxyConfig] = useLocalStorage<ProxyConfig>('proxyConfig', {
+    type: 'none',
+    enabled: false,
+  })
 
   // Funções para manipular workspaces e collections
   const handleNewWorkspace = () => {
@@ -366,13 +379,22 @@ function App() {
       requestHeaders[auth.apiKeyHeader] = auth.apiKeyValue
     }
     try {
-      const result = await axios({
-        method: method,
-        url: url,
-        headers: requestHeaders,
-        data: data,
-        auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
-      })
+      // Aplicar proxy se configurado
+      const finalUrl = applyProxy(url, proxyConfig)
+
+      // Configurar axios para o proxy
+      const axiosConfig = configureAxiosForProxy(
+        {
+          method: method,
+          url: finalUrl,
+          headers: requestHeaders,
+          data: data,
+          auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
+        },
+        proxyConfig
+      )
+
+      const result = await axios(axiosConfig)
       const contentType = result.headers['content-type'] || ''
       let responseBody = result.data
 
@@ -471,6 +493,44 @@ function App() {
     )
   }
 
+  // Handlers para Importação/Exportação
+  const handleImportExportModal = () => {
+    setImportExportModalOpen(true)
+  }
+
+  const handleWorkspaceImported = (workspace: Workspace) => {
+    // Gerar um novo ID para evitar conflitos
+    const newWorkspace = {
+      ...workspace,
+      id: crypto.randomUUID(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    setWorkspaces((prev) => [...prev, newWorkspace])
+    setActiveWorkspace(newWorkspace.id)
+  }
+
+  const handleCollectionImported = (collection: Collection, workspaceId: string) => {
+    // Gerar um novo ID para a collection para evitar conflitos
+    const newCollection = {
+      ...collection,
+      id: crypto.randomUUID(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    setWorkspaces((prev) =>
+      prev.map((workspace) =>
+        workspace.id === workspaceId
+          ? {
+              ...workspace,
+              collections: [...workspace.collections, newCollection],
+              updatedAt: new Date().toISOString(),
+            }
+          : workspace
+      )
+    )
+  }
+
   return (
     <div className='h-screen flex bg-gray-50 dark:bg-gray-900'>
       {/* Sidebar */}
@@ -486,6 +546,7 @@ function App() {
         onNewRequest={handleNewRequest}
         onDeleteCollection={handleDeleteCollection}
         onDeleteRequest={handleDeleteRequestFromSidebar}
+        onImportExport={handleImportExportModal}
       />
 
       {/* Área Principal */}
@@ -512,6 +573,13 @@ function App() {
               </button>
             )}
             <div className='flex items-center space-x-3'>
+              <button
+                onClick={() => setProxySettingsOpen(true)}
+                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors'
+                title={t('proxy.settings')}
+              >
+                <FiSettings size={16} />
+              </button>
               <LanguageSelector />
               <ThemeToggle />
             </div>
@@ -541,6 +609,8 @@ function App() {
                 onSubmit={handleSubmit}
                 onSave={handleSaveCurrentRequest}
                 loading={loading}
+                proxyConfig={proxyConfig}
+                onProxySettings={() => setProxySettingsOpen(true)}
               />
             </Panel>
             <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
@@ -552,6 +622,24 @@ function App() {
           </PanelGroup>
         </main>
       </div>
+
+      {/* Modal de Importação/Exportação */}
+      <ImportExportModal
+        isOpen={importExportModalOpen}
+        onClose={() => setImportExportModalOpen(false)}
+        workspaces={workspaces}
+        onWorkspaceImported={handleWorkspaceImported}
+        onCollectionImported={handleCollectionImported}
+      />
+
+      {/* Modal de Configurações de Proxy */}
+      <ProxySettings
+        isOpen={proxySettingsOpen}
+        onClose={() => setProxySettingsOpen(false)}
+        proxyConfig={proxyConfig}
+        onConfigChange={setProxyConfig}
+        currentUrl={url}
+      />
     </div>
   )
 }

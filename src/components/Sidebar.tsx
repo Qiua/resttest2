@@ -18,7 +18,17 @@
 // src/components/Sidebar.tsx
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiPlus, FiFolderPlus, FiFolder, FiFile, FiTrash2, FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
+import {
+  FiPlus,
+  FiFolderPlus,
+  FiFolder,
+  FiFile,
+  FiTrash2,
+  FiChevronRight,
+  FiMenu,
+  FiX,
+  FiExternalLink,
+} from 'react-icons/fi'
 import type { Workspace, SavedRequest } from '../types'
 
 interface SidebarProps {
@@ -33,6 +43,7 @@ interface SidebarProps {
   onNewRequest: (collectionId?: string) => void
   onDeleteCollection: (collectionId: string) => void
   onDeleteRequest: (requestId: string) => void
+  onImportExport?: () => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -47,6 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNewRequest,
   onDeleteCollection,
   onDeleteRequest,
+  onImportExport,
 }) => {
   const { t } = useTranslation()
   const [expandedCollections, setExpandedCollections] = useState<string[]>([])
@@ -109,13 +121,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
             <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>{t('sidebar.workspace')}</label>
-            <button
-              onClick={onNewWorkspace}
-              className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
-              title={t('sidebar.newWorkspace')}
-            >
-              <FiPlus className='w-4 h-4' />
-            </button>
+            <div className='flex items-center gap-1'>
+              {onImportExport && (
+                <button
+                  onClick={onImportExport}
+                  className='p-1 text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors'
+                  title={t('importExport.title')}
+                >
+                  <FiExternalLink className='w-4 h-4' />
+                </button>
+              )}
+              <button
+                onClick={onNewWorkspace}
+                className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
+                title={t('sidebar.newWorkspace')}
+              >
+                <FiPlus className='w-4 h-4' />
+              </button>
+            </div>
           </div>
           <select
             value={activeWorkspace || ''}

@@ -159,5 +159,73 @@
     "select": "Select language",
     "portuguese": "Português",
     "english": "English"
+  },
+  "importExport": {
+    "title": "Import/Export",
+    "import": "Import",
+    "export": "Export",
+    "importCollection": "Import Collection",
+    "exportCollection": "Export Collection",
+    "importWorkspace": "Import Workspace",
+    "exportWorkspace": "Export Workspace",
+    "exportType": "Export Type",
+    "selectFile": "Select file",
+    "selectCollection": "Select collection",
+    "selectWorkspace": "Select workspace",
+    "formats": {
+      "postman": "Postman Collection",
+      "insomnia": "Insomnia Export",
+      "restTest": "REST Test",
+      "native": "Native Format"
+    },
+    "actions": {
+      "chooseFile": "Choose file",
+      "importFile": "Import file",
+      "exportAs": "Export as",
+      "downloadFile": "Download file"
+    },
+    "messages": {
+      "importSuccess": "Import completed successfully!",
+      "exportSuccess": "Export completed successfully!",
+      "importError": "Error importing file",
+      "exportError": "Error exporting data",
+      "invalidFile": "Invalid file or unsupported format",
+      "noFileSelected": "No file selected",
+      "noCollectionSelected": "No collection selected",
+      "noWorkspaceSelected": "No workspace selected",
+      "fileDetected": "Format detected: {{format}}",
+      "importing": "Importing...",
+      "exporting": "Exporting..."
+    },
+    "descriptions": {
+      "import": "Import collections and requests from other tools",
+      "export": "Export your collections to use in other tools",
+      "workspace": "Export entire workspace with all collections",
+      "collection": "Export only a specific collection",
+      "postman": "Standard Postman Collection v2.1 format",
+      "insomnia": "Insomnia export format",
+      "restTest": "REST Test native format with all features"
+    }
+  },
+  "proxy": {
+    "settings": "Proxy Settings",
+    "corsWarning": "CORS Warning",
+    "currentUrl": "Current URL",
+    "options": "Proxy Options",
+    "noProxy": "No Proxy",
+    "noProxyDescription": "Make direct requests (may fail due to CORS)",
+    "test": "Test",
+    "important": "Important",
+    "developmentOnly": "Proxies are recommended for development only",
+    "productionAdvice": "In production, configure CORS on server or use backend proxy",
+    "privacyWarning": "Public proxies may log your requests",
+    "requiresDemo": "Requires demo access (click link to enable)",
+    "viteLocalDescription": "Local proxy configured in Vite for development",
+    "corsAdvice": {
+      "mayFail": "This request may fail due to CORS restrictions",
+      "useProxy": "Consider using a proxy for development",
+      "configureServer": "In production, configure CORS on the target server",
+      "backendProxy": "Or implement a proxy server in the backend"
+    }
   }
 }

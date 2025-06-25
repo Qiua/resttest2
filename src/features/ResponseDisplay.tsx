@@ -16,9 +16,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 // src/features/ResponseDisplay.tsx
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiCopy, FiEye, FiCode, FiInfo, FiFileText, FiSearch, FiDownload } from 'react-icons/fi'
+import {
+  FiCopy,
+  FiEye,
+  FiCode,
+  FiInfo,
+  FiFileText,
+  FiSearch,
+  FiDownload,
+  FiChevronUp,
+  FiChevronDown,
+  FiX,
+} from 'react-icons/fi'
 import type { ApiResponse } from '../types'
 import { Tabs } from '../components/Tabs'
 
@@ -41,6 +52,121 @@ const getStatusClass = (status: number) => {
 export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, loading, error }) => {
   const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0)
+  const [matches, setMatches] = useState<number[]>([])
+  const [caseSensitive, setCaseSensitive] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  // Atualizar matches quando o termo de busca mudar
+  useEffect(() => {
+    const findMatches = (content: string, term: string): number[] => {
+      if (!term.trim()) return []
+
+      const flags = caseSensitive ? 'g' : 'gi'
+      const regex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags)
+      const matches: number[] = []
+      let match
+
+      while ((match = regex.exec(content)) !== null) {
+        matches.push(match.index)
+      }
+
+      return matches
+    }
+
+    if (response?.body && searchTerm.trim()) {
+      const newMatches = findMatches(response.body, searchTerm.trim())
+      setMatches(newMatches)
+      setCurrentMatchIndex(0)
+    } else {
+      setMatches([])
+      setCurrentMatchIndex(0)
+    }
+  }, [searchTerm, response?.body, caseSensitive])
+
+  // Função para navegar entre matches
+  const navigateToMatch = (direction: 'next' | 'prev') => {
+    if (matches.length === 0) return
+
+    if (direction === 'next') {
+      setCurrentMatchIndex((prev) => (prev + 1) % matches.length)
+    } else {
+      setCurrentMatchIndex((prev) => (prev - 1 + matches.length) % matches.length)
+    }
+  }
+
+  // Função para fazer highlight do texto
+  const highlightText = (text: string, searchTerm: string, currentIndex: number): React.ReactElement => {
+    if (!searchTerm.trim()) {
+      return <span>{text}</span>
+    }
+
+    const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const flags = caseSensitive ? 'g' : 'gi'
+    const regex = new RegExp(`(${escapedTerm})`, flags)
+    const parts = text.split(regex)
+    let matchCount = 0
+
+    return (
+      <span>
+        {parts.map((part, index) => {
+          // Verificar se a parte é um match
+          const isMatch = caseSensitive ? part === searchTerm : part.toLowerCase() === searchTerm.toLowerCase()
+
+          if (isMatch) {
+            const isCurrentMatch = matchCount === currentIndex
+            matchCount++
+            return (
+              <span
+                key={index}
+                className={`${
+                  isCurrentMatch
+                    ? 'bg-yellow-400 dark:bg-yellow-500 text-black font-bold shadow-md ring-2 ring-yellow-500'
+                    : 'bg-yellow-200 dark:bg-yellow-700 text-black dark:text-yellow-100'
+                } px-1 rounded transition-all duration-200`}
+                id={isCurrentMatch ? 'current-match' : undefined}
+              >
+                {part}
+              </span>
+            )
+          }
+          return <span key={index}>{part}</span>
+        })}
+      </span>
+    )
+  }
+
+  // Scroll para o match atual com melhor experiência
+  useEffect(() => {
+    if (matches.length > 0) {
+      const timer = setTimeout(() => {
+        const currentElement = document.getElementById('current-match')
+        if (currentElement) {
+          // Verificar se o elemento está visível na viewport
+          const rect = currentElement.getBoundingClientRect()
+          const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight
+
+          if (!isVisible) {
+            currentElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            })
+          }
+        }
+      }, 100) // Pequeno delay para garantir que o DOM foi atualizado
+
+      return () => clearTimeout(timer)
+    }
+  }, [currentMatchIndex, matches])
+
+  // Limpar busca
+  const clearSearch = () => {
+    setSearchTerm('')
+    setMatches([])
+    setCurrentMatchIndex(0)
+    setCaseSensitive(false)
+  }
 
   // Função para copiar conteúdo para a área de transferência
   const copyToClipboard = (text: string) => {
@@ -186,51 +312,141 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
           </div>
 
           {/* Busca */}
-          <div className='relative mb-4'>
-            <FiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
-            <input
-              type='text'
-              placeholder={t('response.toolbar.searchInResponse')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className='w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
-            />
+          <div className='mb-4 space-y-2'>
+            <div className='flex items-center gap-2'>
+              <div className='relative flex-1'>
+                <FiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+                <input
+                  type='text'
+                  placeholder={t('response.toolbar.searchInResponse')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      if (e.shiftKey) {
+                        navigateToMatch('prev')
+                      } else {
+                        navigateToMatch('next')
+                      }
+                    } else if (e.key === 'Escape') {
+                      clearSearch()
+                    }
+                  }}
+                  className='w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
+                />
+                {searchTerm && (
+                  <button
+                    onClick={clearSearch}
+                    className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-colors'
+                    title='Limpar busca (Esc)'
+                  >
+                    <FiX className='w-4 h-4' />
+                  </button>
+                )}
+              </div>
+
+              {searchTerm && (
+                <div className='flex items-center gap-1'>
+                  {matches.length > 0 ? (
+                    <>
+                      <span className='text-sm text-gray-600 dark:text-gray-400 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded'>
+                        {currentMatchIndex + 1} de {matches.length}
+                      </span>
+                      <button
+                        onClick={() => navigateToMatch('prev')}
+                        disabled={matches.length === 0}
+                        className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors'
+                        title='Anterior (Shift+Enter)'
+                      >
+                        <FiChevronUp className='w-4 h-4' />
+                      </button>
+                      <button
+                        onClick={() => navigateToMatch('next')}
+                        disabled={matches.length === 0}
+                        className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors'
+                        title='Próximo (Enter)'
+                      >
+                        <FiChevronDown className='w-4 h-4' />
+                      </button>
+                    </>
+                  ) : (
+                    <span className='text-sm text-orange-600 dark:text-orange-400 px-2 py-1 bg-orange-50 dark:bg-orange-900 rounded'>
+                      Nenhum resultado
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {searchTerm && (
+              <div className='flex flex-col gap-2'>
+                <div className='text-xs text-gray-500 dark:text-gray-400 px-2'>
+                  💡 Dica: Use Enter/Shift+Enter para navegar, Esc para limpar
+                </div>
+                <div className='flex items-center gap-2 px-2'>
+                  <label className='flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 cursor-pointer'>
+                    <input
+                      type='checkbox'
+                      checked={caseSensitive}
+                      onChange={(e) => setCaseSensitive(e.target.checked)}
+                      className='rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-2'
+                    />
+                    Case sensitive
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Conteúdo da resposta */}
-          <div className='flex-1 min-h-0'>
-            {isJson ? (
-              <SyntaxHighlighter
-                language='json'
-                style={codeStyle}
-                customStyle={{
-                  margin: 0,
-                  padding: '1rem',
-                  height: '100%',
-                  borderRadius: '0.375rem',
-                  fontSize: '14px',
-                }}
-                showLineNumbers={true}
-                wrapLongLines={true}
-              >
-                {formatJson(response.body)}
-              </SyntaxHighlighter>
+          <div className='flex-1 min-h-0' ref={contentRef}>
+            {searchTerm && matches.length > 0 ? (
+              // Versão com highlight para busca
+              <div className='h-full bg-gray-900 rounded-md p-4 overflow-auto'>
+                <pre className='text-sm text-gray-100 font-mono whitespace-pre-wrap'>
+                  {isJson
+                    ? highlightText(formatJson(response.body), searchTerm, currentMatchIndex)
+                    : highlightText(response.body, searchTerm, currentMatchIndex)}
+                </pre>
+              </div>
             ) : (
-              <SyntaxHighlighter
-                language={language}
-                style={codeStyle}
-                customStyle={{
-                  margin: 0,
-                  padding: '1rem',
-                  height: '100%',
-                  borderRadius: '0.375rem',
-                  fontSize: '14px',
-                }}
-                showLineNumbers={true}
-                wrapLongLines={true}
-              >
-                {response.body}
-              </SyntaxHighlighter>
+              // Versão normal com syntax highlighting
+              <>
+                {isJson ? (
+                  <SyntaxHighlighter
+                    language='json'
+                    style={codeStyle}
+                    customStyle={{
+                      margin: 0,
+                      padding: '1rem',
+                      height: '100%',
+                      borderRadius: '0.375rem',
+                      fontSize: '14px',
+                    }}
+                    showLineNumbers={true}
+                    wrapLongLines={true}
+                  >
+                    {formatJson(response.body)}
+                  </SyntaxHighlighter>
+                ) : (
+                  <SyntaxHighlighter
+                    language={language}
+                    style={codeStyle}
+                    customStyle={{
+                      margin: 0,
+                      padding: '1rem',
+                      height: '100%',
+                      borderRadius: '0.375rem',
+                      fontSize: '14px',
+                    }}
+                    showLineNumbers={true}
+                    wrapLongLines={true}
+                  >
+                    {response.body}
+                  </SyntaxHighlighter>
+                )}
+              </>
             )}
           </div>
         </div>

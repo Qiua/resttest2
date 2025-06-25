@@ -25,6 +25,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
+import { RequestTabs } from './components/RequestTabs'
 import { ThemeToggle } from './components/ThemeToggle'
 import { LanguageSelector } from './components/LanguageSelector'
 import { ImportExportModal } from './components/ImportExportModal'
@@ -32,36 +33,29 @@ import { ProxySettings } from './components/ProxySettings'
 import { ConfirmModal } from './components/ConfirmModal'
 import { PromptModal } from './components/PromptModal'
 import { NotificationModal } from './components/NotificationModal'
-import {
-  type KeyValuePair,
-  type Parameter,
-  type ApiResponse,
-  type AuthState,
-  type SavedRequest,
-  type BodyState,
-  type Workspace,
-  type Collection,
-} from './types'
+import { type SavedRequest, type Workspace, type Collection } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { useRequestTabs } from './hooks/useRequestTabs'
 import { useModal } from './hooks/useModal'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 
 function App() {
   const { t } = useTranslation()
-  // Estado da Requisição Atual
-  const [method, setMethod] = useState('GET')
-  const [url, setUrl] = useState('https://httpbin.org/get')
-  const [auth, setAuth] = useState<AuthState>({ type: 'none' })
-  const [headers, setHeaders] = useState<KeyValuePair[]>([])
-  const [params, setParams] = useState<Parameter[]>([])
-  // Estado da Resposta e UI
-  const [response, setResponse] = useState<ApiResponse | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  // Estado do Corpo da Requisição
-  const [body, setBody] = useState<BodyState>({ type: 'form-data', content: '' })
 
-  // Estado das Requisições Salvas (mantido para compatibilidade)
+  // Sistema de tabs para gerenciar múltiplas requisições
+  const {
+    tabs,
+    activeTabId,
+    createNewTab,
+    closeTab,
+    selectTab,
+    updateTab,
+    markTabAsSaved,
+    setTabResponse,
+    getActiveTab,
+  } = useRequestTabs()
+
+  // Estados das Requisições Salvas (mantido para compatibilidade)
   const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
 
   // Estado dos Workspaces e Collections
@@ -249,12 +243,8 @@ function App() {
   }
 
   const handleRequestSelect = (request: SavedRequest) => {
-    setMethod(request.method || 'GET')
-    setUrl(request.url || '')
-    setAuth(request.auth || { type: 'none' })
-    setHeaders(request.headers || [])
-    setParams(request.params?.filter((p) => 'value' in p) || [])
-    setBody(request.body || { type: 'form-data', content: '' })
+    // Abrir a requisição em uma nova aba
+    createNewTab(request)
   }
 
   const handleDeleteCollection = async (collectionId: string) => {
@@ -309,6 +299,9 @@ function App() {
 
   // Função para salvar requisição no sistema de collections
   const handleSaveCurrentRequest = async () => {
+    const activeTab = getActiveTab()
+    if (!activeTab) return
+
     const name = await modal.showPrompt({
       title: t('messages.requestName'),
       message: t('messages.requestName') + ':',
@@ -331,12 +324,12 @@ function App() {
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
       name: name,
-      method,
-      url,
-      auth,
-      headers,
-      params,
-      body,
+      method: activeTab.method,
+      url: activeTab.url,
+      auth: activeTab.auth,
+      headers: activeTab.headers,
+      params: activeTab.params,
+      body: activeTab.body,
       collectionId: targetCollectionId,
     }
 
@@ -360,6 +353,9 @@ function App() {
       )
     )
 
+    // Marcar a aba como salva
+    markTabAsSaved(activeTab.id, newRequest.id)
+
     modal.showNotification({
       title: t('common.success'),
       message: t('messages.requestSaved', { name }),
@@ -369,31 +365,33 @@ function App() {
 
   // Função para enviar a requisição
   const handleSubmit = async () => {
-    setLoading(true)
-    setError(null)
-    setResponse(null)
+    const activeTab = getActiveTab()
+    if (!activeTab) return
+
+    // Definir estado de loading na aba
+    setTabResponse(activeTab.id, null, true, null)
 
     const tempHeaders = new Headers()
     let data: string | FormData | URLSearchParams | undefined
 
     // Define o corpo da requisição com base no tipo selecionado
-    if (body.type === 'json' || body.type === 'xml' || body.type === 'text') {
-      data = body.content
+    if (activeTab.body.type === 'json' || activeTab.body.type === 'xml' || activeTab.body.type === 'text') {
+      data = activeTab.body.content
       // Define o Content-Type, a menos que o usuário já tenha definido um manualmente
       const contentTypeMap = {
         json: 'application/json',
         xml: 'application/xml',
         text: 'text/plain',
       }
-      if (!headers.some((h) => h.key.toLowerCase() === 'content-type')) {
-        tempHeaders.set('Content-Type', contentTypeMap[body.type])
+      if (!activeTab.headers.some((h) => h.key.toLowerCase() === 'content-type')) {
+        tempHeaders.set('Content-Type', contentTypeMap[activeTab.body.type])
       }
-    } else if (body.type === 'form-data') {
-      const hasFiles = params.some((p) => 'file' in p && p.file)
+    } else if (activeTab.body.type === 'form-data') {
+      const hasFiles = activeTab.params.some((p) => 'file' in p && p.file)
       if (hasFiles) {
         // Multipart/form-data
         const formData = new FormData()
-        params.forEach((p) => {
+        activeTab.params.forEach((p) => {
           if ('file' in p && p.file) formData.append(p.key || `file_${p.id}`, p.file)
           else if ('value' in p) formData.append(p.key, p.value)
         })
@@ -402,7 +400,7 @@ function App() {
       } else {
         // application/x-www-form-urlencoded
         const searchParams = new URLSearchParams()
-        params.forEach((p) => {
+        activeTab.params.forEach((p) => {
           if ('value' in p) searchParams.append(p.key, p.value)
         })
         data = searchParams
@@ -414,24 +412,24 @@ function App() {
     tempHeaders.forEach((value, key) => {
       finalHeaders[key] = value
     })
-    headers.forEach((h) => {
+    activeTab.headers.forEach((h) => {
       if (h.key) finalHeaders[h.key] = h.value
     })
 
-    // Lógica de autorização não muda
-    if (auth.type === 'bearer' && auth.token) {
-      finalHeaders['Authorization'] = `Bearer ${auth.token}`
+    // Lógica de autorização
+    if (activeTab.auth.type === 'bearer' && activeTab.auth.token) {
+      finalHeaders['Authorization'] = `Bearer ${activeTab.auth.token}`
     }
-    if (auth.type === 'api-key' && auth.apiKeyHeader && auth.apiKeyValue) {
-      finalHeaders[auth.apiKeyHeader] = auth.apiKeyValue
+    if (activeTab.auth.type === 'api-key' && activeTab.auth.apiKeyHeader && activeTab.auth.apiKeyValue) {
+      finalHeaders[activeTab.auth.apiKeyHeader] = activeTab.auth.apiKeyValue
     }
 
     // Only apply data to non-GET/HEAD requests if it hasn't been set already
-    if (method !== 'GET' && method !== 'HEAD' && !data) {
-      const hasFiles = params.some((p) => 'file' in p && p.file)
+    if (activeTab.method !== 'GET' && activeTab.method !== 'HEAD' && !data) {
+      const hasFiles = activeTab.params.some((p) => 'file' in p && p.file)
       if (hasFiles) {
         const formData = new FormData()
-        params.forEach((p) => {
+        activeTab.params.forEach((p) => {
           if ('file' in p && p.file) {
             formData.append(p.key || `file_${p.id}`, p.file)
           } else if ('value' in p) {
@@ -441,7 +439,7 @@ function App() {
         data = formData
       } else {
         const searchParams = new URLSearchParams()
-        params.forEach((p) => {
+        activeTab.params.forEach((p) => {
           if ('value' in p) {
             searchParams.append(p.key, p.value)
           }
@@ -449,28 +447,33 @@ function App() {
         data = searchParams
       }
     }
+
     const requestHeaders: Record<string, string> = {}
-    headers.forEach((h) => {
+    activeTab.headers.forEach((h) => {
       if (h.key) requestHeaders[h.key] = h.value
     })
-    if (auth.type === 'bearer' && auth.token) {
-      requestHeaders['Authorization'] = `Bearer ${auth.token}`
+    if (activeTab.auth.type === 'bearer' && activeTab.auth.token) {
+      requestHeaders['Authorization'] = `Bearer ${activeTab.auth.token}`
     }
-    if (auth.type === 'api-key' && auth.apiKeyHeader && auth.apiKeyValue) {
-      requestHeaders[auth.apiKeyHeader] = auth.apiKeyValue
+    if (activeTab.auth.type === 'api-key' && activeTab.auth.apiKeyHeader && activeTab.auth.apiKeyValue) {
+      requestHeaders[activeTab.auth.apiKeyHeader] = activeTab.auth.apiKeyValue
     }
+
     try {
       // Aplicar proxy se configurado
-      const finalUrl = applyProxy(url, proxyConfig)
+      const finalUrl = applyProxy(activeTab.url, proxyConfig)
 
       // Configurar axios para o proxy
       const axiosConfig = configureAxiosForProxy(
         {
-          method: method,
+          method: activeTab.method,
           url: finalUrl,
           headers: requestHeaders,
           data: data,
-          auth: auth.type === 'basic' ? { username: auth.username || '', password: auth.password || '' } : undefined,
+          auth:
+            activeTab.auth.type === 'basic'
+              ? { username: activeTab.auth.username || '', password: activeTab.auth.password || '' }
+              : undefined,
         },
         proxyConfig
       )
@@ -488,13 +491,18 @@ function App() {
         responseBody = String(responseBody)
       }
 
-      setResponse({
-        status: result.status,
-        statusText: result.statusText,
-        headers: JSON.stringify(result.headers, null, 2),
-        body: responseBody,
-        contentType: contentType,
-      })
+      setTabResponse(
+        activeTab.id,
+        {
+          status: result.status,
+          statusText: result.statusText,
+          headers: JSON.stringify(result.headers, null, 2),
+          body: responseBody,
+          contentType: contentType,
+        },
+        false,
+        null
+      )
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         const contentType = err.response.headers['content-type'] || ''
@@ -506,18 +514,21 @@ function App() {
           errorBody = String(errorBody)
         }
 
-        setResponse({
-          status: err.response.status,
-          statusText: err.response.statusText,
-          headers: JSON.stringify(err.response.headers, null, 2),
-          body: errorBody,
-          contentType: contentType,
-        })
+        setTabResponse(
+          activeTab.id,
+          {
+            status: err.response.status,
+            statusText: err.response.statusText,
+            headers: JSON.stringify(err.response.headers, null, 2),
+            body: errorBody,
+            contentType: contentType,
+          },
+          false,
+          null
+        )
       } else {
-        setError(t('common.unexpectedError'))
+        setTabResponse(activeTab.id, null, false, t('common.unexpectedError'))
       }
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -668,6 +679,15 @@ function App() {
           </div>
         </header>
 
+        {/* Request Tabs */}
+        <RequestTabs
+          tabs={tabs}
+          activeTabId={activeTabId}
+          onTabSelect={selectTab}
+          onTabClose={closeTab}
+          onNewTab={() => createNewTab()}
+        />
+
         {/* Conteúdo Principal */}
         <main className='flex-1 min-h-0 p-1'>
           <PanelGroup
@@ -675,30 +695,38 @@ function App() {
             className='bg-white rounded-lg shadow-sm border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700'
           >
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
-              <RequestForm
-                method={method}
-                setMethod={setMethod}
-                url={url}
-                setUrl={setUrl}
-                auth={auth}
-                setAuth={setAuth}
-                headers={headers}
-                setHeaders={setHeaders}
-                params={params}
-                setParams={setParams}
-                body={body}
-                setBody={setBody}
-                onSubmit={handleSubmit}
-                onSave={handleSaveCurrentRequest}
-                loading={loading}
-                proxyConfig={proxyConfig}
-                onProxySettings={() => setProxySettingsOpen(true)}
-              />
+              {getActiveTab() && (
+                <RequestForm
+                  method={getActiveTab()!.method}
+                  setMethod={(method) => updateTab(activeTabId!, { method })}
+                  url={getActiveTab()!.url}
+                  setUrl={(url) => updateTab(activeTabId!, { url })}
+                  auth={getActiveTab()!.auth}
+                  setAuth={(auth) => updateTab(activeTabId!, { auth })}
+                  headers={getActiveTab()!.headers}
+                  setHeaders={(headers) => updateTab(activeTabId!, { headers })}
+                  params={getActiveTab()!.params}
+                  setParams={(params) => updateTab(activeTabId!, { params })}
+                  body={getActiveTab()!.body}
+                  setBody={(body) => updateTab(activeTabId!, { body })}
+                  onSubmit={handleSubmit}
+                  onSave={handleSaveCurrentRequest}
+                  loading={getActiveTab()!.loading || false}
+                  proxyConfig={proxyConfig}
+                  onProxySettings={() => setProxySettingsOpen(true)}
+                />
+              )}
             </Panel>
             <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
               <div className='h-full p-3'>
-                <ResponseDisplay response={response} loading={loading} error={error} />
+                {getActiveTab() && (
+                  <ResponseDisplay
+                    response={getActiveTab()!.response || null}
+                    loading={getActiveTab()!.loading || false}
+                    error={getActiveTab()!.error || null}
+                  />
+                )}
               </div>
             </Panel>
           </PanelGroup>
@@ -720,7 +748,7 @@ function App() {
         onClose={() => setProxySettingsOpen(false)}
         proxyConfig={proxyConfig}
         onConfigChange={setProxyConfig}
-        currentUrl={url}
+        currentUrl={getActiveTab()?.url || ''}
       />
 
       {/* Modais do Sistema */}

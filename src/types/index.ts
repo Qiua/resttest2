@@ -107,3 +107,26 @@ export interface SidebarState {
   activeWorkspace?: string
   expandedCollections: string[]
 }
+
+// Request Tab - representa uma aba de requisição aberta
+export interface RequestTab {
+  id: string
+  name: string
+  method: string
+  url: string
+  auth: AuthState
+  headers: KeyValuePair[]
+  params: Parameter[]
+  body: BodyState
+  response?: ApiResponse | null
+  loading?: boolean
+  error?: string | null
+  isModified?: boolean
+  savedRequestId?: string // ID da requisição salva, se for baseada em uma
+}
+
+// Estado do sistema de tabs
+export interface TabsState {
+  tabs: RequestTab[]
+  activeTabId: string | null
+}

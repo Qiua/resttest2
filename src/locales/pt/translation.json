@@ -225,6 +225,16 @@
       "restTest": "Formato nativo do REST Test com todos os recursos"
     }
   },
+  "tabs": {
+    "newTab": "Nova aba",
+    "closeTab": "Fechar aba",
+    "duplicateTab": "Duplicar aba",
+    "closeAllTabs": "Fechar todas as abas",
+    "closeOtherTabs": "Fechar outras abas",
+    "unsavedChanges": "Alterações não salvas",
+    "confirmCloseTab": "Tem certeza que deseja fechar esta aba?",
+    "modified": "Modificado"
+  },
   "proxy": {
     "settings": "Configurações de Proxy",
     "corsWarning": "Aviso de CORS",

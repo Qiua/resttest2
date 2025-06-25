@@ -225,6 +225,16 @@
       "restTest": "REST Test native format with all features"
     }
   },
+  "tabs": {
+    "newTab": "New tab",
+    "closeTab": "Close tab",
+    "duplicateTab": "Duplicate tab",
+    "closeAllTabs": "Close all tabs",
+    "closeOtherTabs": "Close other tabs",
+    "unsavedChanges": "Unsaved changes",
+    "confirmCloseTab": "Are you sure you want to close this tab?",
+    "modified": "Modified"
+  },
   "proxy": {
     "settings": "Proxy Settings",
     "corsWarning": "CORS Warning",

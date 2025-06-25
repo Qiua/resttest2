@@ -13,6 +13,7 @@
     "open": "Abrir",
     "loading": "Carregando",
     "error": "Erro",
+    "unexpectedError": "Ocorreu um erro inesperado",
     "success": "Sucesso",
     "info": "Info",
     "general": "Geral",
@@ -21,6 +22,13 @@
     "absent": "Ausente",
     "unknown": "Desconhecido",
     "load": "Carregar"
+  },
+  "messages": {
+    "createCollectionFirst": "Crie uma coleção primeiro!",
+    "requestSaved": "Requisição '{{name}}' salva na coleção!",
+    "requestName": "Nome da requisição",
+    "confirmDeleteCollection": "Tem certeza que deseja deletar esta coleção? Todas as requisições serão perdidas.",
+    "confirmDeleteRequest": "Tem certeza que deseja deletar esta requisição?"
   },
   "app": {
     "title": "REST Test 2.0",
@@ -35,6 +43,7 @@
     "noCollections": "Nenhuma coleção encontrada",
     "noCollectionsDescription": "Crie sua primeira coleção para organizar suas requisições",
     "noRequests": "Nenhuma requisição nesta coleção",
+    "noRequestsInCollection": "Nenhuma requisição nesta coleção",
     "addRequest": "Adicionar requisição",
     "deleteCollection": "Deletar coleção",
     "deleteRequest": "Deletar requisição",

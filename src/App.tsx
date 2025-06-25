@@ -150,7 +150,7 @@ function App() {
     // Se não foi especificada uma collection, usa a primeira disponível
     const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
     if (!targetWorkspace || targetWorkspace.collections.length === 0) {
-      alert(t('sidebar.newCollection') + ' primeiro!')
+      alert(t('messages.createCollectionFirst'))
       return
     }
 
@@ -199,7 +199,7 @@ function App() {
   }
 
   const handleDeleteCollection = (collectionId: string) => {
-    if (!confirm('Tem certeza que deseja deletar esta collection? Todas as requisições serão perdidas.')) {
+    if (!confirm(t('messages.confirmDeleteCollection'))) {
       return
     }
 
@@ -217,7 +217,7 @@ function App() {
   }
 
   const handleDeleteRequestFromSidebar = (requestId: string) => {
-    if (!confirm('Tem certeza que deseja deletar esta requisição?')) {
+    if (!confirm(t('messages.confirmDeleteRequest'))) {
       return
     }
 
@@ -240,12 +240,12 @@ function App() {
 
   // Função para salvar requisição no sistema de collections
   const handleSaveCurrentRequest = () => {
-    const name = prompt('Nome da requisição:')
+    const name = prompt(t('messages.requestName') + ':')
     if (!name?.trim()) return
 
     const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
     if (!targetWorkspace || targetWorkspace.collections.length === 0) {
-      alert('Crie uma collection primeiro!')
+      alert(t('messages.createCollectionFirst'))
       return
     }
 
@@ -283,7 +283,7 @@ function App() {
       )
     )
 
-    alert(`Requisição '${name}' salva na collection!`)
+    alert(t('messages.requestSaved', { name }))
   }
 
   // Função para enviar a requisição
@@ -433,7 +433,7 @@ function App() {
           contentType: contentType,
         })
       } else {
-        setError('Ocorreu um erro inesperado.')
+        setError(t('common.unexpectedError'))
       }
     } finally {
       setLoading(false)

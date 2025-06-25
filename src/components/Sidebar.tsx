@@ -27,6 +27,7 @@ interface SidebarProps {
   activeWorkspace?: string
   onWorkspaceSelect: (workspaceId: string) => void
   onRequestSelect: (request: SavedRequest) => void
+  onNewWorkspace: () => void
   onNewCollection: (workspaceId: string) => void
   onNewRequest: (collectionId?: string) => void
   onDeleteCollection: (collectionId: string) => void
@@ -40,6 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeWorkspace,
   onWorkspaceSelect,
   onRequestSelect,
+  onNewWorkspace,
   onNewCollection,
   onNewRequest,
   onDeleteCollection,
@@ -103,7 +105,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Seletor de Workspace */}
         <div className='space-y-2'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>Workspace</label>
+          <div className='flex items-center justify-between'>
+            <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>Workspace</label>
+            <button
+              onClick={onNewWorkspace}
+              className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
+              title='Criar novo workspace'
+            >
+              <FiPlus className='w-4 h-4' />
+            </button>
+          </div>
           <select
             value={activeWorkspace || ''}
             onChange={(e) => onWorkspaceSelect(e.target.value)}
@@ -129,7 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className='w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors'
             >
               <FiFolderPlus className='w-4 h-4' />
-              Nova Collection
+              Nova Coleção
             </button>
 
             {/* Lista de Collections */}

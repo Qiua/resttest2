@@ -80,6 +80,23 @@ function App() {
   const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
 
   // Funções para manipular workspaces e collections
+  const handleNewWorkspace = () => {
+    const name = prompt('Nome do novo workspace:')
+    if (!name?.trim()) return
+
+    const newWorkspace: Workspace = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      description: '',
+      collections: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    setWorkspaces((prev) => [...prev, newWorkspace])
+    setActiveWorkspace(newWorkspace.id)
+  }
+
   const handleWorkspaceSelect = (workspaceId: string) => {
     setActiveWorkspace(workspaceId)
   }
@@ -461,6 +478,7 @@ function App() {
         activeWorkspace={activeWorkspace}
         onWorkspaceSelect={handleWorkspaceSelect}
         onRequestSelect={handleRequestSelect}
+        onNewWorkspace={handleNewWorkspace}
         onNewCollection={handleNewCollection}
         onNewRequest={handleNewRequest}
         onDeleteCollection={handleDeleteCollection}

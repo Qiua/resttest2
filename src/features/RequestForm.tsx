@@ -16,8 +16,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 // src/features/RequestForm.tsx
-import React from 'react'
-import { FiSave, FiPlus, FiFile } from 'react-icons/fi'
+import React, { useState, useEffect, useRef } from 'react'
+import { FiSave, FiPlus, FiFile, FiChevronDown } from 'react-icons/fi'
 import { Tabs } from '../components/Tabs'
 import {
   type KeyValuePair,
@@ -65,10 +65,53 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   onSave,
   loading,
 }) => {
+  // Estado para controlar dropdown de métodos
+  const [methodDropdownOpen, setMethodDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Métodos HTTP disponíveis
+  const httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+
   // Valores padrão para evitar erros de undefined
   const safeBody = body || { type: 'form-data', content: '' }
   const safeHeaders = headers || []
   const safeParams = params || []
+
+  // Fechar dropdown ao clicar fora dele
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setMethodDropdownOpen(false)
+      }
+    }
+
+    if (methodDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [methodDropdownOpen])
+
+  // Função para definir cores dos métodos HTTP
+  const getMethodColor = (method: string) => {
+    switch (method.toUpperCase()) {
+      case 'GET':
+        return 'text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-600'
+      case 'POST':
+        return 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600'
+      case 'PUT':
+        return 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600'
+      case 'DELETE':
+        return 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-600'
+      case 'PATCH':
+        return 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 border-purple-300 dark:border-purple-600'
+      default:
+        return 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+    }
+  }
+
   const addHeader = () => setHeaders([...safeHeaders, { id: crypto.randomUUID(), key: '', value: '' }])
   const addParam = () => setParams([...safeParams, { id: crypto.randomUUID(), key: '', value: '' }])
   const addFileParam = () => setParams([...safeParams, { id: crypto.randomUUID(), key: '', file: null }])
@@ -391,18 +434,39 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     >
       {/* Barra Principal - Estilo Postman */}
       <div className='flex items-center gap-1 p-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0'>
-        <select
-          id='httpmethod'
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
-          className='px-3 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[80px] text-gray-900 dark:text-white'
-        >
-          <option>GET</option>
-          <option>POST</option>
-          <option>PUT</option>
-          <option>DELETE</option>
-          <option>PATCH</option>
-        </select>
+        {/* Dropdown customizado para métodos HTTP */}
+        <div className='relative' ref={dropdownRef}>
+          <button
+            type='button'
+            onClick={() => setMethodDropdownOpen(!methodDropdownOpen)}
+            className={`px-3 py-2 text-sm font-medium border rounded-l-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px] transition-colors flex items-center justify-between gap-2 ${getMethodColor(
+              method
+            )}`}
+          >
+            {method}
+            <FiChevronDown className={`w-4 h-4 transition-transform ${methodDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {methodDropdownOpen && (
+            <div className='absolute top-full left-0 z-50 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden'>
+              {httpMethods.map((methodOption) => (
+                <button
+                  key={methodOption}
+                  type='button'
+                  onClick={() => {
+                    setMethod(methodOption)
+                    setMethodDropdownOpen(false)
+                  }}
+                  className={`w-full px-3 py-2 text-sm font-medium text-left hover:opacity-80 transition-colors ${getMethodColor(
+                    methodOption
+                  )}`}
+                >
+                  {methodOption}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <input
           type='text'
           id='urlvalue'

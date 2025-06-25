@@ -16,20 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 // src/components/Sidebar.tsx
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  FiPlus,
-  FiFolderPlus,
-  FiFolder,
-  FiFile,
-  FiTrash2,
-  FiChevronRight,
-  FiMenu,
-  FiX,
-  FiExternalLink,
-} from 'react-icons/fi'
-import type { Workspace, SavedRequest } from '../types'
+import { FiMenu, FiX, FiFolder, FiGlobe, FiLayers, FiSettings } from 'react-icons/fi'
+import { SettingsMenu } from './SettingsMenu'
+import type { Workspace, SavedRequest, Environment } from '../types'
 
 interface SidebarProps {
   isOpen: boolean
@@ -45,60 +36,92 @@ interface SidebarProps {
   onDeleteRequest: (requestId: string) => void
   onDeleteWorkspace?: (workspaceId: string) => void
   onImportExport?: () => void
+
+  // Settings props
+  environments: Environment[]
+  activeEnvironmentId: string | null
+  onEnvironmentSelect: (environmentId: string | null) => void
+  onManageEnvironments: () => void
+  onHistoryOpen: () => void
+  onProxySettingsOpen: () => void
+  onInterfaceSettingsOpen: () => void
+
+  // Workspace panel props
+  isWorkspacePanelOpen: boolean
+  onWorkspacePanelToggle: () => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   onToggle,
-  workspaces,
-  activeWorkspace,
-  onWorkspaceSelect,
-  onRequestSelect,
-  onNewWorkspace,
-  onNewCollection,
-  onNewRequest,
-  onDeleteCollection,
-  onDeleteRequest,
-  onDeleteWorkspace,
   onImportExport,
+
+  // Settings props
+  environments,
+  activeEnvironmentId,
+  onEnvironmentSelect,
+  onManageEnvironments,
+  onHistoryOpen,
+  onProxySettingsOpen,
+  onInterfaceSettingsOpen,
+
+  // Workspace panel props
+  isWorkspacePanelOpen,
+  onWorkspacePanelToggle,
 }) => {
   const { t } = useTranslation()
-  const [expandedCollections, setExpandedCollections] = useState<string[]>([])
-
-  const toggleCollection = (collectionId: string) => {
-    setExpandedCollections(prev =>
-      prev.includes(collectionId) ? prev.filter(id => id !== collectionId) : [...prev, collectionId],
-    )
-  }
-
-  const activeWorkspaceData = workspaces.find(w => w.id === activeWorkspace)
-
-  const getMethodColor = (method: string) => {
-    switch (method.toUpperCase()) {
-      case 'GET':
-        return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30'
-      case 'POST':
-        return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
-      case 'PUT':
-        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30'
-      case 'DELETE':
-        return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30'
-      case 'PATCH':
-        return 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30'
-      default:
-        return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800'
-    }
-  }
 
   if (!isOpen) {
     return (
-      <div className="w-12 bg-gray-800 dark:bg-gray-900 flex flex-col items-center py-3 transition-all duration-300 ease-in-out">
+      <div className="w-12 bg-gray-800 dark:bg-gray-900 flex flex-col items-center py-3 gap-2 transition-all duration-300 ease-in-out">
+        {/* Toggle Sidebar Button */}
         <button
           onClick={onToggle}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
           title={t('sidebar.openSidebar')}
         >
           <FiMenu className="w-5 h-5" />
+        </button>
+
+        {/* Tools Icon */}
+        <button
+          onClick={onHistoryOpen}
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          title={t('settings.tools')}
+        >
+          <FiSettings className="w-5 h-5" />
+        </button>
+
+        {/* Separador */}
+        <div className="w-6 h-px bg-gray-600 dark:bg-gray-700"></div>
+
+        {/* Workspace Icon */}
+        <button
+          onClick={onWorkspacePanelToggle}
+          className={`text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer ${
+            isWorkspacePanelOpen ? 'bg-blue-600 hover:bg-blue-700' : ''
+          }`}
+          title={t('sidebar.workspace')}
+        >
+          <FiFolder className="w-5 h-5" />
+        </button>
+
+        {/* Environment Manager Icon */}
+        <button
+          onClick={onManageEnvironments}
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          title={t('environments.title')}
+        >
+          <FiLayers className="w-5 h-5" />
+        </button>
+
+        {/* Interface Settings Icon */}
+        <button
+          onClick={onInterfaceSettingsOpen}
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          title={t('settings.interface')}
+        >
+          <FiGlobe className="w-5 h-5" />
         </button>
       </div>
     )
@@ -108,8 +131,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <div className="w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full transition-all duration-300 ease-in-out">
       {/* Header do Sidebar */}
       <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('sidebar.collections')}</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Menu</h2>
           <button
             onClick={onToggle}
             className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
@@ -118,169 +141,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <FiX className="w-5 h-5" />
           </button>
         </div>
-
-        {/* Seletor de Workspace */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('sidebar.workspace')}</label>
-            <div className="flex items-center gap-1">
-              {onImportExport && (
-                <button
-                  onClick={onImportExport}
-                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
-                  title={t('importExport.title')}
-                >
-                  <FiExternalLink className="w-4 h-4" />
-                </button>
-              )}
-              <button
-                onClick={onNewWorkspace}
-                className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors cursor-pointer"
-                title={t('sidebar.newWorkspace')}
-              >
-                <FiPlus className="w-4 h-4" />
-              </button>
-              {onDeleteWorkspace && activeWorkspace && workspaces.length > 1 && (
-                <button
-                  onClick={() => onDeleteWorkspace(activeWorkspace)}
-                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer"
-                  title={t('sidebar.deleteWorkspace')}
-                >
-                  <FiTrash2 className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </div>
-          <select
-            value={activeWorkspace || ''}
-            onChange={e => onWorkspaceSelect(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          >
-            <option value="">{t('sidebar.selectWorkspace')}</option>
-            {workspaces.map(workspace => (
-              <option key={workspace.id} value={workspace.id}>
-                {workspace.name}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
-      {/* Conteúdo do Workspace */}
+      {/* Menu de Opções */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
-        {activeWorkspaceData ? (
-          <>
-            {/* Botão para nova collection */}
-            <button
-              onClick={() => onNewCollection(activeWorkspaceData.id)}
-              className="w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors cursor-pointer"
-            >
-              <FiFolderPlus className="w-4 h-4" />
-              {t('sidebar.newCollection')}
-            </button>
+        {/* Menu de Configurações */}
+        <SettingsMenu
+          environments={environments}
+          activeEnvironmentId={activeEnvironmentId}
+          onEnvironmentSelect={onEnvironmentSelect}
+          onManageEnvironments={onManageEnvironments}
+          onHistoryOpen={onHistoryOpen}
+          onProxySettingsOpen={onProxySettingsOpen}
+          onImportExportOpen={onImportExport || (() => {})}
+        />
 
-            {/* Lista de Collections */}
-            <div className="space-y-2">
-              {activeWorkspaceData.collections.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg">
-                  <FiFolder className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-                  <p className="text-sm mb-2">{t('sidebar.noCollections')}</p>
-                  <p className="text-xs">{t('sidebar.noCollectionsDescription')}</p>
-                </div>
-              ) : (
-                activeWorkspaceData.collections.map(collection => (
-                  <div
-                    key={collection.id}
-                    className="border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 hover:shadow-md transition-shadow"
-                  >
-                    {/* Header da Collection */}
-                    <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-                      onClick={() => toggleCollection(collection.id)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <FiChevronRight
-                          className={`w-4 h-4 transition-transform duration-200 text-gray-600 dark:text-gray-300 ${
-                            expandedCollections.includes(collection.id) ? 'rotate-90' : ''
-                          }`}
-                        />
-                        <span className="font-medium text-gray-900 dark:text-white">{collection.name}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">({collection.requests.length})</span>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={e => {
-                            e.stopPropagation()
-                            onNewRequest(collection.id)
-                          }}
-                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                          title={t('sidebar.addRequest')}
-                        >
-                          <FiPlus className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={e => {
-                            e.stopPropagation()
-                            onDeleteCollection(collection.id)
-                          }}
-                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                          title={t('sidebar.deleteCollection')}
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Lista de Requisições */}
-                    {expandedCollections.includes(collection.id) && (
-                      <div className="border-t border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
-                        {collection.requests.length === 0 ? (
-                          <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                            {t('sidebar.noRequestsInCollection')}
-                          </div>
-                        ) : (
-                          collection.requests.map(request => (
-                            <div
-                              key={request.id}
-                              className="flex items-center justify-between p-3 hover:bg-white dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0 group transition-colors"
-                              onClick={() => onRequestSelect(request)}
-                            >
-                              <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <span
-                                  className={`px-2 py-1 text-xs font-medium rounded ${getMethodColor(request.method)}`}
-                                >
-                                  {request.method}
-                                </span>
-                                <FiFile className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-                                <span className="text-sm text-gray-900 dark:text-white truncate">{request.name}</span>
-                              </div>
-                              <button
-                                onClick={e => {
-                                  e.stopPropagation()
-                                  onDeleteRequest(request.id)
-                                }}
-                                className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all"
-                                title={t('sidebar.deleteRequest')}
-                              >
-                                <FiTrash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
+        {/* Separador */}
+        <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
+          {/* Botão Workspace */}
+          <button
+            onClick={onWorkspacePanelToggle}
+            className={`w-full px-3 py-3 text-left text-sm font-medium rounded-lg transition-colors flex items-center gap-3 ${
+              isWorkspacePanelOpen
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
+            }`}
+          >
+            <FiFolder className="w-5 h-5" />
+            <div className="flex-1">
+              <div className="font-medium">{t('sidebar.workspace')}</div>
+              <div className="text-xs opacity-75">{isWorkspacePanelOpen ? 'Fechar workspace' : 'Abrir workspace'}</div>
             </div>
-          </>
-        ) : (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            <FiFolder className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-            <p className="text-sm">{t('sidebar.selectWorkspaceToView')}</p>
-          </div>
-        )}
+          </button>
+
+          {/* Botão Environment Manager */}
+          <button
+            onClick={onManageEnvironments}
+            className="w-full px-3 py-3 text-left text-sm font-medium rounded-lg transition-colors flex items-center gap-3 mt-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600"
+          >
+            <FiLayers className="w-5 h-5" />
+            <div className="flex-1">
+              <div className="font-medium">{t('environments.title')}</div>
+              <div className="text-xs opacity-75">Gerenciar ambientes</div>
+            </div>
+          </button>
+
+          {/* Botão Interface Settings */}
+          <button
+            onClick={onInterfaceSettingsOpen}
+            className="w-full px-3 py-3 text-left text-sm font-medium rounded-lg transition-colors flex items-center gap-3 mt-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600"
+          >
+            <FiGlobe className="w-5 h-5" />
+            <div className="flex-1">
+              <div className="font-medium">{t('settings.interface')}</div>
+              <div className="text-xs opacity-75">Configurações da interface</div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   )

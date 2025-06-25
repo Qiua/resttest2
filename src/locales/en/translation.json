@@ -55,6 +55,7 @@
     "selectWorkspaceToView": "Select a workspace to view collections",
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar",
+    "closeWorkspace": "Close workspace",
     "deleteWorkspace": "Delete workspace",
     "workspaceName": "Workspace name",
     "collectionName": "Collection name",
@@ -313,5 +314,14 @@
     "importError": "Error importing environment file",
     "delete": "Delete Environment",
     "selectEnvironmentDescription": "Select an environment to view and edit its variables"
+  },
+  "settings": {
+    "title": "Settings",
+    "interface": "Interface",
+    "language": "Language",
+    "theme": "Theme",
+    "tools": "Tools",
+    "appearance": "Appearance",
+    "general": "General"
   }
 }

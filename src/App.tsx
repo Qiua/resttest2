@@ -19,22 +19,21 @@
 // src/App.tsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiRefreshCw, FiSettings, FiClock } from 'react-icons/fi'
+import { FiRefreshCw } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
+import { WorkspacePanel } from './components/WorkspacePanel'
 import { RequestTabs } from './components/RequestTabs'
-import { ThemeToggle } from './components/ThemeToggle'
-import { LanguageSelector } from './components/LanguageSelector'
-import { EnvironmentSelector } from './components/EnvironmentSelector'
 import { EnvironmentManager } from './components/EnvironmentManager'
 import { ImportExportModal } from './components/ImportExportModal'
 import { ProxySettings } from './components/ProxySettings'
 import { ConfirmModal } from './components/ConfirmModal'
 import { PromptModal } from './components/PromptModal'
 import { NotificationModal } from './components/NotificationModal'
+import { InterfaceSettings } from './components/InterfaceSettings'
 import { RequestHistory } from './components/RequestHistory'
 import { type SavedRequest, type Workspace, type Collection, type HistoryEntry } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
@@ -100,6 +99,7 @@ function App() {
 
   // Estado da Sidebar
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false)
   const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
 
   // Hook para modais
@@ -135,6 +135,9 @@ function App() {
     type: 'none',
     enabled: false,
   })
+
+  // Estado das Configurações de Interface
+  const [interfaceSettingsOpen, setInterfaceSettingsOpen] = useState(false)
 
   // Funções para manipular workspaces e collections
   const handleNewWorkspace = async () => {
@@ -760,6 +763,34 @@ function App() {
         onDeleteRequest={handleDeleteRequestFromSidebar}
         onDeleteWorkspace={handleDeleteWorkspace}
         onImportExport={handleImportExportModal}
+        // Settings props
+        environments={environments}
+        activeEnvironmentId={activeEnvironmentId}
+        onEnvironmentSelect={setActiveEnvironment}
+        onManageEnvironments={() => setEnvironmentManagerOpen(true)}
+        onHistoryOpen={() => setIsHistoryOpen(true)}
+        onProxySettingsOpen={() => setProxySettingsOpen(true)}
+        onInterfaceSettingsOpen={() => setInterfaceSettingsOpen(true)}
+        // Workspace panel props
+        isWorkspacePanelOpen={workspacePanelOpen}
+        onWorkspacePanelToggle={() => setWorkspacePanelOpen(!workspacePanelOpen)}
+      />
+
+      {/* Workspace Panel */}
+      <WorkspacePanel
+        isOpen={workspacePanelOpen}
+        onClose={() => setWorkspacePanelOpen(false)}
+        workspaces={workspaces}
+        activeWorkspace={activeWorkspace}
+        onWorkspaceSelect={handleWorkspaceSelect}
+        onRequestSelect={handleRequestSelect}
+        onNewWorkspace={handleNewWorkspace}
+        onNewCollection={handleNewCollection}
+        onNewRequest={handleNewRequest}
+        onDeleteCollection={handleDeleteCollection}
+        onDeleteRequest={handleDeleteRequestFromSidebar}
+        onDeleteWorkspace={handleDeleteWorkspace}
+        onImportExport={handleImportExportModal}
       />
 
       {/* Área Principal com responsividade */}
@@ -773,7 +804,7 @@ function App() {
             </span>
           </div>
 
-          {/* Controles do Header com melhor UX */}
+          {/* Controles do Header simplificados */}
           <div className="flex items-center gap-3">
             {savedRequests.some(req => !req.collectionId) && (
               <button
@@ -786,43 +817,6 @@ function App() {
                 <span>Migrar ({savedRequests.filter(req => !req.collectionId).length})</span>
               </button>
             )}
-
-            <div className="flex items-center bg-gray-50 dark:bg-gray-700/50 rounded-lg p-1 gap-2 border border-gray-200 dark:border-gray-600">
-              {/* Environment Selector */}
-              <EnvironmentSelector
-                environments={environments}
-                activeEnvironmentId={activeEnvironmentId}
-                onEnvironmentSelect={setActiveEnvironment}
-                onManageEnvironments={() => setEnvironmentManagerOpen(true)}
-              />
-
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
-
-              <button
-                onClick={() => setIsHistoryOpen(true)}
-                className="p-2.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-gray-600 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 group"
-                title={t('history.title')}
-                aria-label={t('history.title')}
-              >
-                <FiClock size={18} className="group-hover:scale-110 transition-transform duration-200" />
-              </button>
-
-              <button
-                onClick={() => setProxySettingsOpen(true)}
-                className="p-2.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-gray-600 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 group"
-                title={t('proxy.settings')}
-                aria-label={t('proxy.settings')}
-              >
-                <FiSettings size={18} className="group-hover:rotate-90 transition-transform duration-200" />
-              </button>
-
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-
-              <div className="flex items-center gap-1">
-                <LanguageSelector />
-                <ThemeToggle />
-              </div>
-            </div>
           </div>
         </header>
 
@@ -921,6 +915,9 @@ function App() {
         onConfigChange={setProxyConfig}
         currentUrl={getActiveTab()?.url || ''}
       />
+
+      {/* Modal de Configurações de Interface */}
+      <InterfaceSettings isOpen={interfaceSettingsOpen} onClose={() => setInterfaceSettingsOpen(false)} />
 
       {/* Modais do Sistema */}
       <ConfirmModal

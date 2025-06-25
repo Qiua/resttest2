@@ -55,6 +55,7 @@
     "selectWorkspaceToView": "Selecione uma área de trabalho para ver as coleções",
     "openSidebar": "Abrir barra lateral",
     "closeSidebar": "Fechar barra lateral",
+    "closeWorkspace": "Fechar workspace",
     "deleteWorkspace": "Deletar área de trabalho",
     "workspaceName": "Nome da área de trabalho",
     "collectionName": "Nome da coleção",
@@ -313,5 +314,14 @@
     "importError": "Erro ao importar arquivo de ambiente",
     "delete": "Deletar Ambiente",
     "selectEnvironmentDescription": "Selecione um ambiente para visualizar e editar suas variáveis"
+  },
+  "settings": {
+    "title": "Configurações",
+    "interface": "Interface",
+    "language": "Idioma",
+    "theme": "Tema",
+    "tools": "Ferramentas",
+    "appearance": "Aparência",
+    "general": "Geral"
   }
 }

@@ -28,6 +28,8 @@ import { Sidebar } from './components/Sidebar'
 import { RequestTabs } from './components/RequestTabs'
 import { ThemeToggle } from './components/ThemeToggle'
 import { LanguageSelector } from './components/LanguageSelector'
+import { EnvironmentSelector } from './components/EnvironmentSelector'
+import { EnvironmentManager } from './components/EnvironmentManager'
 import { ImportExportModal } from './components/ImportExportModal'
 import { ProxySettings } from './components/ProxySettings'
 import { ConfirmModal } from './components/ConfirmModal'
@@ -38,6 +40,7 @@ import { type SavedRequest, type Workspace, type Collection, type HistoryEntry }
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useRequestTabs } from './hooks/useRequestTabs'
 import { useRequestHistory } from './hooks/useRequestHistory'
+import { useEnvironments } from './hooks/useEnvironments'
 import { useModal } from './hooks/useModal'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 
@@ -102,6 +105,27 @@ function App() {
   // Hook para modais
   const modal = useModal()
 
+  // Sistema de ambientes (environments)
+  const {
+    environments,
+    activeEnvironmentId,
+    createEnvironment,
+    updateEnvironment,
+    deleteEnvironment,
+    setActiveEnvironment,
+    duplicateEnvironment,
+    addVariable,
+    updateVariable,
+    deleteVariable,
+    resolveVariables,
+    importEnvironment,
+    exportEnvironment,
+    exportAllEnvironments,
+  } = useEnvironments()
+
+  // Estado do Modal de Ambientes
+  const [environmentManagerOpen, setEnvironmentManagerOpen] = useState(false)
+
   // Estado do Modal de Importação/Exportação
   const [importExportModalOpen, setImportExportModalOpen] = useState(false)
 
@@ -132,48 +156,6 @@ function App() {
 
     setWorkspaces(prev => [...prev, newWorkspace])
     setActiveWorkspace(newWorkspace.id)
-  }
-
-  const handleWorkspaceSelect = (workspaceId: string) => {
-    setActiveWorkspace(workspaceId)
-  }
-
-  const handleDeleteWorkspace = async (workspaceId: string) => {
-    const workspace = workspaces.find(w => w.id === workspaceId)
-    if (!workspace) return
-
-    const confirmed = await modal.showConfirm({
-      title: t('messages.confirmDeleteWorkspace'),
-      message: t('messages.confirmDeleteWorkspaceMessage', {
-        name: workspace.name,
-      }),
-      type: 'danger',
-      confirmText: t('common.delete'),
-    })
-
-    if (!confirmed) return
-
-    setWorkspaces(prev => prev.filter(w => w.id !== workspaceId))
-
-    // Se o workspace ativo foi deletado, selecionar outro
-    if (activeWorkspace === workspaceId) {
-      const remaining = workspaces.filter(w => w.id !== workspaceId)
-      if (remaining.length > 0) {
-        setActiveWorkspace(remaining[0].id)
-      } else {
-        // Criar um novo workspace padrão se não sobrar nenhum
-        const newWorkspace: Workspace = {
-          id: 'default',
-          name: 'Meu Workspace',
-          description: 'Workspace padrão',
-          collections: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-        setWorkspaces([newWorkspace])
-        setActiveWorkspace('default')
-      }
-    }
   }
 
   const handleNewCollection = async (workspaceId: string) => {
@@ -395,6 +377,21 @@ function App() {
     // Iniciar medição de tempo para o histórico
     const startTime = performance.now()
 
+    // Resolver variáveis de ambiente na URL e outros campos
+    const resolvedUrl = resolveVariables(activeTab.url)
+    const resolvedHeaders = activeTab.headers.map(h => ({
+      ...h,
+      key: resolveVariables(h.key),
+      value: resolveVariables(h.value),
+    }))
+    const resolvedAuth = {
+      ...activeTab.auth,
+      token: activeTab.auth.token ? resolveVariables(activeTab.auth.token) : '',
+      username: activeTab.auth.username ? resolveVariables(activeTab.auth.username) : '',
+      password: activeTab.auth.password ? resolveVariables(activeTab.auth.password) : '',
+      apiKeyValue: activeTab.auth.apiKeyValue ? resolveVariables(activeTab.auth.apiKeyValue) : '',
+    }
+
     // Definir estado de loading na aba
     setTabResponse(activeTab.id, null, true, null)
 
@@ -403,7 +400,7 @@ function App() {
 
     // Define o corpo da requisição com base no tipo selecionado
     if (activeTab.body.type === 'json' || activeTab.body.type === 'xml' || activeTab.body.type === 'text') {
-      data = activeTab.body.content
+      data = resolveVariables(activeTab.body.content)
       // Define o Content-Type, a menos que o usuário já tenha definido um manualmente
       const contentTypeMap = {
         json: 'application/json',
@@ -420,7 +417,7 @@ function App() {
         const formData = new FormData()
         activeTab.params.forEach(p => {
           if ('file' in p && p.file) formData.append(p.key || `file_${p.id}`, p.file)
-          else if ('value' in p) formData.append(p.key, p.value)
+          else if ('value' in p) formData.append(resolveVariables(p.key), resolveVariables(p.value))
         })
         data = formData
         // O navegador define o Content-Type para multipart automaticamente
@@ -428,7 +425,7 @@ function App() {
         // application/x-www-form-urlencoded
         const searchParams = new URLSearchParams()
         activeTab.params.forEach(p => {
-          if ('value' in p) searchParams.append(p.key, p.value)
+          if ('value' in p) searchParams.append(resolveVariables(p.key), resolveVariables(p.value))
         })
         data = searchParams
         tempHeaders.set('Content-Type', 'application/x-www-form-urlencoded')
@@ -439,16 +436,16 @@ function App() {
     tempHeaders.forEach((value, key) => {
       finalHeaders[key] = value
     })
-    activeTab.headers.forEach(h => {
+    resolvedHeaders.forEach(h => {
       if (h.key) finalHeaders[h.key] = h.value
     })
 
-    // Lógica de autorização
-    if (activeTab.auth.type === 'bearer' && activeTab.auth.token) {
-      finalHeaders['Authorization'] = `Bearer ${activeTab.auth.token}`
+    // Lógica de autorização com variáveis resolvidas
+    if (resolvedAuth.type === 'bearer' && resolvedAuth.token) {
+      finalHeaders['Authorization'] = `Bearer ${resolvedAuth.token}`
     }
-    if (activeTab.auth.type === 'api-key' && activeTab.auth.apiKeyHeader && activeTab.auth.apiKeyValue) {
-      finalHeaders[activeTab.auth.apiKeyHeader] = activeTab.auth.apiKeyValue
+    if (resolvedAuth.type === 'api-key' && resolvedAuth.apiKeyHeader && resolvedAuth.apiKeyValue) {
+      finalHeaders[resolvedAuth.apiKeyHeader] = resolvedAuth.apiKeyValue
     }
 
     // Only apply data to non-GET/HEAD requests if it hasn't been set already
@@ -458,9 +455,9 @@ function App() {
         const formData = new FormData()
         activeTab.params.forEach(p => {
           if ('file' in p && p.file) {
-            formData.append(p.key || `file_${p.id}`, p.file)
+            formData.append(resolveVariables(p.key) || `file_${p.id}`, p.file)
           } else if ('value' in p) {
-            formData.append(p.key, p.value)
+            formData.append(resolveVariables(p.key), resolveVariables(p.value))
           }
         })
         data = formData
@@ -468,40 +465,29 @@ function App() {
         const searchParams = new URLSearchParams()
         activeTab.params.forEach(p => {
           if ('value' in p) {
-            searchParams.append(p.key, p.value)
+            searchParams.append(resolveVariables(p.key), resolveVariables(p.value))
           }
         })
         data = searchParams
       }
     }
 
-    const requestHeaders: Record<string, string> = {}
-    activeTab.headers.forEach(h => {
-      if (h.key) requestHeaders[h.key] = h.value
-    })
-    if (activeTab.auth.type === 'bearer' && activeTab.auth.token) {
-      requestHeaders['Authorization'] = `Bearer ${activeTab.auth.token}`
-    }
-    if (activeTab.auth.type === 'api-key' && activeTab.auth.apiKeyHeader && activeTab.auth.apiKeyValue) {
-      requestHeaders[activeTab.auth.apiKeyHeader] = activeTab.auth.apiKeyValue
-    }
-
     try {
-      // Aplicar proxy se configurado
-      const finalUrl = applyProxy(activeTab.url, proxyConfig)
+      // Aplicar proxy se configurado (usando URL resolvida)
+      const finalUrl = applyProxy(resolvedUrl, proxyConfig)
 
-      // Configurar axios para o proxy
+      // Configurar axios para o proxy (usando headers resolvidos)
       const axiosConfig = configureAxiosForProxy(
         {
           method: activeTab.method,
           url: finalUrl,
-          headers: requestHeaders,
+          headers: finalHeaders,
           data,
           auth:
-            activeTab.auth.type === 'basic'
+            resolvedAuth.type === 'basic'
               ? {
-                  username: activeTab.auth.username || '',
-                  password: activeTab.auth.password || '',
+                  username: resolvedAuth.username || '',
+                  password: resolvedAuth.password || '',
                 }
               : undefined,
         },
@@ -700,6 +686,63 @@ function App() {
     )
   }
 
+  // Handlers para o sistema de ambientes
+  const handleExportAllEnvironments = () => {
+    const allEnvironments = exportAllEnvironments()
+    if (allEnvironments.length === 0) return
+
+    const dataStr = JSON.stringify(allEnvironments, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'all_environments.json'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleWorkspaceSelect = (workspaceId: string) => {
+    setActiveWorkspace(workspaceId)
+  }
+
+  const handleDeleteWorkspace = async (workspaceId: string) => {
+    const workspace = workspaces.find(w => w.id === workspaceId)
+    if (!workspace) return
+
+    const confirmed = await modal.showConfirm({
+      title: t('messages.confirmDeleteWorkspace'),
+      message: t('messages.confirmDeleteWorkspaceMessage', {
+        name: workspace.name,
+      }),
+      type: 'danger',
+      confirmText: t('common.delete'),
+    })
+
+    if (!confirmed) return
+
+    setWorkspaces(prev => prev.filter(w => w.id !== workspaceId))
+
+    // Se o workspace ativo foi deletado, selecionar outro
+    if (activeWorkspace === workspaceId) {
+      const remaining = workspaces.filter(w => w.id !== workspaceId)
+      if (remaining.length > 0) {
+        setActiveWorkspace(remaining[0].id)
+      } else {
+        // Criar um novo workspace padrão se não sobrar nenhum
+        const newWorkspace: Workspace = {
+          id: 'default',
+          name: 'Meu Workspace',
+          description: 'Workspace padrão',
+          collections: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        setWorkspaces([newWorkspace])
+        setActiveWorkspace('default')
+      }
+    }
+  }
+
   return (
     <div className="h-screen flex bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
       {/* Sidebar com melhor integração visual */}
@@ -722,7 +765,7 @@ function App() {
       {/* Área Principal com responsividade */}
       <div className="flex-1 flex flex-col min-w-0 backdrop-blur-sm">
         {/* Header aprimorado com melhor UX */}
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700 transition-all duration-200">
+        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700 transition-all duration-200 relative z-50">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">REST Test</h1>
             <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800">
@@ -744,7 +787,17 @@ function App() {
               </button>
             )}
 
-            <div className="flex items-center bg-gray-50 dark:bg-gray-700/50 rounded-lg p-1 gap-1 border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center bg-gray-50 dark:bg-gray-700/50 rounded-lg p-1 gap-2 border border-gray-200 dark:border-gray-600">
+              {/* Environment Selector */}
+              <EnvironmentSelector
+                environments={environments}
+                activeEnvironmentId={activeEnvironmentId}
+                onEnvironmentSelect={setActiveEnvironment}
+                onManageEnvironments={() => setEnvironmentManagerOpen(true)}
+              />
+
+              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+
               <button
                 onClick={() => setIsHistoryOpen(true)}
                 className="p-2.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-gray-600 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 group"
@@ -831,6 +884,25 @@ function App() {
           </PanelGroup>
         </main>
       </div>
+
+      {/* Modal de Gerenciamento de Ambientes */}
+      <EnvironmentManager
+        isOpen={environmentManagerOpen}
+        onClose={() => setEnvironmentManagerOpen(false)}
+        environments={environments}
+        activeEnvironmentId={activeEnvironmentId}
+        onCreateEnvironment={createEnvironment}
+        onUpdateEnvironment={updateEnvironment}
+        onDeleteEnvironment={deleteEnvironment}
+        onDuplicateEnvironment={duplicateEnvironment}
+        onSetActiveEnvironment={setActiveEnvironment}
+        onAddVariable={addVariable}
+        onUpdateVariable={updateVariable}
+        onDeleteVariable={deleteVariable}
+        onImportEnvironment={importEnvironment}
+        onExportEnvironment={exportEnvironment}
+        onExportAllEnvironments={handleExportAllEnvironments}
+      />
 
       {/* Modal de Importação/Exportação */}
       <ImportExportModal

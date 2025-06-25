@@ -149,8 +149,31 @@ export interface HistoryEntry {
 
 // Configurações do histórico
 export interface HistoryConfig {
-  maxEntries: number // Máximo de entradas mantidas no histórico
-  autoSave: boolean // Se deve salvar automaticamente
-  includeRequestBody: boolean // Se deve incluir o corpo da requisição
-  includeResponseBody: boolean // Se deve incluir o corpo da resposta
+  maxEntries: number
+  autoSave: boolean
+}
+
+// Environment - sistema de ambientes para variáveis
+export interface EnvironmentVariable {
+  key: string
+  value: string
+  description?: string
+  isSecret?: boolean // Para senhas, tokens, etc.
+}
+
+export interface Environment {
+  id: string
+  name: string
+  description?: string
+  variables: EnvironmentVariable[]
+  isGlobal?: boolean // Ambiente global sempre disponível
+  createdAt: string
+  updatedAt: string
+}
+
+// Estado do sistema de ambientes
+export interface EnvironmentState {
+  environments: Environment[]
+  activeEnvironmentId: string | null
+  globalEnvironmentId: string | null
 }

@@ -22,6 +22,10 @@ Este projeto nasceu da necessidade de modernizar uma ferramenta interna de teste
 - **Envio de Arquivos:** Suporte para requisições `multipart/form-data`.
 - **Syntax Highlighting:** Visualização agradável e colorida para respostas em formato JSON.
 - **Salvar e Carregar Requisições:** Guarde suas requisições mais usadas no `localStorage` do navegador para reutilizá-las facilmente.
+- **Sistema de Ambientes:** Defina variáveis como `{{baseUrl}}` que podem ser reutilizadas em diferentes contextos (desenvolvimento, produção, etc.).
+- **Gerenciamento de Coleções:** Organize suas requisições em workspaces e coleções para melhor estruturação.
+- **Histórico de Requisições:** Mantenha um registro automático das requisições realizadas com estatísticas detalhadas.
+- **Configurações de Proxy:** Contorne limitações de CORS com suporte a diferentes tipos de proxy.
 
 ### 🛠️ Construído Com
 
@@ -67,11 +71,26 @@ npm run dev
 
 Temos várias ideias para o futuro! Sinta-se à vontade para pegar uma delas e contribuir.
 
-- [ ] Implementar um sistema de "Coleções" para agrupar requisições.
-- [ ] Adicionar gerenciamento de "Ambientes" (ex: desenvolvimento, produção).
+- [x] ~~Implementar um sistema de "Coleções" para agrupar requisições.~~
+- [x] ~~Adicionar gerenciamento de "Ambientes" (ex: desenvolvimento, produção).~~
+- [x] ~~Criar um histórico de requisições recentes.~~
+- [x] ~~Implementar sistema de workspaces para organização.~~
+- [x] ~~Adicionar suporte a configurações de proxy/CORS.~~
+- [x] ~~Criar sistema de importação/exportação de dados.~~
+- [x] ~~Implementar internacionalização (i18n) - Português/Inglês.~~
+- [x] ~~Adicionar sistema de abas para múltiplas requisições.~~
+- [x] ~~Implementar temas claro/escuro.~~
+- [x] ~~Adicionar modais de confirmação e notificação.~~
 - [ ] Suporte para mais tipos de autenticação (ex: OAuth 2.0).
-- [ ] Criar um histórico de requisições recentes.
 - [ ] Melhorar a visualização de outros tipos de resposta (HTML, XML).
+- [ ] Implementar testes automatizados de requisições.
+- [ ] Adicionar documentação automática de APIs.
+- [ ] Criar templates de requisições comuns.
+
+### 📖 Documentação Adicional
+
+- [**Guia de Ambientes**](ENVIRONMENTS.md) - Como usar o sistema de variáveis e ambientes
+- [**Guia de Proxy**](CORS-PROXY-GUIDE.md) - Configuração de proxy para contornar CORS
 
 ## 🤝 Contribuindo
 

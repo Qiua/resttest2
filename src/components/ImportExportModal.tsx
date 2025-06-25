@@ -227,8 +227,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               notification.type === 'success'
                 ? 'bg-green-50 border-green-400 text-green-700 dark:bg-green-900 dark:text-green-300'
                 : notification.type === 'error'
-                ? 'bg-red-50 border-red-400 text-red-700 dark:bg-red-900 dark:text-red-300'
-                : 'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                  ? 'bg-red-50 border-red-400 text-red-700 dark:bg-red-900 dark:text-red-300'
+                  : 'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
             }`}
           >
             <div className="flex items-center">

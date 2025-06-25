@@ -2,7 +2,64 @@
 
 @theme {
   --default-transition-duration: 200ms;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
 }
 
 /* Configuração do modo escuro para Tailwind 4 */
 @variant dark (&:is(.dark *));
+
+/* Melhorias de estilo global */
+* {
+  transition: background-color var(--default-transition-duration), border-color var(--default-transition-duration),
+    color var(--default-transition-duration), box-shadow var(--default-transition-duration);
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Backdrop blur para modais */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+/* Estilo elegante para foco */
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.dark .focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+}

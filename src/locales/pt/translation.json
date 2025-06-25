@@ -9,6 +9,7 @@
     "create": "Criar",
     "search": "Buscar",
     "cancel": "Cancelar",
+    "confirm": "Confirmar",
     "close": "Fechar",
     "open": "Abrir",
     "loading": "Carregando",
@@ -27,8 +28,12 @@
     "createCollectionFirst": "Crie uma coleção primeiro!",
     "requestSaved": "Requisição '{{name}}' salva na coleção!",
     "requestName": "Nome da requisição",
-    "confirmDeleteCollection": "Tem certeza que deseja deletar esta coleção? Todas as requisições serão perdidas.",
-    "confirmDeleteRequest": "Tem certeza que deseja deletar esta requisição?"
+    "confirmDeleteCollection": "Confirmar exclusão",
+    "confirmDeleteCollectionMessage": "Tem certeza que deseja deletar esta coleção? Todas as requisições serão perdidas.",
+    "confirmDeleteRequest": "Confirmar exclusão",
+    "confirmDeleteRequestMessage": "Tem certeza que deseja deletar esta requisição?",
+    "confirmDeleteWorkspace": "Confirmar exclusão",
+    "confirmDeleteWorkspaceMessage": "Tem certeza que deseja deletar a área de trabalho '{{name}}'? Todas as coleções e requisições serão perdidas."
   },
   "app": {
     "title": "REST Test 2.0",
@@ -49,7 +54,11 @@
     "deleteRequest": "Deletar requisição",
     "selectWorkspaceToView": "Selecione uma área de trabalho para ver as coleções",
     "openSidebar": "Abrir barra lateral",
-    "closeSidebar": "Fechar barra lateral"
+    "closeSidebar": "Fechar barra lateral",
+    "deleteWorkspace": "Deletar área de trabalho",
+    "workspaceName": "Nome da área de trabalho",
+    "collectionName": "Nome da coleção",
+    "requestName": "Nome da requisição"
   },
   "request": {
     "form": {

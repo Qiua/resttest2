@@ -9,6 +9,7 @@
     "create": "Create",
     "search": "Search",
     "cancel": "Cancel",
+    "confirm": "Confirm",
     "close": "Close",
     "open": "Open",
     "loading": "Loading",
@@ -27,8 +28,12 @@
     "createCollectionFirst": "Create a collection first!",
     "requestSaved": "Request '{{name}}' saved to collection!",
     "requestName": "Request name",
-    "confirmDeleteCollection": "Are you sure you want to delete this collection? All requests will be lost.",
-    "confirmDeleteRequest": "Are you sure you want to delete this request?"
+    "confirmDeleteCollection": "Confirm deletion",
+    "confirmDeleteCollectionMessage": "Are you sure you want to delete this collection? All requests will be lost.",
+    "confirmDeleteRequest": "Confirm deletion",
+    "confirmDeleteRequestMessage": "Are you sure you want to delete this request?",
+    "confirmDeleteWorkspace": "Confirm deletion",
+    "confirmDeleteWorkspaceMessage": "Are you sure you want to delete workspace '{{name}}'? All collections and requests will be lost."
   },
   "app": {
     "title": "REST Test 2.0",
@@ -49,7 +54,11 @@
     "deleteRequest": "Delete request",
     "selectWorkspaceToView": "Select a workspace to view collections",
     "openSidebar": "Open sidebar",
-    "closeSidebar": "Close sidebar"
+    "closeSidebar": "Close sidebar",
+    "deleteWorkspace": "Delete workspace",
+    "workspaceName": "Workspace name",
+    "collectionName": "Collection name",
+    "requestName": "Request name"
   },
   "request": {
     "form": {

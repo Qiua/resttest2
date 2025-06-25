@@ -86,22 +86,34 @@ export const ProxySettings: React.FC<ProxySettingsProps> = ({
 
   if (!isOpen) return null
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-      <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden'>
+    <div
+      className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer'
+      onClick={handleBackdropClick}
+    >
+      <div className='bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700 cursor-default'>
         {/* Header */}
-        <div className='flex items-center justify-between p-6 border-b dark:border-gray-700'>
+        <div className='flex items-center justify-between p-4 border-b dark:border-gray-700'>
           <div className='flex items-center gap-3'>
-            <FiSettings className='text-blue-600 dark:text-blue-400' size={24} />
+            <FiSettings className='text-blue-600 dark:text-blue-400' size={20} />
             <h2 className='text-xl font-semibold text-gray-900 dark:text-white'>{t('proxy.settings')}</h2>
           </div>
-          <button onClick={onClose} className='text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'>
-            <FiX size={24} />
+          <button
+            onClick={onClose}
+            className='p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer'
+          >
+            <FiX size={20} />
           </button>
         </div>
 
         {/* Content */}
-        <div className='p-6 overflow-y-auto max-h-[calc(90vh-120px)] space-y-6'>
+        <div className='p-4 overflow-y-auto max-h-[calc(90vh-120px)] space-y-4'>
           {/* CORS Warning */}
           {corsWarning && (
             <div className='bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4'>

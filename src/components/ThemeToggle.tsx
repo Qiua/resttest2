@@ -29,11 +29,10 @@ export const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={toggleTheme}
-      className='px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors duration-200 border border-gray-300 dark:border-gray-600 flex items-center gap-2'
-      title={t('theme.toggle')}
+      className='p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors duration-200 border border-gray-300 dark:border-gray-600 cursor-pointer'
+      title={theme === 'light' ? t('theme.dark') : t('theme.light')}
     >
       {theme === 'light' ? <FiMoon className='w-4 h-4' /> : <FiSun className='w-4 h-4' />}
-      {theme === 'light' ? t('theme.dark') : t('theme.light')}
     </button>
   )
 }

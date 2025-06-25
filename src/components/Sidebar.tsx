@@ -43,6 +43,7 @@ interface SidebarProps {
   onNewRequest: (collectionId?: string) => void
   onDeleteCollection: (collectionId: string) => void
   onDeleteRequest: (requestId: string) => void
+  onDeleteWorkspace?: (workspaceId: string) => void
   onImportExport?: () => void
 }
 
@@ -58,6 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNewRequest,
   onDeleteCollection,
   onDeleteRequest,
+  onDeleteWorkspace,
   onImportExport,
 }) => {
   const { t } = useTranslation()
@@ -90,10 +92,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   if (!isOpen) {
     return (
-      <div className='w-12 bg-gray-800 dark:bg-gray-900 flex flex-col items-center py-4 transition-all duration-300 ease-in-out'>
+      <div className='w-12 bg-gray-800 dark:bg-gray-900 flex flex-col items-center py-3 transition-all duration-300 ease-in-out'>
         <button
           onClick={onToggle}
-          className='text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200'
+          className='text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer'
           title={t('sidebar.openSidebar')}
         >
           <FiMenu className='w-5 h-5' />
@@ -105,12 +107,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <div className='w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full transition-all duration-300 ease-in-out'>
       {/* Header do Sidebar */}
-      <div className='p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'>
-        <div className='flex items-center justify-between mb-3'>
+      <div className='p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'>
+        <div className='flex items-center justify-between mb-2'>
           <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>{t('sidebar.collections')}</h2>
           <button
             onClick={onToggle}
-            className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+            className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer'
             title={t('sidebar.closeSidebar')}
           >
             <FiX className='w-5 h-5' />
@@ -133,11 +135,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
               <button
                 onClick={onNewWorkspace}
-                className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
+                className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors cursor-pointer'
                 title={t('sidebar.newWorkspace')}
               >
                 <FiPlus className='w-4 h-4' />
               </button>
+              {onDeleteWorkspace && activeWorkspace && workspaces.length > 1 && (
+                <button
+                  onClick={() => onDeleteWorkspace(activeWorkspace)}
+                  className='p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer'
+                  title={t('sidebar.deleteWorkspace')}
+                >
+                  <FiTrash2 className='w-4 h-4' />
+                </button>
+              )}
             </div>
           </div>
           <select
@@ -156,13 +167,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Conteúdo do Workspace */}
-      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
+      <div className='flex-1 overflow-y-auto p-3 space-y-3'>
         {activeWorkspaceData ? (
           <>
             {/* Botão para nova collection */}
             <button
               onClick={() => onNewCollection(activeWorkspaceData.id)}
-              className='w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors'
+              className='w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors cursor-pointer'
             >
               <FiFolderPlus className='w-4 h-4' />
               {t('sidebar.newCollection')}

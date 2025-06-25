@@ -29,6 +29,9 @@ import { ThemeToggle } from './components/ThemeToggle'
 import { LanguageSelector } from './components/LanguageSelector'
 import { ImportExportModal } from './components/ImportExportModal'
 import { ProxySettings } from './components/ProxySettings'
+import { ConfirmModal } from './components/ConfirmModal'
+import { PromptModal } from './components/PromptModal'
+import { NotificationModal } from './components/NotificationModal'
 import {
   type KeyValuePair,
   type Parameter,
@@ -40,6 +43,7 @@ import {
   type Collection,
 } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { useModal } from './hooks/useModal'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 
 function App() {
@@ -85,6 +89,9 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
 
+  // Hook para modais
+  const modal = useModal()
+
   // Estado do Modal de Importação/Exportação
   const [importExportModalOpen, setImportExportModalOpen] = useState(false)
 
@@ -96,13 +103,17 @@ function App() {
   })
 
   // Funções para manipular workspaces e collections
-  const handleNewWorkspace = () => {
-    const name = prompt(t('sidebar.newWorkspace') + ':')
-    if (!name?.trim()) return
+  const handleNewWorkspace = async () => {
+    const name = await modal.showPrompt({
+      title: t('sidebar.newWorkspace'),
+      message: t('sidebar.newWorkspace') + ':',
+      placeholder: t('sidebar.workspaceName'),
+    })
+    if (!name) return
 
     const newWorkspace: Workspace = {
       id: crypto.randomUUID(),
-      name: name.trim(),
+      name: name,
       description: '',
       collections: [],
       createdAt: new Date().toISOString(),
@@ -117,13 +128,53 @@ function App() {
     setActiveWorkspace(workspaceId)
   }
 
-  const handleNewCollection = (workspaceId: string) => {
-    const name = prompt(t('sidebar.newCollection') + ':')
-    if (!name?.trim()) return
+  const handleDeleteWorkspace = async (workspaceId: string) => {
+    const workspace = workspaces.find((w) => w.id === workspaceId)
+    if (!workspace) return
+
+    const confirmed = await modal.showConfirm({
+      title: t('messages.confirmDeleteWorkspace'),
+      message: t('messages.confirmDeleteWorkspaceMessage', { name: workspace.name }),
+      type: 'danger',
+      confirmText: t('common.delete'),
+    })
+
+    if (!confirmed) return
+
+    setWorkspaces((prev) => prev.filter((w) => w.id !== workspaceId))
+
+    // Se o workspace ativo foi deletado, selecionar outro
+    if (activeWorkspace === workspaceId) {
+      const remaining = workspaces.filter((w) => w.id !== workspaceId)
+      if (remaining.length > 0) {
+        setActiveWorkspace(remaining[0].id)
+      } else {
+        // Criar um novo workspace padrão se não sobrar nenhum
+        const newWorkspace: Workspace = {
+          id: 'default',
+          name: 'Meu Workspace',
+          description: 'Workspace padrão',
+          collections: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        setWorkspaces([newWorkspace])
+        setActiveWorkspace('default')
+      }
+    }
+  }
+
+  const handleNewCollection = async (workspaceId: string) => {
+    const name = await modal.showPrompt({
+      title: t('sidebar.newCollection'),
+      message: t('sidebar.newCollection') + ':',
+      placeholder: t('sidebar.collectionName'),
+    })
+    if (!name) return
 
     const newCollection: Collection = {
       id: crypto.randomUUID(),
-      name: name.trim(),
+      name: name,
       description: '',
       requests: [],
       createdAt: new Date().toISOString(),
@@ -143,14 +194,22 @@ function App() {
     )
   }
 
-  const handleNewRequest = (collectionId?: string) => {
-    const name = prompt(t('sidebar.addRequest') + ':')
-    if (!name?.trim()) return
+  const handleNewRequest = async (collectionId?: string) => {
+    const name = await modal.showPrompt({
+      title: t('sidebar.addRequest'),
+      message: t('sidebar.addRequest') + ':',
+      placeholder: t('sidebar.requestName'),
+    })
+    if (!name) return
 
     // Se não foi especificada uma collection, usa a primeira disponível
     const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
     if (!targetWorkspace || targetWorkspace.collections.length === 0) {
-      alert(t('messages.createCollectionFirst'))
+      modal.showNotification({
+        title: t('common.error'),
+        message: t('messages.createCollectionFirst'),
+        type: 'error',
+      })
       return
     }
 
@@ -158,7 +217,7 @@ function App() {
 
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
-      name: name.trim(),
+      name: name,
       method: 'GET',
       url: 'https://httpbin.org/get',
       auth: { type: 'none' },
@@ -198,10 +257,15 @@ function App() {
     setBody(request.body || { type: 'form-data', content: '' })
   }
 
-  const handleDeleteCollection = (collectionId: string) => {
-    if (!confirm(t('messages.confirmDeleteCollection'))) {
-      return
-    }
+  const handleDeleteCollection = async (collectionId: string) => {
+    const confirmed = await modal.showConfirm({
+      title: t('messages.confirmDeleteCollection'),
+      message: t('messages.confirmDeleteCollectionMessage'),
+      type: 'danger',
+      confirmText: t('common.delete'),
+    })
+
+    if (!confirmed) return
 
     setWorkspaces((prev) =>
       prev.map((workspace) =>
@@ -216,10 +280,15 @@ function App() {
     )
   }
 
-  const handleDeleteRequestFromSidebar = (requestId: string) => {
-    if (!confirm(t('messages.confirmDeleteRequest'))) {
-      return
-    }
+  const handleDeleteRequestFromSidebar = async (requestId: string) => {
+    const confirmed = await modal.showConfirm({
+      title: t('messages.confirmDeleteRequest'),
+      message: t('messages.confirmDeleteRequestMessage'),
+      type: 'danger',
+      confirmText: t('common.delete'),
+    })
+
+    if (!confirmed) return
 
     setWorkspaces((prev) =>
       prev.map((workspace) =>
@@ -239,13 +308,21 @@ function App() {
   }
 
   // Função para salvar requisição no sistema de collections
-  const handleSaveCurrentRequest = () => {
-    const name = prompt(t('messages.requestName') + ':')
-    if (!name?.trim()) return
+  const handleSaveCurrentRequest = async () => {
+    const name = await modal.showPrompt({
+      title: t('messages.requestName'),
+      message: t('messages.requestName') + ':',
+      placeholder: t('sidebar.requestName'),
+    })
+    if (!name) return
 
     const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
     if (!targetWorkspace || targetWorkspace.collections.length === 0) {
-      alert(t('messages.createCollectionFirst'))
+      modal.showNotification({
+        title: t('common.error'),
+        message: t('messages.createCollectionFirst'),
+        type: 'error',
+      })
       return
     }
 
@@ -253,7 +330,7 @@ function App() {
 
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
-      name: name.trim(),
+      name: name,
       method,
       url,
       auth,
@@ -283,7 +360,11 @@ function App() {
       )
     )
 
-    alert(t('messages.requestSaved', { name }))
+    modal.showNotification({
+      title: t('common.success'),
+      message: t('messages.requestSaved', { name }),
+      type: 'success',
+    })
   }
 
   // Função para enviar a requisição
@@ -546,36 +627,37 @@ function App() {
         onNewRequest={handleNewRequest}
         onDeleteCollection={handleDeleteCollection}
         onDeleteRequest={handleDeleteRequestFromSidebar}
+        onDeleteWorkspace={handleDeleteWorkspace}
         onImportExport={handleImportExportModal}
       />
 
       {/* Área Principal */}
       <div className='flex-1 flex flex-col min-w-0'>
         {/* Header compacto estilo profissional */}
-        <header className='bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm dark:bg-gray-800 dark:border-gray-700'>
-          <div className='flex items-center gap-3'>
+        <header className='bg-white border-b border-gray-200 px-3 py-1.5 flex items-center justify-between shadow-sm dark:bg-gray-800 dark:border-gray-700'>
+          <div className='flex items-center gap-2'>
             <h1 className='text-lg font-semibold text-gray-900 dark:text-white'>REST Test</h1>
-            <span className='text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300'>
+            <span className='text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300'>
               2.0
             </span>
           </div>
 
           {/* Controles do Header */}
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-1'>
             {savedRequests.some((req) => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
-                className='px-3 py-1.5 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors flex items-center gap-1'
+                className='px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors flex items-center gap-1 cursor-pointer'
                 title='Migrar requests antigos para collections'
               >
                 <FiRefreshCw className='w-3 h-3' />
                 Migrar ({savedRequests.filter((req) => !req.collectionId).length})
               </button>
             )}
-            <div className='flex items-center space-x-3'>
+            <div className='flex items-center gap-1'>
               <button
                 onClick={() => setProxySettingsOpen(true)}
-                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors'
+                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer'
                 title={t('proxy.settings')}
               >
                 <FiSettings size={16} />
@@ -587,7 +669,7 @@ function App() {
         </header>
 
         {/* Conteúdo Principal */}
-        <main className='flex-1 min-h-0 p-2'>
+        <main className='flex-1 min-h-0 p-1'>
           <PanelGroup
             direction='vertical'
             className='bg-white rounded-lg shadow-sm border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700'
@@ -615,7 +697,7 @@ function App() {
             </Panel>
             <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
-              <div className='h-full p-4'>
+              <div className='h-full p-3'>
                 <ResponseDisplay response={response} loading={loading} error={error} />
               </div>
             </Panel>
@@ -639,6 +721,38 @@ function App() {
         proxyConfig={proxyConfig}
         onConfigChange={setProxyConfig}
         currentUrl={url}
+      />
+
+      {/* Modais do Sistema */}
+      <ConfirmModal
+        isOpen={modal.confirmModal.isOpen}
+        onClose={modal.closeConfirm}
+        onConfirm={modal.confirmModal.onConfirm}
+        title={modal.confirmModal.options.title}
+        message={modal.confirmModal.options.message}
+        confirmText={modal.confirmModal.options.confirmText}
+        cancelText={modal.confirmModal.options.cancelText}
+        type={modal.confirmModal.options.type}
+      />
+
+      <PromptModal
+        isOpen={modal.promptModal.isOpen}
+        onClose={modal.closePrompt}
+        onConfirm={modal.promptModal.onConfirm}
+        title={modal.promptModal.options.title}
+        message={modal.promptModal.options.message}
+        placeholder={modal.promptModal.options.placeholder}
+        initialValue={modal.promptModal.options.initialValue}
+        confirmText={modal.promptModal.options.confirmText}
+        cancelText={modal.promptModal.options.cancelText}
+      />
+
+      <NotificationModal
+        isOpen={modal.notificationModal.isOpen}
+        onClose={modal.closeNotification}
+        title={modal.notificationModal.options.title}
+        message={modal.notificationModal.options.message}
+        type={modal.notificationModal.options.type}
       />
     </div>
   )

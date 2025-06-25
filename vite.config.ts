@@ -11,13 +11,13 @@ export default defineConfig({
       '/api/anatel': {
         target: 'https://sistemas.anatel.gov.br',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/anatel/, ''),
+        rewrite: path => path.replace(/^\/api\/anatel/, ''),
         secure: true,
       },
       '/api/cors-proxy': {
         target: 'https://cors-anywhere.herokuapp.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/cors-proxy/, ''),
+        rewrite: path => path.replace(/^\/api\/cors-proxy/, ''),
         secure: true,
       },
     },

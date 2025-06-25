@@ -52,7 +52,7 @@ export const useRequestTabs = () => {
       savedRequestId: savedRequest?.id,
     }
 
-    setTabs((prev) => [...prev, newTab])
+    setTabs(prev => [...prev, newTab])
     setActiveTabId(newTab.id)
     return newTab.id
   }, [])
@@ -60,8 +60,8 @@ export const useRequestTabs = () => {
   // Função para fechar uma aba
   const closeTab = useCallback(
     (tabId: string) => {
-      setTabs((prev) => {
-        const newTabs = prev.filter((tab) => tab.id !== tabId)
+      setTabs(prev => {
+        const newTabs = prev.filter(tab => tab.id !== tabId)
 
         // Se não sobrar nenhuma aba, criar uma nova
         if (newTabs.length === 0) {
@@ -84,16 +84,16 @@ export const useRequestTabs = () => {
 
       // Se a aba ativa foi fechada, selecionar outra
       if (activeTabId === tabId) {
-        setTabs((prev) => {
-          const newTabs = prev.filter((tab) => tab.id !== tabId)
+        setTabs(prev => {
+          const newTabs = prev.filter(tab => tab.id !== tabId)
           if (newTabs.length > 0) {
-            const currentIndex = prev.findIndex((tab) => tab.id === tabId)
+            const currentIndex = prev.findIndex(tab => tab.id === tabId)
             const newActiveIndex = Math.min(currentIndex, newTabs.length - 1)
             setActiveTabId(newTabs[newActiveIndex].id)
           } else {
             // Se não sobrar nenhuma aba, será criada uma nova acima
             setTimeout(() => {
-              setTabs((currentTabs) => {
+              setTabs(currentTabs => {
                 if (currentTabs.length > 0) {
                   setActiveTabId(currentTabs[0].id)
                 }
@@ -105,7 +105,7 @@ export const useRequestTabs = () => {
         })
       }
     },
-    [activeTabId]
+    [activeTabId],
   )
 
   // Função para selecionar uma aba
@@ -115,31 +115,31 @@ export const useRequestTabs = () => {
 
   // Função para atualizar uma aba
   const updateTab = useCallback((tabId: string, updates: Partial<RequestTab>) => {
-    setTabs((prev) => prev.map((tab) => (tab.id === tabId ? { ...tab, ...updates, isModified: true } : tab)))
+    setTabs(prev => prev.map(tab => (tab.id === tabId ? { ...tab, ...updates, isModified: true } : tab)))
   }, [])
 
   // Função para marcar uma aba como salva (não modificada)
   const markTabAsSaved = useCallback((tabId: string, savedRequestId?: string) => {
-    setTabs((prev) => prev.map((tab) => (tab.id === tabId ? { ...tab, isModified: false, savedRequestId } : tab)))
+    setTabs(prev => prev.map(tab => (tab.id === tabId ? { ...tab, isModified: false, savedRequestId } : tab)))
   }, [])
 
   // Função para definir a resposta de uma aba
   const setTabResponse = useCallback(
     (tabId: string, response: ApiResponse | null, loading = false, error: string | null = null) => {
-      setTabs((prev) => prev.map((tab) => (tab.id === tabId ? { ...tab, response, loading, error } : tab)))
+      setTabs(prev => prev.map(tab => (tab.id === tabId ? { ...tab, response, loading, error } : tab)))
     },
-    []
+    [],
   )
 
   // Função para obter a aba ativa
   const getActiveTab = useCallback(() => {
-    return tabs.find((tab) => tab.id === activeTabId) || null
+    return tabs.find(tab => tab.id === activeTabId) || null
   }, [tabs, activeTabId])
 
   // Função para duplicar uma aba
   const duplicateTab = useCallback(
     (tabId: string) => {
-      const tab = tabs.find((t) => t.id === tabId)
+      const tab = tabs.find(t => t.id === tabId)
       if (!tab) return
 
       const newTab: RequestTab = {
@@ -153,11 +153,11 @@ export const useRequestTabs = () => {
         error: null,
       }
 
-      setTabs((prev) => [...prev, newTab])
+      setTabs(prev => [...prev, newTab])
       setActiveTabId(newTab.id)
       return newTab.id
     },
-    [tabs]
+    [tabs],
   )
 
   return {

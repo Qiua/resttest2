@@ -54,7 +54,10 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [detectedFormat, setDetectedFormat] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [notification, setNotification] = useState<NotificationState>({ type: null, message: '' })
+  const [notification, setNotification] = useState<NotificationState>({
+    type: null,
+    message: '',
+  })
 
   // Export states
   const [exportType, setExportType] = useState<ExportType>('workspace')
@@ -84,8 +87,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
       } else {
         showNotification('error', t('importExport.messages.invalidFile'))
       }
-    } catch (error) {
-      console.error('Error reading file:', error)
+    } catch {
+      // Error logging removido para produção - pode ser re-habilitado em desenvolvimento
       showNotification('error', t('importExport.messages.invalidFile'))
     }
   }
@@ -114,7 +117,7 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
         // Import as workspace(s)
         const workspaces = importWorkspace(content)
         // Import all workspaces
-        workspaces.forEach((workspace) => {
+        workspaces.forEach(workspace => {
           onWorkspaceImported(workspace)
         })
         showNotification('success', t('importExport.messages.importSuccess'))
@@ -126,8 +129,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-    } catch (error) {
-      console.error('Import error:', error)
+    } catch {
+      // Error logging removido para produção - pode ser re-habilitado em desenvolvimento
       showNotification('error', t('importExport.messages.importError'))
     } finally {
       setIsProcessing(false)
@@ -149,15 +152,15 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
 
     try {
       if (exportType === 'workspace') {
-        const workspace = workspaces.find((w) => w.id === selectedWorkspaceId)
+        const workspace = workspaces.find(w => w.id === selectedWorkspaceId)
         if (!workspace) throw new Error('Workspace not found')
 
         const exportData = exportWorkspace(workspace)
         const filename = `${workspace.name}_workspace.json`
         await downloadJSON(exportData, filename)
       } else if (exportType === 'collection') {
-        const workspace = workspaces.find((w) => w.collections.some((c) => c.id === selectedCollectionId))
-        const collection = workspace?.collections.find((c) => c.id === selectedCollectionId)
+        const workspace = workspaces.find(w => w.collections.some(c => c.id === selectedCollectionId))
+        const collection = workspace?.collections.find(c => c.id === selectedCollectionId)
 
         if (!collection) throw new Error('Collection not found')
 
@@ -181,15 +184,15 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
       }
 
       showNotification('success', t('importExport.messages.exportSuccess'))
-    } catch (error) {
-      console.error('Export error:', error)
+    } catch {
+      // Error logging removido para produção - pode ser re-habilitado em desenvolvimento
       showNotification('error', t('importExport.messages.exportError'))
     } finally {
       setIsProcessing(false)
     }
   }
 
-  const selectedWorkspace = workspaces.find((w) => w.id === selectedWorkspaceId)
+  const selectedWorkspace = workspaces.find(w => w.id === selectedWorkspaceId)
   const availableCollections = selectedWorkspace?.collections || []
 
   if (!isOpen) return null
@@ -202,16 +205,16 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
 
   return (
     <div
-      className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer'
+      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer"
       onClick={handleBackdropClick}
     >
-      <div className='bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700 cursor-default'>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700 cursor-default">
         {/* Header */}
-        <div className='flex items-center justify-between p-4 border-b dark:border-gray-700'>
-          <h2 className='text-xl font-semibold text-gray-900 dark:text-white'>{t('importExport.title')}</h2>
+        <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('importExport.title')}</h2>
           <button
             onClick={onClose}
-            className='p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer'
+            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
           >
             <FiX size={20} />
           </button>
@@ -228,17 +231,17 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                 : 'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
             }`}
           >
-            <div className='flex items-center'>
-              {notification.type === 'success' && <FiCheckCircle className='mr-2' />}
-              {notification.type === 'error' && <FiAlertCircle className='mr-2' />}
-              {notification.type === 'info' && <FiFile className='mr-2' />}
+            <div className="flex items-center">
+              {notification.type === 'success' && <FiCheckCircle className="mr-2" />}
+              {notification.type === 'error' && <FiAlertCircle className="mr-2" />}
+              {notification.type === 'info' && <FiFile className="mr-2" />}
               {notification.message}
             </div>
           </div>
         )}
 
         {/* Tabs */}
-        <div className='flex border-b dark:border-gray-700'>
+        <div className="flex border-b dark:border-gray-700">
           <button
             onClick={() => setActiveTab('import')}
             className={`flex-1 px-6 py-3 text-sm font-medium ${
@@ -247,7 +250,7 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
-            <FiUpload className='inline mr-2' />
+            <FiUpload className="inline mr-2" />
             {t('importExport.import')}
           </button>
           <button
@@ -258,45 +261,45 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
-            <FiDownload className='inline mr-2' />
+            <FiDownload className="inline mr-2" />
             {t('importExport.export')}
           </button>
         </div>
 
         {/* Content */}
-        <div className='p-6 overflow-y-auto max-h-[calc(90vh-200px)]'>
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
           {activeTab === 'import' ? (
-            <div className='space-y-6'>
-              <p className='text-gray-600 dark:text-gray-400'>{t('importExport.descriptions.import')}</p>
+            <div className="space-y-6">
+              <p className="text-gray-600 dark:text-gray-400">{t('importExport.descriptions.import')}</p>
 
               {/* File Input */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('importExport.selectFile')}
                 </label>
                 <input
                   ref={fileInputRef}
-                  type='file'
-                  accept='.json'
+                  type="file"
+                  accept=".json"
                   onChange={handleFileSelect}
-                  className='block w-full text-sm text-gray-500 dark:text-gray-400
+                  className="block w-full text-sm text-gray-500 dark:text-gray-400
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0
                     file:text-sm file:font-semibold
                     file:bg-blue-50 file:text-blue-700
                     hover:file:bg-blue-100
-                    dark:file:bg-blue-900 dark:file:text-blue-300'
+                    dark:file:bg-blue-900 dark:file:text-blue-300"
                 />
               </div>
 
               {/* Format Detection */}
               {detectedFormat && detectedFormat !== 'unknown' && (
-                <div className='p-4 bg-blue-50 dark:bg-blue-900 rounded-lg'>
-                  <h4 className='font-medium text-blue-800 dark:text-blue-200 mb-2'>
-                    {t('importExport.formats.' + detectedFormat)}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                  <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
+                    {t(`importExport.formats.${detectedFormat}`)}
                   </h4>
-                  <p className='text-sm text-blue-600 dark:text-blue-300'>
-                    {t('importExport.descriptions.' + detectedFormat)}
+                  <p className="text-sm text-blue-600 dark:text-blue-300">
+                    {t(`importExport.descriptions.${detectedFormat}`)}
                   </p>
                 </div>
               )}
@@ -305,32 +308,32 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               <button
                 onClick={handleImport}
                 disabled={!selectedFile || !detectedFormat || detectedFormat === 'unknown' || isProcessing}
-                className='w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 
-                  text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center'
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 
+                  text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center"
               >
                 {isProcessing ? (
                   <>
-                    <FiLoader className='animate-spin mr-2' />
+                    <FiLoader className="animate-spin mr-2" />
                     {t('importExport.messages.importing')}
                   </>
                 ) : (
                   <>
-                    <FiUpload className='mr-2' />
+                    <FiUpload className="mr-2" />
                     {t('importExport.actions.importFile')}
                   </>
                 )}
               </button>
             </div>
           ) : (
-            <div className='space-y-6'>
-              <p className='text-gray-600 dark:text-gray-400'>{t('importExport.descriptions.export')}</p>
+            <div className="space-y-6">
+              <p className="text-gray-600 dark:text-gray-400">{t('importExport.descriptions.export')}</p>
 
               {/* Export Type Selection */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('importExport.exportType')}
                 </label>
-                <div className='grid grid-cols-2 gap-4'>
+                <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={() => setExportType('workspace')}
                     className={`p-4 border-2 rounded-lg text-left ${
@@ -339,8 +342,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                         : 'border-gray-300 dark:border-gray-600'
                     }`}
                   >
-                    <h4 className='font-medium'>{t('importExport.exportWorkspace')}</h4>
-                    <p className='text-sm text-gray-600 dark:text-gray-400'>
+                    <h4 className="font-medium">{t('importExport.exportWorkspace')}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {t('importExport.descriptions.workspace')}
                     </p>
                   </button>
@@ -352,8 +355,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                         : 'border-gray-300 dark:border-gray-600'
                     }`}
                   >
-                    <h4 className='font-medium'>{t('importExport.exportCollection')}</h4>
-                    <p className='text-sm text-gray-600 dark:text-gray-400'>
+                    <h4 className="font-medium">{t('importExport.exportCollection')}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {t('importExport.descriptions.collection')}
                     </p>
                   </button>
@@ -363,17 +366,17 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               {/* Workspace/Collection Selection */}
               {exportType === 'workspace' && (
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     {t('importExport.selectWorkspace')}
                   </label>
                   <select
                     value={selectedWorkspaceId}
-                    onChange={(e) => setSelectedWorkspaceId(e.target.value)}
-                    className='w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                      bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                    onChange={e => setSelectedWorkspaceId(e.target.value)}
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                      bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
-                    <option value=''>{t('importExport.selectWorkspace')}</option>
-                    {workspaces.map((workspace) => (
+                    <option value="">{t('importExport.selectWorkspace')}</option>
+                    {workspaces.map(workspace => (
                       <option key={workspace.id} value={workspace.id}>
                         {workspace.name}
                       </option>
@@ -385,20 +388,20 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               {exportType === 'collection' && (
                 <>
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('importExport.selectWorkspace')}
                     </label>
                     <select
                       value={selectedWorkspaceId}
-                      onChange={(e) => {
+                      onChange={e => {
                         setSelectedWorkspaceId(e.target.value)
                         setSelectedCollectionId('')
                       }}
-                      className='w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                      className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
-                      <option value=''>{t('importExport.selectWorkspace')}</option>
-                      {workspaces.map((workspace) => (
+                      <option value="">{t('importExport.selectWorkspace')}</option>
+                      {workspaces.map(workspace => (
                         <option key={workspace.id} value={workspace.id}>
                           {workspace.name}
                         </option>
@@ -408,17 +411,17 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
 
                   {selectedWorkspaceId && (
                     <div>
-                      <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         {t('importExport.selectCollection')}
                       </label>
                       <select
                         value={selectedCollectionId}
-                        onChange={(e) => setSelectedCollectionId(e.target.value)}
-                        className='w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                        onChange={e => setSelectedCollectionId(e.target.value)}
+                        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       >
-                        <option value=''>{t('importExport.selectCollection')}</option>
-                        {availableCollections.map((collection) => (
+                        <option value="">{t('importExport.selectCollection')}</option>
+                        {availableCollections.map(collection => (
                           <option key={collection.id} value={collection.id}>
                             {collection.name}
                           </option>
@@ -430,10 +433,10 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                   {/* Format Selection for Collections */}
                   {selectedCollectionId && (
                     <div>
-                      <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         {t('importExport.actions.exportAs')}
                       </label>
-                      <div className='grid grid-cols-2 gap-4'>
+                      <div className="grid grid-cols-2 gap-4">
                         <button
                           onClick={() => setExportFormat('native')}
                           className={`p-4 border-2 rounded-lg text-left ${
@@ -442,8 +445,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                               : 'border-gray-300 dark:border-gray-600'
                           }`}
                         >
-                          <h4 className='font-medium'>{t('importExport.formats.native')}</h4>
-                          <p className='text-sm text-gray-600 dark:text-gray-400'>
+                          <h4 className="font-medium">{t('importExport.formats.native')}</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {t('importExport.descriptions.restTest')}
                           </p>
                         </button>
@@ -455,8 +458,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                               : 'border-gray-300 dark:border-gray-600'
                           }`}
                         >
-                          <h4 className='font-medium'>{t('importExport.formats.postman')}</h4>
-                          <p className='text-sm text-gray-600 dark:text-gray-400'>
+                          <h4 className="font-medium">{t('importExport.formats.postman')}</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {t('importExport.descriptions.postman')}
                           </p>
                         </button>
@@ -474,17 +477,17 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                   (exportType === 'workspace' && !selectedWorkspaceId) ||
                   (exportType === 'collection' && !selectedCollectionId)
                 }
-                className='w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 
-                  text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center'
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 
+                  text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center"
               >
                 {isProcessing ? (
                   <>
-                    <FiLoader className='animate-spin mr-2' />
+                    <FiLoader className="animate-spin mr-2" />
                     {t('importExport.messages.exporting')}
                   </>
                 ) : (
                   <>
-                    <FiDownload className='mr-2' />
+                    <FiDownload className="mr-2" />
                     {t('importExport.actions.downloadFile')}
                   </>
                 )}

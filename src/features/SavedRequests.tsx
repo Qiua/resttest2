@@ -32,7 +32,7 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
   const [selectedId, setSelectedId] = useState<string>('')
 
   const handleSave = () => {
-    const name = prompt(t('request.form.saveRequest') + ':')
+    const name = prompt(`${t('request.form.saveRequest')}:`)
     if (name) {
       onSave(name)
     }
@@ -45,22 +45,22 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
   }
 
   const handleDelete = () => {
-    if (selectedId && confirm(t('sidebar.deleteRequest') + '?')) {
+    if (selectedId && confirm(`${t('sidebar.deleteRequest')}?`)) {
       onDelete(selectedId)
       setSelectedId('')
     }
   }
 
   return (
-    <div className='flex items-center gap-2'>
+    <div className="flex items-center gap-2">
       {/* Dropdown compacto */}
       <select
         value={selectedId}
-        onChange={(e) => setSelectedId(e.target.value)}
-        className='text-sm border border-gray-300 rounded px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]'
+        onChange={e => setSelectedId(e.target.value)}
+        className="text-sm border border-gray-300 rounded px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]"
       >
-        <option value=''>{t('sidebar.selectWorkspace')}</option>
-        {savedRequests.map((req) => (
+        <option value="">{t('sidebar.selectWorkspace')}</option>
+        {savedRequests.map(req => (
           <option key={req.id} value={req.id}>
             {req.name} ({req.method})
           </option>
@@ -68,24 +68,24 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
       </select>
 
       {/* Botões compactos */}
-      <div className='flex items-center gap-1'>
+      <div className="flex items-center gap-1">
         <button
           onClick={handleLoad}
           disabled={!selectedId}
-          className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500'
+          className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {t('common.load')}
         </button>
         <button
           onClick={handleSave}
-          className='px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'
+          className="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           {t('common.save')}
         </button>
         <button
           onClick={handleDelete}
           disabled={!selectedId}
-          className='px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500'
+          className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           {t('common.delete')}
         </button>

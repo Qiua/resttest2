@@ -72,26 +72,26 @@ export const useModal = () => {
   })
 
   const showConfirm = (options: ConfirmModalOptions): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setConfirmModal({
         isOpen: true,
         options,
         onConfirm: () => {
           resolve(true)
-          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          setConfirmModal(prev => ({ ...prev, isOpen: false }))
         },
       })
     })
   }
 
   const showPrompt = (options: PromptModalOptions): Promise<string | null> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setPromptModal({
         isOpen: true,
         options,
         onConfirm: (value: string) => {
           resolve(value)
-          setPromptModal((prev) => ({ ...prev, isOpen: false }))
+          setPromptModal(prev => ({ ...prev, isOpen: false }))
         },
       })
     })
@@ -105,15 +105,15 @@ export const useModal = () => {
   }
 
   const closeConfirm = () => {
-    setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+    setConfirmModal(prev => ({ ...prev, isOpen: false }))
   }
 
   const closePrompt = () => {
-    setPromptModal((prev) => ({ ...prev, isOpen: false }))
+    setPromptModal(prev => ({ ...prev, isOpen: false }))
   }
 
   const closeNotification = () => {
-    setNotificationModal((prev) => ({ ...prev, isOpen: false }))
+    setNotificationModal(prev => ({ ...prev, isOpen: false }))
   }
 
   return {

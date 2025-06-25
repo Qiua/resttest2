@@ -66,36 +66,36 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <div
-      className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer'
+      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer"
       onClick={handleBackdropClick}
     >
-      <div className='bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full border border-gray-200 dark:border-gray-700 cursor-default'>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full border border-gray-200 dark:border-gray-700 cursor-default">
         {/* Header */}
-        <div className='flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700'>
-          <div className='flex items-center gap-3'>
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-3">
             <div className={`p-2 rounded-lg ${typeColors[type]}`}>
               <FiAlertTriangle size={20} />
             </div>
-            <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
           </div>
           <button
             onClick={onClose}
-            className='p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer'
+            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
           >
             <FiX size={20} />
           </button>
         </div>
 
         {/* Content */}
-        <div className='p-4'>
-          <p className='text-gray-700 dark:text-gray-300 leading-relaxed'>{message}</p>
+        <div className="p-4">
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{message}</p>
         </div>
 
         {/* Actions */}
-        <div className='flex gap-3 p-4 border-t border-gray-200 dark:border-gray-700'>
+        <div className="flex gap-3 p-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={onClose}
-            className='flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer'
+            className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer"
           >
             {cancelText || t('common.cancel')}
           </button>

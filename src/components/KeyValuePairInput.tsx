@@ -38,27 +38,27 @@ export const KeyValuePairInput: React.FC<KeyValuePairInputProps> = ({
   isPassword = false,
 }) => {
   return (
-    <div className='flex items-center gap-2'>
+    <div className="flex items-center gap-2">
       <input
-        type='text'
+        type="text"
         placeholder={keyPlaceholder}
         value={item.key}
-        onChange={(e) => updateItem({ ...item, key: e.target.value })}
-        className='flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+        onChange={e => updateItem({ ...item, key: e.target.value })}
+        className="flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
       <input
         type={isPassword ? 'password' : 'text'}
         placeholder={valuePlaceholder}
         value={item.value}
-        onChange={(e) => updateItem({ ...item, value: e.target.value })}
-        className='flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+        onChange={e => updateItem({ ...item, value: e.target.value })}
+        className="flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
       <button
-        type='button'
+        type="button"
         onClick={removeItem}
-        className='px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500'
+        className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
       >
-        <FiX className='w-4 h-4' />
+        <FiX className="w-4 h-4" />
       </button>
     </div>
   )

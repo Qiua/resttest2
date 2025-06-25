@@ -66,10 +66,10 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
   }
 
   return (
-    <div className='flex items-center bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600 min-h-[52px] overflow-x-auto shadow-sm dark:shadow-lg'>
+    <div className="flex items-center bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600 min-h-[52px] overflow-x-auto shadow-sm dark:shadow-lg">
       {/* Tabs existentes com melhor design */}
-      <div className='flex items-center flex-1 overflow-x-auto'>
-        {tabs.map((tab) => (
+      <div className="flex items-center flex-1 overflow-x-auto">
+        {tabs.map(tab => (
           <div
             key={tab.id}
             className={`
@@ -104,13 +104,13 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
 
             {/* Indicador de modificação melhorado */}
             {tab.isModified && (
-              <div className='w-2 h-2 bg-gradient-to-r from-orange-400 to-orange-500 dark:from-orange-300 dark:to-orange-400 rounded-full ml-2 mr-1 animate-pulse shadow-sm dark:shadow-orange-500/25'></div>
+              <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-orange-500 dark:from-orange-300 dark:to-orange-400 rounded-full ml-2 mr-1 animate-pulse shadow-sm dark:shadow-orange-500/25"></div>
             )}
 
             {/* Botão de fechar melhorado */}
             {tabs.length > 1 && (
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   onTabClose(tab.id)
                 }}
@@ -125,7 +125,7 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
                 title={t('tabs.closeTab')}
                 aria-label={t('tabs.closeTab')}
               >
-                <FiX className='w-3 h-3' />
+                <FiX className="w-3 h-3" />
               </button>
             )}
           </div>
@@ -135,11 +135,11 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
       {/* Botão de nova aba melhorado */}
       <button
         onClick={onNewTab}
-        className='flex items-center justify-center min-w-[44px] h-[44px] mx-3 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 shadow-sm hover:shadow-md dark:hover:shadow-blue-500/10 group'
+        className="flex items-center justify-center min-w-[44px] h-[44px] mx-3 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 shadow-sm hover:shadow-md dark:hover:shadow-blue-500/10 group"
         title={t('tabs.newTab')}
         aria-label={t('tabs.newTab')}
       >
-        <FiPlus className='w-5 h-5 group-hover:scale-110 transition-transform duration-200' />
+        <FiPlus className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
       </button>
     </div>
   )

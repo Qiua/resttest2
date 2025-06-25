@@ -59,13 +59,13 @@ export const useRequestHistory = () => {
         error,
       }
 
-      setHistory((prev) => {
+      setHistory(prev => {
         const newHistory = [entry, ...prev]
         // Limitar o número de entradas conforme configuração
         return newHistory.slice(0, historyConfig.maxEntries)
       })
     },
-    [historyConfig, setHistory]
+    [historyConfig, setHistory],
   )
 
   // Buscar entradas no histórico
@@ -75,62 +75,68 @@ export const useRequestHistory = () => {
 
       const term = searchTerm.toLowerCase()
       return history.filter(
-        (entry) =>
+        entry =>
           entry.url.toLowerCase().includes(term) ||
           entry.method.toLowerCase().includes(term) ||
-          entry.response.status.toString().includes(term)
+          entry.response.status.toString().includes(term),
       )
     },
-    [history]
+    [history],
   )
 
   // Filtrar histórico por método
   const filterByMethod = useCallback(
     (method: string) => {
       if (method === 'ALL') return history
-      return history.filter((entry) => entry.method === method)
+      return history.filter(entry => entry.method === method)
     },
-    [history]
+    [history],
   )
 
   // Filtrar histórico por status
   const filterByStatus = useCallback(
     (status: 'success' | 'error' | 'ALL') => {
       if (status === 'ALL') return history
-      return history.filter((entry) => entry.status === status)
+      return history.filter(entry => entry.status === status)
     },
-    [history]
+    [history],
   )
 
   // Filtrar histórico por período
   const filterByDateRange = useCallback(
     (startDate: Date, endDate: Date) => {
-      return history.filter((entry) => {
+      return history.filter(entry => {
         const entryDate = new Date(entry.timestamp)
         return entryDate >= startDate && entryDate <= endDate
       })
     },
-    [history]
+    [history],
   )
 
   // Obter estatísticas do histórico
   const getStats = useCallback(() => {
     const totalRequests = history.length
-    const successfulRequests = history.filter((entry) => entry.status === 'success').length
-    const failedRequests = history.filter((entry) => entry.status === 'error').length
+    const successfulRequests = history.filter(entry => entry.status === 'success').length
+    const failedRequests = history.filter(entry => entry.status === 'error').length
     const averageResponseTime =
       history.length > 0 ? history.reduce((acc, entry) => acc + entry.duration, 0) / history.length : 0
 
-    const methodStats = history.reduce((acc, entry) => {
-      acc[entry.method] = (acc[entry.method] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const methodStats = history.reduce(
+      (acc, entry) => {
+        acc[entry.method] = (acc[entry.method] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
-    const statusCodeStats = history.reduce((acc, entry) => {
-      const statusCode = entry.response.status.toString()
-      acc[statusCode] = (acc[statusCode] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const statusCodeStats = history.reduce(
+      (acc, entry) => {
+        const statusCode = entry.response.status.toString()
+        acc[statusCode] = (acc[statusCode] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
     return {
       totalRequests,
@@ -151,9 +157,9 @@ export const useRequestHistory = () => {
   // Remover entrada específica
   const removeEntry = useCallback(
     (entryId: string) => {
-      setHistory((prev) => prev.filter((entry) => entry.id !== entryId))
+      setHistory(prev => prev.filter(entry => entry.id !== entryId))
     },
-    [setHistory]
+    [setHistory],
   )
 
   // Exportar histórico
@@ -172,8 +178,8 @@ export const useRequestHistory = () => {
         const csvHeaders = 'Timestamp,Method,URL,Status Code,Response Time (ms),Status\n'
         const csvData = history
           .map(
-            (entry) =>
-              `${entry.timestamp},${entry.method},${entry.url},${entry.response.status},${entry.duration},${entry.status}`
+            entry =>
+              `${entry.timestamp},${entry.method},${entry.url},${entry.response.status},${entry.duration},${entry.status}`,
           )
           .join('\n')
 
@@ -187,7 +193,7 @@ export const useRequestHistory = () => {
         URL.revokeObjectURL(url)
       }
     },
-    [history]
+    [history],
   )
 
   // Reexecutar uma entrada do histórico

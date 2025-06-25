@@ -89,9 +89,9 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     if (matches.length === 0) return
 
     if (direction === 'next') {
-      setCurrentMatchIndex((prev) => (prev + 1) % matches.length)
+      setCurrentMatchIndex(prev => (prev + 1) % matches.length)
     } else {
-      setCurrentMatchIndex((prev) => (prev - 1 + matches.length) % matches.length)
+      setCurrentMatchIndex(prev => (prev - 1 + matches.length) % matches.length)
     }
   }
 
@@ -200,7 +200,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
   }
 
   // Função para parsear headers de string para objeto
@@ -208,7 +208,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     const headers: Record<string, string> = {}
     if (!headersString) return headers
 
-    headersString.split('\n').forEach((line) => {
+    headersString.split('\n').forEach(line => {
       const [key, ...valueParts] = line.split(': ')
       if (key && valueParts.length > 0) {
         headers[key.trim()] = valueParts.join(': ').trim()
@@ -219,10 +219,10 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
 
   if (loading) {
     return (
-      <div className='flex items-center justify-center h-full'>
-        <div className='flex flex-col items-center space-y-4'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
-          <p className='text-gray-500 dark:text-gray-500'>{t('response.sending')}</p>
+      <div className="flex items-center justify-center h-full">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-500 dark:text-gray-500">{t('response.sending')}</p>
         </div>
       </div>
     )
@@ -230,13 +230,13 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
 
   if (error) {
     return (
-      <div className='p-6'>
-        <div className='bg-red-100 dark:bg-red-950 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 rounded-r-md'>
-          <div className='flex items-center'>
-            <FiInfo className='w-5 h-5 mr-3' />
+      <div className="p-6">
+        <div className="bg-red-100 dark:bg-red-950 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 rounded-r-md">
+          <div className="flex items-center">
+            <FiInfo className="w-5 h-5 mr-3" />
             <div>
-              <p className='font-bold'>{t('response.error')}</p>
-              <p className='mt-1'>{error}</p>
+              <p className="font-bold">{t('response.error')}</p>
+              <p className="mt-1">{error}</p>
             </div>
           </div>
         </div>
@@ -246,11 +246,11 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
 
   if (!response) {
     return (
-      <div className='flex items-center justify-center h-full'>
-        <div className='text-center'>
-          <FiCode className='w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-4' />
-          <p className='text-gray-500 dark:text-gray-500 text-lg mb-2'>{t('response.noResponse')}</p>
-          <p className='text-gray-400 dark:text-gray-600 text-sm'>{t('response.noResponseDescription')}</p>
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <FiCode className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+          <p className="text-gray-500 dark:text-gray-500 text-lg mb-2">{t('response.noResponse')}</p>
+          <p className="text-gray-400 dark:text-gray-600 text-sm">{t('response.noResponseDescription')}</p>
         </div>
       </div>
     )
@@ -265,36 +265,38 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
   const responseTabs = [
     {
       label: (
-        <span className='flex items-center space-x-2'>
-          <FiEye className='w-4 h-4' />
+        <span className="flex items-center space-x-2">
+          <FiEye className="w-4 h-4" />
           <span>{t('response.tabs.response')}</span>
-          <span className='text-xs bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full'>
+          <span className="text-xs bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full">
             {formatBytes(responseSize)}
           </span>
         </span>
       ),
       content: (
-        <div className='h-full flex flex-col'>
+        <div className="h-full flex flex-col">
           {/* Barra de ferramentas */}
-          <div className='flex items-center justify-between mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md'>
-            <div className='flex items-center space-x-2'>
-              <FiEye className='w-4 h-4 text-gray-500 dark:text-gray-500' />
-              <span className='text-sm text-gray-600 dark:text-gray-400'>
+          <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+            <div className="flex items-center space-x-2">
+              <FiEye className="w-4 h-4 text-gray-500 dark:text-gray-500" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {language.toUpperCase()} • {formatBytes(responseSize)}
               </span>
             </div>
-            <div className='flex space-x-2'>
+            <div className="flex space-x-2">
               <button
                 onClick={() => copyToClipboard(response.body)}
-                className='flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
+                className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 title={t('response.toolbar.copyResponse')}
               >
-                <FiCopy className='w-4 h-4' />
+                <FiCopy className="w-4 h-4" />
                 <span>{t('common.copy')}</span>
               </button>
               <button
                 onClick={() => {
-                  const blob = new Blob([response.body], { type: response.contentType || 'text/plain' })
+                  const blob = new Blob([response.body], {
+                    type: response.contentType || 'text/plain',
+                  })
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement('a')
                   a.href = url
@@ -302,26 +304,26 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                   a.click()
                   URL.revokeObjectURL(url)
                 }}
-                className='flex items-center space-x-1 px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors'
+                className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
                 title={t('response.toolbar.downloadResponse')}
               >
-                <FiDownload className='w-4 h-4' />
+                <FiDownload className="w-4 h-4" />
                 <span>{t('common.download')}</span>
               </button>
             </div>
           </div>
 
           {/* Busca */}
-          <div className='mb-4 space-y-2'>
-            <div className='flex items-center gap-2'>
-              <div className='relative flex-1'>
-                <FiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+          <div className="mb-4 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
-                  type='text'
+                  type="text"
                   placeholder={t('response.toolbar.searchInResponse')}
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={e => setSearchTerm(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === 'Enter') {
                       e.preventDefault()
                       if (e.shiftKey) {
@@ -333,45 +335,45 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                       clearSearch()
                     }
                   }}
-                  className='w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
+                  className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 />
                 {searchTerm && (
                   <button
                     onClick={clearSearch}
-                    className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-colors'
-                    title='Limpar busca (Esc)'
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-colors"
+                    title="Limpar busca (Esc)"
                   >
-                    <FiX className='w-4 h-4' />
+                    <FiX className="w-4 h-4" />
                   </button>
                 )}
               </div>
 
               {searchTerm && (
-                <div className='flex items-center gap-1'>
+                <div className="flex items-center gap-1">
                   {matches.length > 0 ? (
                     <>
-                      <span className='text-sm text-gray-600 dark:text-gray-400 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded'>
+                      <span className="text-sm text-gray-600 dark:text-gray-400 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">
                         {currentMatchIndex + 1} de {matches.length}
                       </span>
                       <button
                         onClick={() => navigateToMatch('prev')}
                         disabled={matches.length === 0}
-                        className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors'
-                        title='Anterior (Shift+Enter)'
+                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors"
+                        title="Anterior (Shift+Enter)"
                       >
-                        <FiChevronUp className='w-4 h-4' />
+                        <FiChevronUp className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigateToMatch('next')}
                         disabled={matches.length === 0}
-                        className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors'
-                        title='Próximo (Enter)'
+                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors"
+                        title="Próximo (Enter)"
                       >
-                        <FiChevronDown className='w-4 h-4' />
+                        <FiChevronDown className="w-4 h-4" />
                       </button>
                     </>
                   ) : (
-                    <span className='text-sm text-orange-600 dark:text-orange-400 px-2 py-1 bg-orange-50 dark:bg-orange-900 rounded'>
+                    <span className="text-sm text-orange-600 dark:text-orange-400 px-2 py-1 bg-orange-50 dark:bg-orange-900 rounded">
                       Nenhum resultado
                     </span>
                   )}
@@ -380,17 +382,17 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
             </div>
 
             {searchTerm && (
-              <div className='flex flex-col gap-2'>
-                <div className='text-xs text-gray-500 dark:text-gray-400 px-2'>
+              <div className="flex flex-col gap-2">
+                <div className="text-xs text-gray-500 dark:text-gray-400 px-2">
                   💡 Dica: Use Enter/Shift+Enter para navegar, Esc para limpar
                 </div>
-                <div className='flex items-center gap-2 px-2'>
-                  <label className='flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 cursor-pointer'>
+                <div className="flex items-center gap-2 px-2">
+                  <label className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
                     <input
-                      type='checkbox'
+                      type="checkbox"
                       checked={caseSensitive}
-                      onChange={(e) => setCaseSensitive(e.target.checked)}
-                      className='rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-2'
+                      onChange={e => setCaseSensitive(e.target.checked)}
+                      className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
                     Case sensitive
                   </label>
@@ -400,11 +402,11 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
           </div>
 
           {/* Conteúdo da resposta */}
-          <div className='flex-1 min-h-0' ref={contentRef}>
+          <div className="flex-1 min-h-0" ref={contentRef}>
             {searchTerm && matches.length > 0 ? (
               // Versão com highlight para busca
-              <div className='h-full bg-gray-900 rounded-md p-4 overflow-auto'>
-                <pre className='text-sm text-gray-100 font-mono whitespace-pre-wrap'>
+              <div className="h-full bg-gray-900 rounded-md p-4 overflow-auto">
+                <pre className="text-sm text-gray-100 font-mono whitespace-pre-wrap">
                   {isJson
                     ? highlightText(formatJson(response.body), searchTerm, currentMatchIndex)
                     : highlightText(response.body, searchTerm, currentMatchIndex)}
@@ -415,7 +417,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
               <>
                 {isJson ? (
                   <SyntaxHighlighter
-                    language='json'
+                    language="json"
                     style={codeStyle}
                     customStyle={{
                       margin: 0,
@@ -454,52 +456,52 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     },
     {
       label: (
-        <span className='flex items-center space-x-2'>
-          <FiFileText className='w-4 h-4' />
+        <span className="flex items-center space-x-2">
+          <FiFileText className="w-4 h-4" />
           <span>{t('response.tabs.headers')}</span>
-          <span className='text-xs bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-0.5 rounded-full'>
+          <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 px-2 py-0.5 rounded-full">
             {Object.keys(parsedHeaders).length}
           </span>
         </span>
       ),
       content: (
-        <div className='space-y-4'>
+        <div className="space-y-4">
           {/* Ferramentas */}
-          <div className='flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md'>
-            <div className='flex items-center space-x-2'>
-              <FiFileText className='w-4 h-4 text-gray-500 dark:text-gray-500' />
-              <span className='text-sm text-gray-600 dark:text-gray-400'>
+          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+            <div className="flex items-center space-x-2">
+              <FiFileText className="w-4 h-4 text-gray-500 dark:text-gray-500" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {Object.keys(parsedHeaders).length} {t('response.info.headersFound')}
               </span>
             </div>
             <button
               onClick={() => copyToClipboard(response.headers)}
-              className='flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
+              className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
               title={t('response.toolbar.copyHeaders')}
             >
-              <FiCopy className='w-4 h-4' />
+              <FiCopy className="w-4 h-4" />
               <span>{t('common.copy')}</span>
             </button>
           </div>
 
           {/* Lista de headers */}
-          <div className='space-y-2'>
+          <div className="space-y-2">
             {Object.entries(parsedHeaders).map(([key, value]) => (
               <div
                 key={key}
-                className='bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-3'
+                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-3"
               >
-                <div className='flex items-center justify-between'>
-                  <span className='font-medium text-gray-900 dark:text-white text-sm'>{key}</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-900 dark:text-white text-sm">{key}</span>
                   <button
                     onClick={() => copyToClipboard(value)}
-                    className='text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
+                    className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                     title={t('response.toolbar.copyHeaders')}
                   >
-                    <FiCopy className='w-4 h-4' />
+                    <FiCopy className="w-4 h-4" />
                   </button>
                 </div>
-                <p className='text-gray-600 dark:text-gray-400 text-sm mt-1 break-all'>{value}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 break-all">{value}</p>
               </div>
             ))}
           </div>
@@ -508,32 +510,32 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     },
     {
       label: (
-        <span className='flex items-center space-x-2'>
-          <FiCode className='w-4 h-4' />
+        <span className="flex items-center space-x-2">
+          <FiCode className="w-4 h-4" />
           <span>{t('response.tabs.raw')}</span>
         </span>
       ),
       content: (
-        <div className='h-full flex flex-col'>
-          <div className='flex items-center justify-between mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md'>
-            <div className='flex items-center space-x-2'>
-              <FiCode className='w-4 h-4 text-gray-500 dark:text-gray-500' />
-              <span className='text-sm text-gray-600 dark:text-gray-400'>{t('response.toolbar.rawData')}</span>
+        <div className="h-full flex flex-col">
+          <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+            <div className="flex items-center space-x-2">
+              <FiCode className="w-4 h-4 text-gray-500 dark:text-gray-500" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">{t('response.toolbar.rawData')}</span>
             </div>
             <button
               onClick={() =>
                 copyToClipboard(
-                  `HTTP ${response.status} ${response.statusText}\n${response.headers}\n\n${response.body}`
+                  `HTTP ${response.status} ${response.statusText}\n${response.headers}\n\n${response.body}`,
                 )
               }
-              className='flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
+              className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
               title={t('response.toolbar.copyCompleteResponse')}
             >
-              <FiCopy className='w-4 h-4' />
+              <FiCopy className="w-4 h-4" />
               <span>{t('response.toolbar.copyAll')}</span>
             </button>
           </div>
-          <pre className='flex-1 p-4 bg-gray-900 dark:bg-black text-white dark:text-gray-200 text-sm rounded-md overflow-auto font-mono'>
+          <pre className="flex-1 p-4 bg-gray-900 dark:bg-black text-white dark:text-gray-200 text-sm rounded-md overflow-auto font-mono">
             {`HTTP ${response.status} ${response.statusText}\n${response.headers}\n\n${response.body}`}
           </pre>
         </div>
@@ -541,53 +543,53 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     },
     {
       label: (
-        <span className='flex items-center space-x-2'>
-          <FiInfo className='w-4 h-4' />
+        <span className="flex items-center space-x-2">
+          <FiInfo className="w-4 h-4" />
           <span>{t('response.tabs.info')}</span>
         </span>
       ),
       content: (
-        <div className='space-y-4'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Informações Gerais */}
-            <div className='bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4'>
-              <h4 className='font-semibold text-gray-900 dark:text-white mb-3 flex items-center'>
-                <FiInfo className='w-4 h-4 mr-2' />
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                <FiInfo className="w-4 h-4 mr-2" />
                 {t('response.info.generalInfo')}
               </h4>
-              <div className='space-y-2 text-sm'>
-                <div className='flex justify-between'>
-                  <span className='text-gray-600 dark:text-gray-500'>{t('response.info.status')}:</span>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-500">{t('response.info.status')}:</span>
                   <span
                     className={`font-medium ${
                       response.status >= 200 && response.status < 300
                         ? 'text-green-600 dark:text-green-400'
                         : response.status >= 400
-                        ? 'text-red-600 dark:text-red-400'
-                        : 'text-yellow-600 dark:text-yellow-400'
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-yellow-600 dark:text-yellow-400'
                     }`}
                   >
                     {response.status} {response.statusText}
                   </span>
                 </div>
-                <div className='flex justify-between'>
-                  <span className='text-gray-600 dark:text-gray-500'>{t('response.info.size')}:</span>
-                  <span className='text-gray-900 dark:text-white font-medium'>{formatBytes(responseSize)}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-500">{t('response.info.size')}:</span>
+                  <span className="text-gray-900 dark:text-white font-medium">{formatBytes(responseSize)}</span>
                 </div>
                 {responseTime && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-500'>{t('response.info.responseTime')}:</span>
-                    <span className='text-gray-900 dark:text-white font-medium'>{responseTime}ms</span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-500">{t('response.info.responseTime')}:</span>
+                    <span className="text-gray-900 dark:text-white font-medium">{responseTime}ms</span>
                   </div>
                 )}
-                <div className='flex justify-between'>
-                  <span className='text-gray-600 dark:text-gray-500'>{t('response.info.contentType')}:</span>
-                  <span className='text-gray-900 dark:text-white font-medium'>{response.contentType || 'N/A'}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-500">{t('response.info.contentType')}:</span>
+                  <span className="text-gray-900 dark:text-white font-medium">{response.contentType || 'N/A'}</span>
                 </div>
                 {response.timestamp && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-500'>{t('response.info.timestamp')}:</span>
-                    <span className='text-gray-900 dark:text-white font-medium'>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-500">{t('response.info.timestamp')}:</span>
+                    <span className="text-gray-900 dark:text-white font-medium">
                       {new Date(response.timestamp).toLocaleString()}
                     </span>
                   </div>
@@ -596,34 +598,34 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
             </div>
 
             {/* Estatísticas dos Headers */}
-            <div className='bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4'>
-              <h4 className='font-semibold text-gray-900 dark:text-white mb-3 flex items-center'>
-                <FiFileText className='w-4 h-4 mr-2' />
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                <FiFileText className="w-4 h-4 mr-2" />
                 {t('response.info.headers')}
               </h4>
-              <div className='space-y-2 text-sm'>
-                <div className='flex justify-between'>
-                  <span className='text-gray-600 dark:text-gray-500'>{t('response.info.totalHeaders')}:</span>
-                  <span className='text-gray-900 dark:text-white font-medium'>{Object.keys(parsedHeaders).length}</span>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-500">{t('response.info.totalHeaders')}:</span>
+                  <span className="text-gray-900 dark:text-white font-medium">{Object.keys(parsedHeaders).length}</span>
                 </div>
                 {parsedHeaders['server'] && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-500'>{t('response.info.server')}:</span>
-                    <span className='text-gray-900 dark:text-white font-medium'>{parsedHeaders['server']}</span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-500">{t('response.info.server')}:</span>
+                    <span className="text-gray-900 dark:text-white font-medium">{parsedHeaders['server']}</span>
                   </div>
                 )}
                 {parsedHeaders['content-encoding'] && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-500'>{t('response.info.encoding')}:</span>
-                    <span className='text-gray-900 dark:text-white font-medium'>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-500">{t('response.info.encoding')}:</span>
+                    <span className="text-gray-900 dark:text-white font-medium">
                       {parsedHeaders['content-encoding']}
                     </span>
                   </div>
                 )}
                 {parsedHeaders['cache-control'] && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-500'>{t('response.info.cacheControl')}:</span>
-                    <span className='text-gray-900 dark:text-white font-medium'>{parsedHeaders['cache-control']}</span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-500">{t('response.info.cacheControl')}:</span>
+                    <span className="text-gray-900 dark:text-white font-medium">{parsedHeaders['cache-control']}</span>
                   </div>
                 )}
               </div>
@@ -631,9 +633,9 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
           </div>
 
           {/* Headers de Segurança */}
-          <div className='bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4'>
-            <h4 className='font-semibold text-gray-900 dark:text-white mb-3'>{t('response.info.securityHeaders')}</h4>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-4">
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-3">{t('response.info.securityHeaders')}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[
                 'strict-transport-security',
                 'content-security-policy',
@@ -641,7 +643,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                 'x-content-type-options',
                 'x-xss-protection',
                 'referrer-policy',
-              ].map((header) => (
+              ].map(header => (
                 <div
                   key={header}
                   className={`p-2 rounded text-sm ${
@@ -650,8 +652,8 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                       : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-500'
                   }`}
                 >
-                  <div className='font-medium'>{header}</div>
-                  <div className='text-xs mt-1'>
+                  <div className="font-medium">{header}</div>
+                  <div className="text-xs mt-1">
                     {parsedHeaders[header] ? `✓ ${t('common.present')}` : `✗ ${t('common.absent')}`}
                   </div>
                 </div>
@@ -664,12 +666,12 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
   ]
 
   return (
-    <div className='h-full flex flex-col bg-white dark:bg-gray-900'>
+    <div className="h-full flex flex-col bg-white dark:bg-gray-900">
       {/* Status da Resposta - Melhorado */}
-      <div className='flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-800'>
-        <div className='flex items-center justify-between mb-3'>
-          <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{t('response.title')}</h3>
-          <div className='flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-500'>
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('response.title')}</h3>
+          <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-500">
             <span>
               {t('response.info.size')}: {formatBytes(responseSize)}
             </span>
@@ -685,16 +687,16 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
         </div>
         <div
           className={`inline-flex items-center px-4 py-2 rounded-md text-sm font-semibold ${getStatusClass(
-            response.status
+            response.status,
           )}`}
         >
-          <span className='mr-2'>●</span>
+          <span className="mr-2">●</span>
           HTTP {response.status} {response.statusText}
         </div>
       </div>
 
       {/* Abas da Resposta */}
-      <div className='flex-1 min-h-0'>
+      <div className="flex-1 min-h-0">
         <Tabs tabs={responseTabs} />
       </div>
     </div>

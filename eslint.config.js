@@ -19,10 +19,26 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+
+      // TypeScript rules
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+
+      // General JavaScript rules
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-console': 'warn',
+      eqeqeq: ['error', 'always'],
+      'no-debugger': 'error',
+      'no-alert': 'off', // Desabilitado pois prompt/confirm podem ser úteis em desenvolvimento
+      'no-duplicate-imports': 'error',
+      'no-unused-expressions': 'error',
+      'prefer-template': 'error',
+      'object-shorthand': 'error',
+
+      // React specific rules
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 )

@@ -1,0 +1,50 @@
+# Build outputs
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Coverage reports
+coverage/
+
+# Cache directories
+.vite/
+.cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Binary files
+*.gif
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.ico
+*.webp
+
+# Generated files
+*.min.js
+*.min.css

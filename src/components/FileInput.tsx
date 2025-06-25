@@ -44,34 +44,34 @@ export const FileInput: React.FC<FileInputProps> = ({
   const inputId = `file-input-${item.id}`
 
   return (
-    <div className='flex items-center gap-2 p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800'>
+    <div className="flex items-center gap-2 p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
       <input
-        type='text'
+        type="text"
         placeholder={keyPlaceholder}
         value={item.key}
-        onChange={(e) => updateItem({ ...item, key: e.target.value })}
-        className='w-1/3 p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500'
-        aria-label='Chave do arquivo'
+        onChange={e => updateItem({ ...item, key: e.target.value })}
+        className="w-1/3 p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+        aria-label="Chave do arquivo"
       />
       <label
         htmlFor={inputId}
-        className='cursor-pointer px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center gap-2'
+        className="cursor-pointer px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center gap-2"
       >
-        <FiUpload className='w-4 h-4' />
+        <FiUpload className="w-4 h-4" />
         Escolher Arquivo
       </label>
-      <input id={inputId} type='file' onChange={handleFileChange} className='sr-only' />
-      <p className='flex-grow text-sm text-gray-700 dark:text-gray-300 truncate' title={item.file?.name}>
+      <input id={inputId} type="file" onChange={handleFileChange} className="sr-only" />
+      <p className="flex-grow text-sm text-gray-700 dark:text-gray-300 truncate" title={item.file?.name}>
         {item.file ? item.file.name : 'Nenhum arquivo selecionado'}
       </p>
 
       <button
-        type='button'
+        type="button"
         onClick={removeItem}
-        className='px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-red-500'
-        aria-label='Remover arquivo'
+        className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-red-500"
+        aria-label="Remover arquivo"
       >
-        <FiX className='w-4 h-4' />
+        <FiX className="w-4 h-4" />
       </button>
     </div>
   )

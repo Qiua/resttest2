@@ -127,38 +127,38 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   // Função para renderizar o preview do form-data baseado nos parâmetros
   const renderFormDataPreview = () => {
     const validParams = safeParams.filter(
-      (param) => param.key && (('value' in param && param.value) || ('file' in param && param.file))
+      param => param.key && (('value' in param && param.value) || ('file' in param && param.file)),
     )
 
     if (validParams.length === 0) {
       return (
-        <div className='p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300'>
+        <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300">
           <p>{t('request.params.noParams')}</p>
         </div>
       )
     }
 
     return (
-      <div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-sm border border-gray-200 dark:border-gray-600'>
-        <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-3'>{t('request.body.preview')}:</h4>
-        <div className='space-y-2 font-mono text-xs'>
-          {validParams.map((param) => (
+      <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-sm border border-gray-200 dark:border-gray-600">
+        <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('request.body.preview')}:</h4>
+        <div className="space-y-2 font-mono text-xs">
+          {validParams.map(param => (
             <div
               key={param.id}
-              className='flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600'
+              className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600"
             >
-              <span className='font-semibold text-blue-600 dark:text-blue-400 min-w-0 flex-shrink-0'>{param.key}:</span>
-              <span className='text-gray-800 dark:text-gray-200 break-all'>
+              <span className="font-semibold text-blue-600 dark:text-blue-400 min-w-0 flex-shrink-0">{param.key}:</span>
+              <span className="text-gray-800 dark:text-gray-200 break-all">
                 {'file' in param && param.file
                   ? `[Arquivo: ${param.file.name} (${(param.file.size / 1024).toFixed(1)}KB)]`
                   : 'value' in param
-                  ? param.value
-                  : ''}
+                    ? param.value
+                    : ''}
               </span>
             </div>
           ))}
         </div>
-        <div className='mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400'>
+        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400">
           <strong>Content-Type:</strong> multipart/form-data
         </div>
       </div>
@@ -170,43 +170,43 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: t('request.tabs.params'),
       content: (
-        <div className='space-y-2'>
-          {safeParams.map((param) =>
+        <div className="space-y-2">
+          {safeParams.map(param =>
             'file' in param ? (
               <FileInput
                 key={param.id}
                 item={param}
-                updateItem={(updated) => setParams(safeParams.map((p) => (p.id === updated.id ? updated : p)))}
-                removeItem={() => setParams(safeParams.filter((p) => p.id !== param.id))}
+                updateItem={updated => setParams(safeParams.map(p => (p.id === updated.id ? updated : p)))}
+                removeItem={() => setParams(safeParams.filter(p => p.id !== param.id))}
               />
             ) : (
               <KeyValuePairInput
                 key={param.id}
                 item={param}
                 updateItem={(updated: KeyValuePair) =>
-                  setParams(safeParams.map((p) => (p.id === updated.id ? updated : p)))
+                  setParams(safeParams.map(p => (p.id === updated.id ? updated : p)))
                 }
-                removeItem={() => setParams(safeParams.filter((p) => p.id !== param.id))}
+                removeItem={() => setParams(safeParams.filter(p => p.id !== param.id))}
                 keyPlaceholder={t('request.params.keyPlaceholder')}
                 valuePlaceholder={t('request.params.valuePlaceholder')}
               />
-            )
+            ),
           )}
-          <div className='mt-4 flex gap-2'>
+          <div className="mt-4 flex gap-2">
             <button
-              type='button'
+              type="button"
               onClick={addParam}
-              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
             >
-              <FiPlus className='w-4 h-4' />
+              <FiPlus className="w-4 h-4" />
               {t('request.params.addParam')}
             </button>
             <button
-              type='button'
+              type="button"
               onClick={addFileParam}
-              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
             >
-              <FiFile className='w-4 h-4' />
+              <FiFile className="w-4 h-4" />
               {t('request.params.addFile')}
             </button>
           </div>
@@ -216,80 +216,80 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: t('request.tabs.body'),
       content: (
-        <div className='space-y-4 h-full flex flex-col'>
-          <div className='flex items-center gap-x-6 gap-y-2 flex-wrap'>
-            <div className='flex items-center'>
+        <div className="space-y-4 h-full flex flex-col">
+          <div className="flex items-center gap-x-6 gap-y-2 flex-wrap">
+            <div className="flex items-center">
               <input
-                id='body-type-none'
-                type='radio'
-                value='form-data'
+                id="body-type-none"
+                type="radio"
+                value="form-data"
                 checked={safeBody.type === 'form-data'}
-                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
-                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
+                onChange={e => setBody({ ...safeBody, type: e.target.value as BodyType })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
               />
               <label
-                htmlFor='body-type-none'
-                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor="body-type-none"
+                className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 {t('request.body.formData')}
               </label>
             </div>
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <input
-                id='body-type-json'
-                type='radio'
-                value='json'
+                id="body-type-json"
+                type="radio"
+                value="json"
                 checked={safeBody.type === 'json'}
-                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
-                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
+                onChange={e => setBody({ ...safeBody, type: e.target.value as BodyType })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
               />
               <label
-                htmlFor='body-type-json'
-                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor="body-type-json"
+                className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 {t('request.body.json')}
               </label>
             </div>
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <input
-                id='body-type-text'
-                type='radio'
-                value='text'
+                id="body-type-text"
+                type="radio"
+                value="text"
                 checked={safeBody.type === 'text'}
-                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
-                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
+                onChange={e => setBody({ ...safeBody, type: e.target.value as BodyType })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
               />
               <label
-                htmlFor='body-type-text'
-                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor="body-type-text"
+                className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 {t('request.body.text')}
               </label>
             </div>
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <input
-                id='body-type-xml'
-                type='radio'
-                value='xml'
+                id="body-type-xml"
+                type="radio"
+                value="xml"
                 checked={safeBody.type === 'xml'}
-                onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
-                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
+                onChange={e => setBody({ ...safeBody, type: e.target.value as BodyType })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
               />
               <label
-                htmlFor='body-type-xml'
-                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor="body-type-xml"
+                className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 {t('request.body.xml')}
               </label>
             </div>
           </div>{' '}
           {safeBody.type !== 'form-data' ? (
-            <div className='flex-grow'>
+            <div className="flex-grow">
               <textarea
                 value={safeBody.content}
-                onChange={(e) => setBody({ ...safeBody, content: e.target.value })}
+                onChange={e => setBody({ ...safeBody, content: e.target.value })}
                 placeholder={t(`request.body.${safeBody.type}Placeholder`)}
-                className='w-full h-full resize-none outline-none font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                className="w-full h-full resize-none outline-none font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 spellCheck={false}
               />
             </div>
@@ -302,47 +302,47 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: t('request.tabs.auth'),
       content: (
-        <div className='space-y-4'>
-          <div className='flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700'>
-            <label className='text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]'>
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]">
               {t('request.auth.type')}:
             </label>
             <select
               value={auth.type}
-              onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
-              className='px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-600 text-gray-900 dark:text-white'
+              onChange={e => handleAuthTypeChange(e.target.value as AuthType)}
+              className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-600 text-gray-900 dark:text-white"
             >
-              <option value='none'>{t('request.auth.none')}</option>
-              <option value='basic'>{t('request.auth.basic')}</option>
-              <option value='bearer'>{t('request.auth.bearer')}</option>
-              <option value='api-key'>{t('request.auth.apiKey')}</option>
+              <option value="none">{t('request.auth.none')}</option>
+              <option value="basic">{t('request.auth.basic')}</option>
+              <option value="bearer">{t('request.auth.bearer')}</option>
+              <option value="api-key">{t('request.auth.apiKey')}</option>
             </select>
           </div>
 
           {auth.type === 'basic' && (
-            <div className='grid grid-cols-2 gap-4'>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('request.auth.username')}
                 </label>
                 <input
-                  type='text'
+                  type="text"
                   placeholder={t('request.auth.usernameHelp')}
                   value={auth.username || ''}
-                  onChange={(e) => setAuth({ ...auth, username: e.target.value })}
-                  className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                  onChange={e => setAuth({ ...auth, username: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('request.auth.password')}
                 </label>
                 <input
-                  type='password'
+                  type="password"
                   placeholder={t('request.auth.passwordHelp')}
                   value={auth.password || ''}
-                  onChange={(e) => setAuth({ ...auth, password: e.target.value })}
-                  className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                  onChange={e => setAuth({ ...auth, password: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -350,43 +350,43 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
           {auth.type === 'bearer' && (
             <div>
-              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t('request.auth.token')}
               </label>
               <input
-                type='text'
+                type="text"
                 placeholder={t('request.auth.tokenHelp')}
                 value={auth.token || ''}
-                onChange={(e) => setAuth({ ...auth, token: e.target.value })}
-                className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                onChange={e => setAuth({ ...auth, token: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
           )}
 
           {auth.type === 'api-key' && (
-            <div className='space-y-4'>
+            <div className="space-y-4">
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('request.auth.apiKeyHeader')}
                 </label>
                 <input
-                  type='text'
+                  type="text"
                   placeholder={t('request.auth.apiKeyHeaderHelp')}
                   value={auth.apiKeyHeader || ''}
-                  onChange={(e) => setAuth({ ...auth, apiKeyHeader: e.target.value })}
-                  className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                  onChange={e => setAuth({ ...auth, apiKeyHeader: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('request.auth.apiKeyValue')}
                 </label>
                 <input
-                  type='text'
+                  type="text"
                   placeholder={t('request.auth.apiKeyValueHelp')}
                   value={auth.apiKeyValue || ''}
-                  onChange={(e) => setAuth({ ...auth, apiKeyValue: e.target.value })}
-                  className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                  onChange={e => setAuth({ ...auth, apiKeyValue: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -397,33 +397,33 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     {
       label: t('request.tabs.headers'),
       content: (
-        <div className='space-y-3'>
-          <div className='flex items-center justify-between'>
-            <h3 className='text-sm font-medium text-gray-700 dark:text-gray-300'>{t('request.headers.title')}</h3>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('request.headers.title')}</h3>
             <button
-              type='button'
+              type="button"
               onClick={addHeader}
-              className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-1'
+              className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-1"
             >
-              <FiPlus className='w-4 h-4' />
+              <FiPlus className="w-4 h-4" />
               {t('request.headers.addHeader')}
             </button>
           </div>
 
           {headers.length === 0 ? (
-            <div className='text-center py-8 text-gray-500 dark:text-gray-400 text-sm border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg'>
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg">
               {t('request.headers.noHeaders')}
             </div>
           ) : (
-            <div className='space-y-2'>
-              {headers.map((header) => (
+            <div className="space-y-2">
+              {headers.map(header => (
                 <KeyValuePairInput
                   key={header.id}
                   item={header}
                   updateItem={(updated: KeyValuePair) =>
-                    setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))
+                    setHeaders(headers.map(h => (h.id === updated.id ? updated : h)))
                   }
-                  removeItem={() => setHeaders(headers.filter((h) => h.id !== header.id))}
+                  removeItem={() => setHeaders(headers.filter(h => h.id !== header.id))}
                   keyPlaceholder={t('request.headers.keyPlaceholder')}
                   valuePlaceholder={t('request.headers.valuePlaceholder')}
                 />
@@ -437,21 +437,21 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
   return (
     <form
-      className='h-full flex flex-col'
-      onSubmit={(e) => {
+      className="h-full flex flex-col"
+      onSubmit={e => {
         e.preventDefault()
         onSubmit()
       }}
     >
       {/* Barra Principal - Estilo Postman */}
-      <div className='flex items-center gap-1 p-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0'>
+      <div className="flex items-center gap-1 p-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         {/* Dropdown customizado para métodos HTTP */}
-        <div className='relative' ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
           <button
-            type='button'
+            type="button"
             onClick={() => setMethodDropdownOpen(!methodDropdownOpen)}
             className={`px-3 py-2 text-sm font-medium border rounded-l-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px] transition-colors flex items-center justify-between gap-2 ${getMethodColor(
-              method
+              method,
             )}`}
           >
             {method}
@@ -459,17 +459,17 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           </button>
 
           {methodDropdownOpen && (
-            <div className='absolute top-full left-0 z-50 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden'>
-              {httpMethods.map((methodOption) => (
+            <div className="absolute top-full left-0 z-50 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg overflow-hidden">
+              {httpMethods.map(methodOption => (
                 <button
                   key={methodOption}
-                  type='button'
+                  type="button"
                   onClick={() => {
                     setMethod(methodOption)
                     setMethodDropdownOpen(false)
                   }}
                   className={`w-full px-3 py-2 text-sm font-medium text-left hover:opacity-80 transition-colors ${getMethodColor(
-                    methodOption
+                    methodOption,
                   )}`}
                 >
                   {methodOption}
@@ -479,29 +479,29 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           )}
         </div>
         <input
-          type='text'
-          id='urlvalue'
+          type="text"
+          id="urlvalue"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+          onChange={e => setUrl(e.target.value)}
+          className="flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           placeholder={t('request.form.url')}
         />
-        <div className='flex'>
+        <div className="flex">
           <button
-            type='submit'
+            type="submit"
             disabled={loading}
-            className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]'
+            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]"
           >
             {loading ? t('request.form.sending') : t('common.send')}
           </button>
           {onSave && (
             <button
-              type='button'
+              type="button"
               onClick={onSave}
-              className='px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               title={t('request.form.saveRequest')}
             >
-              <FiSave className='w-4 h-4' />
+              <FiSave className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -509,19 +509,19 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
       {/* Aviso de CORS */}
       {mayHaveCorsIssues(url) && proxyConfig && !proxyConfig.enabled && (
-        <div className='mx-4 mb-2 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg'>
-          <div className='flex items-start gap-3'>
-            <FiAlertTriangle className='text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0' />
-            <div className='flex-1'>
-              <p className='text-sm text-yellow-800 dark:text-yellow-200 font-medium'>{t('proxy.corsWarning')}</p>
-              <p className='text-xs text-yellow-700 dark:text-yellow-300 mt-1'>
+        <div className="mx-4 mb-2 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <div className="flex items-start gap-3">
+            <FiAlertTriangle className="text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">{t('proxy.corsWarning')}</p>
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
                 Esta URL pode falhar devido a restrições CORS. Configure um proxy para resolver.
               </p>
             </div>
             {onProxySettings && (
               <button
                 onClick={onProxySettings}
-                className='flex items-center gap-1 px-2 py-1 text-xs text-yellow-700 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-100 border border-yellow-300 dark:border-yellow-600 rounded hover:bg-yellow-100 dark:hover:bg-yellow-800/50 transition-colors'
+                className="flex items-center gap-1 px-2 py-1 text-xs text-yellow-700 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-100 border border-yellow-300 dark:border-yellow-600 rounded hover:bg-yellow-100 dark:hover:bg-yellow-800/50 transition-colors"
               >
                 <FiSettings size={12} />
                 Configurar
@@ -532,7 +532,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       )}
 
       {/* Área de Abas */}
-      <div className='flex-1 min-h-0 bg-gray-50 dark:bg-gray-900'>
+      <div className="flex-1 min-h-0 bg-gray-50 dark:bg-gray-900">
         <Tabs tabs={requestTabs} />
       </div>
     </form>

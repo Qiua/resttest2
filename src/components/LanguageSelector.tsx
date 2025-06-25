@@ -20,8 +20,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiChevronDown, FiGlobe } from 'react-icons/fi'
 // Bandeiras disponíveis - adicione novas importações aqui
-import { BR } from 'country-flag-icons/react/3x2'
-import { US } from 'country-flag-icons/react/3x2'
+import { BR, US } from 'country-flag-icons/react/3x2'
 // import { ES } from 'country-flag-icons/react/3x2' // Para espanhol
 // import { FR } from 'country-flag-icons/react/3x2' // Para francês
 // import { DE } from 'country-flag-icons/react/3x2' // Para alemão
@@ -30,7 +29,10 @@ interface Language {
   code: string
   name: string
   flagCode: string
-  FlagComponent: React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+  FlagComponent: React.ComponentType<{
+    className?: string
+    style?: React.CSSProperties
+  }>
 }
 
 // Configuração de idiomas - adicione novos idiomas aqui

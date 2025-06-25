@@ -126,7 +126,7 @@ export interface RestTestExport {
  * Converte uma Collection do REST Test para formato Postman
  */
 export function collectionToPostman(collection: Collection): PostmanCollection {
-  const postmanItems: PostmanItem[] = collection.requests.map((request) => ({
+  const postmanItems: PostmanItem[] = collection.requests.map(request => ({
     name: request.name,
     request: requestToPostman(request),
     response: [],
@@ -147,7 +147,7 @@ export function collectionToPostman(collection: Collection): PostmanCollection {
  * Converte uma Request do REST Test para formato Postman
  */
 function requestToPostman(request: SavedRequest): PostmanRequest {
-  const headers: PostmanHeader[] = request.headers.map((h) => ({
+  const headers: PostmanHeader[] = request.headers.map(h => ({
     key: h.key,
     value: h.value,
   }))
@@ -162,7 +162,7 @@ function requestToPostman(request: SavedRequest): PostmanRequest {
   })
 
   // Adicionar parâmetros do formulário
-  request.params.forEach((param) => {
+  request.params.forEach(param => {
     if ('value' in param) {
       queryParams.push({ key: param.key, value: param.value })
     }
@@ -185,8 +185,12 @@ function requestToPostman(request: SavedRequest): PostmanRequest {
     body = {
       mode: 'formdata',
       formdata: request.params
-        .filter((p) => 'value' in p)
-        .map((p) => ({ key: p.key, value: (p as KeyValuePair).value, type: 'text' as const })),
+        .filter(p => 'value' in p)
+        .map(p => ({
+          key: p.key,
+          value: (p as KeyValuePair).value,
+          type: 'text' as const,
+        })),
     }
   }
 
@@ -237,7 +241,7 @@ function requestToPostman(request: SavedRequest): PostmanRequest {
  */
 export function postmanToCollection(postmanCollection: PostmanCollection): Collection {
   const requests: SavedRequest[] = postmanCollection.item.map((item, index) =>
-    postmanRequestToRequest(item, `${postmanCollection.info._postman_id || 'imported'}-${index}`)
+    postmanRequestToRequest(item, `${postmanCollection.info._postman_id || 'imported'}-${index}`),
   )
 
   return {
@@ -257,7 +261,7 @@ function postmanRequestToRequest(item: PostmanItem, collectionId: string): Saved
   const request = item.request
 
   // Processar headers
-  const headers: KeyValuePair[] = request.header.map((h) => ({
+  const headers: KeyValuePair[] = request.header.map(h => ({
     id: crypto.randomUUID(),
     key: h.key,
     value: h.value,
@@ -272,7 +276,7 @@ function postmanRequestToRequest(item: PostmanItem, collectionId: string): Saved
   } else {
     url = request.url.raw
     if (request.url.query) {
-      params = request.url.query.map((q) => ({
+      params = request.url.query.map(q => ({
         id: crypto.randomUUID(),
         key: q.key,
         value: q.value,
@@ -292,7 +296,7 @@ function postmanRequestToRequest(item: PostmanItem, collectionId: string): Saved
     } else if (request.body.mode === 'formdata') {
       body = { type: 'form-data', content: '' }
       if (request.body.formdata) {
-        params = request.body.formdata.map((fd) => ({
+        params = request.body.formdata.map(fd => ({
           id: crypto.randomUUID(),
           key: fd.key,
           value: fd.value,
@@ -304,7 +308,7 @@ function postmanRequestToRequest(item: PostmanItem, collectionId: string): Saved
       if (request.body.urlencoded) {
         params = [
           ...params,
-          ...request.body.urlencoded.map((fd) => ({
+          ...request.body.urlencoded.map(fd => ({
             id: crypto.randomUUID(),
             key: fd.key,
             value: fd.value,
@@ -437,7 +441,7 @@ export function downloadJSON(data: string, filename: string): void {
 export function readFile(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = (e) => resolve(e.target?.result as string)
+    reader.onload = e => resolve(e.target?.result as string)
     reader.onerror = reject
     reader.readAsText(file)
   })

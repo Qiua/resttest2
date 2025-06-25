@@ -19,8 +19,11 @@
 
 /* Melhorias de estilo global */
 * {
-  transition: background-color var(--default-transition-duration), border-color var(--default-transition-duration),
-    color var(--default-transition-duration), box-shadow var(--default-transition-duration);
+  transition:
+    background-color var(--default-transition-duration),
+    border-color var(--default-transition-duration),
+    color var(--default-transition-duration),
+    box-shadow var(--default-transition-duration);
 }
 
 /* Scrollbar personalizada */

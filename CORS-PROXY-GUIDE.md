@@ -51,14 +51,12 @@ O REST Test 2.0 inclui um sistema completo para resolver problemas de CORS duran
 Para testar com a collection anexada:
 
 1. **Importe a Collection**:
-
    - Clique no ícone de link externo na barra lateral
    - Vá para a aba "Importar"
    - Selecione o arquivo `New Collection.postman_collection.json`
    - A aplicação detectará automaticamente o formato Postman
 
 2. **Configure o Proxy**:
-
    - Como as URLs da ANATEL terão problemas de CORS, configure um proxy
    - Recomendado: Use "Proxy Local (Vite)" para melhor performance
 

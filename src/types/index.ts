@@ -151,6 +151,8 @@ export interface HistoryEntry {
 export interface HistoryConfig {
   maxEntries: number
   autoSave: boolean
+  includeRequestBody: boolean
+  includeResponseBody: boolean
 }
 
 // Environment - sistema de ambientes para variáveis

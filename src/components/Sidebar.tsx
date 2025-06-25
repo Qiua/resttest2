@@ -17,6 +17,7 @@
 */
 // src/components/Sidebar.tsx
 import React, { useState } from 'react'
+import { FiPlus, FiFolderPlus, FiFolder, FiFile, FiTrash2, FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
 import type { Workspace, SavedRequest } from '../types'
 
 interface SidebarProps {
@@ -79,9 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className='text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200'
           title='Abrir sidebar'
         >
-          <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
-          </svg>
+          <FiMenu className='w-5 h-5' />
         </button>
       </div>
     )
@@ -98,9 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
             title='Fechar sidebar'
           >
-            <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
-            </svg>
+            <FiX className='w-5 h-5' />
           </button>
         </div>
 
@@ -131,9 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onNewCollection(activeWorkspaceData.id)}
               className='w-full px-3 py-2 text-sm bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-colors'
             >
-              <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
-              </svg>
+              <FiFolderPlus className='w-4 h-4' />
               Nova Collection
             </button>
 
@@ -141,19 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className='space-y-2'>
               {activeWorkspaceData.collections.length === 0 ? (
                 <div className='text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg'>
-                  <svg
-                    className='w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
-                    />
-                  </svg>
+                  <FiFolder className='w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600' />
                   <p className='text-sm mb-2'>Nenhuma collection encontrada</p>
                   <p className='text-xs'>Crie sua primeira collection para organizar suas requisições</p>
                 </div>
@@ -169,16 +152,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => toggleCollection(collection.id)}
                     >
                       <div className='flex items-center gap-2'>
-                        <svg
+                        <FiChevronRight
                           className={`w-4 h-4 transition-transform duration-200 text-gray-600 dark:text-gray-300 ${
                             expandedCollections.includes(collection.id) ? 'rotate-90' : ''
                           }`}
-                          fill='none'
-                          stroke='currentColor'
-                          viewBox='0 0 24 24'
-                        >
-                          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
-                        </svg>
+                        />
                         <span className='font-medium text-gray-900 dark:text-white'>{collection.name}</span>
                         <span className='text-xs text-gray-500 dark:text-gray-400'>({collection.requests.length})</span>
                       </div>
@@ -192,9 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           className='p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
                           title='Adicionar requisição'
                         >
-                          <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
-                          </svg>
+                          <FiPlus className='w-4 h-4' />
                         </button>
                         <button
                           onClick={(e) => {
@@ -204,14 +180,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors'
                           title='Deletar collection'
                         >
-                          <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                              d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                            />
-                          </svg>
+                          <FiTrash2 className='w-4 h-4' />
                         </button>
                       </div>
                     </div>
@@ -236,6 +205,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 >
                                   {request.method}
                                 </span>
+                                <FiFile className='w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0' />
                                 <span className='text-sm text-gray-900 dark:text-white truncate'>{request.name}</span>
                               </div>
                               <button
@@ -246,14 +216,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all'
                                 title='Deletar requisição'
                               >
-                                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                  <path
-                                    strokeLinecap='round'
-                                    strokeLinejoin='round'
-                                    strokeWidth={2}
-                                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                                  />
-                                </svg>
+                                <FiTrash2 className='w-4 h-4' />
                               </button>
                             </div>
                           ))
@@ -267,19 +230,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </>
         ) : (
           <div className='text-center py-8 text-gray-500 dark:text-gray-400'>
-            <svg
-              className='w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
-              />
-            </svg>
+            <FiFolder className='w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600' />
             <p className='text-sm'>Selecione um workspace para ver as collections</p>
           </div>
         )}

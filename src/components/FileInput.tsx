@@ -17,6 +17,7 @@
 */
 // src/components/FileInput.tsx
 import React from 'react'
+import { FiX, FiUpload } from 'react-icons/fi'
 import type { FileParameter } from '../types'
 
 interface FileInputProps {
@@ -54,8 +55,9 @@ export const FileInput: React.FC<FileInputProps> = ({
       />
       <label
         htmlFor={inputId}
-        className='cursor-pointer px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+        className='cursor-pointer px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center gap-2'
       >
+        <FiUpload className='w-4 h-4' />
         Escolher Arquivo
       </label>
       <input id={inputId} type='file' onChange={handleFileChange} className='sr-only' />
@@ -69,7 +71,7 @@ export const FileInput: React.FC<FileInputProps> = ({
         className='px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-red-500'
         aria-label='Remover arquivo'
       >
-        &times;
+        <FiX className='w-4 h-4' />
       </button>
     </div>
   )

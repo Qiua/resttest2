@@ -18,6 +18,7 @@
 
 // src/App.tsx
 import { useState } from 'react'
+import { FiRefreshCw } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
@@ -482,9 +483,10 @@ function App() {
             {savedRequests.some((req) => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
-                className='px-3 py-1.5 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors'
+                className='px-3 py-1.5 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors flex items-center gap-1'
                 title='Migrar requests antigos para collections'
               >
+                <FiRefreshCw className='w-3 h-3' />
                 Migrar ({savedRequests.filter((req) => !req.collectionId).length})
               </button>
             )}

@@ -17,6 +17,7 @@
 */
 // src/features/RequestForm.tsx
 import React from 'react'
+import { FiSave, FiPlus, FiFile } from 'react-icons/fi'
 import { Tabs } from '../components/Tabs'
 import {
   type KeyValuePair,
@@ -145,19 +146,21 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               />
             )
           )}
-          <div className='mt-4 space-x-2'>
+          <div className='mt-4 flex gap-2'>
             <button
               type='button'
               onClick={addParam}
-              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
+              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
             >
+              <FiPlus className='w-4 h-4' />
               Adicionar Parâmetro
             </button>
             <button
               type='button'
               onClick={addFileParam}
-              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
+              className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
             >
+              <FiFile className='w-4 h-4' />
               Adicionar Arquivo
             </button>
           </div>
@@ -178,7 +181,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
               />
-              <label htmlFor='body-type-none' className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <label
+                htmlFor='body-type-none'
+                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+              >
                 Form-Data / x-www-form-urlencoded
               </label>
             </div>
@@ -191,7 +197,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
               />
-              <label htmlFor='body-type-json' className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <label
+                htmlFor='body-type-json'
+                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+              >
                 JSON
               </label>
             </div>
@@ -204,7 +213,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
               />
-              <label htmlFor='body-type-text' className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <label
+                htmlFor='body-type-text'
+                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+              >
                 Text
               </label>
             </div>
@@ -217,7 +229,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 onChange={(e) => setBody({ ...safeBody, type: e.target.value as BodyType })}
                 className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600'
               />
-              <label htmlFor='body-type-xml' className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+              <label
+                htmlFor='body-type-xml'
+                className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
+              >
                 XML
               </label>
             </div>
@@ -297,7 +312,9 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           {auth.type === 'api-key' && (
             <div className='space-y-4'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Nome do Header</label>
+                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                  Nome do Header
+                </label>
                 <input
                   type='text'
                   placeholder='ex: X-API-Key, Authorization'
@@ -307,7 +324,9 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 />
               </div>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Valor da API Key</label>
+                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                  Valor da API Key
+                </label>
                 <input
                   type='text'
                   placeholder='Digite o valor da API Key'
@@ -330,9 +349,10 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             <button
               type='button'
               onClick={addHeader}
-              className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-1'
             >
-              + Adicionar Header
+              <FiPlus className='w-4 h-4' />
+              Adicionar Header
             </button>
           </div>
 
@@ -406,7 +426,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               className='px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
               title='Salvar requisição'
             >
-              💾
+              <FiSave className='w-4 h-4' />
             </button>
           )}
         </div>

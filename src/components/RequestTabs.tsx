@@ -36,17 +36,17 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
   const getMethodColor = (method: string) => {
     switch (method.toUpperCase()) {
       case 'GET':
-        return 'text-green-600 dark:text-green-400'
+        return 'text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/40 border border-green-200 dark:border-green-700'
       case 'POST':
-        return 'text-blue-600 dark:text-blue-400'
+        return 'text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700'
       case 'PUT':
-        return 'text-yellow-600 dark:text-yellow-400'
+        return 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-700'
       case 'DELETE':
-        return 'text-red-600 dark:text-red-400'
+        return 'text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/40 border border-red-200 dark:border-red-700'
       case 'PATCH':
-        return 'text-purple-600 dark:text-purple-400'
+        return 'text-purple-700 bg-purple-100 dark:text-purple-300 dark:bg-purple-900/40 border border-purple-200 dark:border-purple-700'
       default:
-        return 'text-gray-600 dark:text-gray-400'
+        return 'text-gray-700 bg-gray-100 dark:text-gray-300 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600'
     }
   }
 
@@ -66,40 +66,48 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
   }
 
   return (
-    <div className='flex items-center bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 min-h-[48px] overflow-x-auto'>
-      {/* Tabs existentes */}
+    <div className='flex items-center bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600 min-h-[52px] overflow-x-auto shadow-sm dark:shadow-lg'>
+      {/* Tabs existentes com melhor design */}
       <div className='flex items-center flex-1 overflow-x-auto'>
         {tabs.map((tab) => (
           <div
             key={tab.id}
             className={`
-              flex items-center min-w-0 max-w-[200px] px-3 py-2 border-r border-gray-200 dark:border-gray-700 cursor-pointer group
+              flex items-center min-w-0 max-w-[220px] px-4 py-3 border-r border-gray-200 dark:border-gray-600 cursor-pointer group transition-all duration-300 relative
               ${
                 activeTabId === tab.id
-                  ? 'bg-white dark:bg-gray-900 border-b-2 border-blue-500'
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-white dark:bg-gray-800 shadow-md border-t-3 border-t-blue-500 dark:border-t-blue-400 -mb-px dark:shadow-xl'
+                  : 'hover:bg-white/70 dark:hover:bg-gray-700/80 hover:shadow-sm dark:hover:shadow-md'
               }
             `}
             onClick={() => onTabSelect(tab.id)}
           >
-            {/* Método HTTP */}
-            <span className={`text-xs font-bold mr-2 ${getMethodColor(tab.method)}`}>{tab.method}</span>
+            {/* Método HTTP com melhor styling */}
+            <span className={`text-xs font-bold mr-3 px-2 py-1 rounded-md ${getMethodColor(tab.method)} shadow-sm`}>
+              {tab.method}
+            </span>
 
             {/* Nome da requisição */}
             <span
               className={`
-                flex-1 truncate text-sm
-                ${activeTabId === tab.id ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}
+                flex-1 truncate text-sm font-medium transition-colors duration-200
+                ${
+                  activeTabId === tab.id
+                    ? 'text-gray-900 dark:text-gray-100'
+                    : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100'
+                }
               `}
               title={getTabName(tab)}
             >
               {getTabName(tab)}
             </span>
 
-            {/* Indicador de modificação */}
-            {tab.isModified && <div className='w-2 h-2 bg-orange-500 rounded-full ml-1 mr-1'></div>}
+            {/* Indicador de modificação melhorado */}
+            {tab.isModified && (
+              <div className='w-2 h-2 bg-gradient-to-r from-orange-400 to-orange-500 dark:from-orange-300 dark:to-orange-400 rounded-full ml-2 mr-1 animate-pulse shadow-sm dark:shadow-orange-500/25'></div>
+            )}
 
-            {/* Botão de fechar */}
+            {/* Botão de fechar melhorado */}
             {tabs.length > 1 && (
               <button
                 onClick={(e) => {
@@ -107,13 +115,15 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
                   onTabClose(tab.id)
                 }}
                 className={`
-                  ml-1 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity
+                  ml-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110
                   ${
                     activeTabId === tab.id
-                      ? 'hover:bg-gray-200 dark:hover:bg-gray-800'
-                      : 'hover:bg-gray-200 dark:hover:bg-gray-600'
+                      ? 'hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/40 dark:hover:text-red-300'
+                      : 'hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/40 dark:hover:text-red-300'
                   }
                 `}
+                title={t('tabs.closeTab')}
+                aria-label={t('tabs.closeTab')}
               >
                 <FiX className='w-3 h-3' />
               </button>
@@ -122,13 +132,14 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({ tabs, activeTabId, onT
         ))}
       </div>
 
-      {/* Botão de nova aba */}
+      {/* Botão de nova aba melhorado */}
       <button
         onClick={onNewTab}
-        className='flex items-center justify-center min-w-[40px] h-[40px] mx-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors'
+        className='flex items-center justify-center min-w-[44px] h-[44px] mx-3 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 shadow-sm hover:shadow-md dark:hover:shadow-blue-500/10 group'
         title={t('tabs.newTab')}
+        aria-label={t('tabs.newTab')}
       >
-        <FiPlus className='w-4 h-4' />
+        <FiPlus className='w-5 h-5 group-hover:scale-110 transition-transform duration-200' />
       </button>
     </div>
   )

@@ -698,8 +698,8 @@ function App() {
   }
 
   return (
-    <div className='h-screen flex bg-gray-50 dark:bg-gray-900'>
-      {/* Sidebar */}
+    <div className='h-screen flex bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500'>
+      {/* Sidebar com melhor integração visual */}
       <Sidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -716,46 +716,56 @@ function App() {
         onImportExport={handleImportExportModal}
       />
 
-      {/* Área Principal */}
-      <div className='flex-1 flex flex-col min-w-0'>
-        {/* Header compacto estilo profissional */}
-        <header className='bg-white border-b border-gray-200 px-3 py-1.5 flex items-center justify-between shadow-sm dark:bg-gray-800 dark:border-gray-700'>
-          <div className='flex items-center gap-2'>
-            <h1 className='text-lg font-semibold text-gray-900 dark:text-white'>REST Test</h1>
-            <span className='text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300'>
-              2.0
+      {/* Área Principal com responsividade */}
+      <div className='flex-1 flex flex-col min-w-0 backdrop-blur-sm'>
+        {/* Header aprimorado com melhor UX */}
+        <header className='bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700 transition-all duration-200'>
+          <div className='flex items-center gap-3'>
+            <h1 className='text-xl font-bold text-gray-900 dark:text-white tracking-tight'>REST Test</h1>
+            <span className='text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800'>
+              v2.0
             </span>
           </div>
 
-          {/* Controles do Header */}
-          <div className='flex items-center gap-1'>
+          {/* Controles do Header com melhor UX */}
+          <div className='flex items-center gap-3'>
             {savedRequests.some((req) => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
-                className='px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-600 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors flex items-center gap-1 cursor-pointer'
+                className='px-3 py-2 text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800 dark:hover:bg-amber-900/30 transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800'
                 title='Migrar requests antigos para collections'
+                aria-label='Migrar requests antigos para collections'
               >
-                <FiRefreshCw className='w-3 h-3' />
-                Migrar ({savedRequests.filter((req) => !req.collectionId).length})
+                <FiRefreshCw className='w-4 h-4' />
+                <span>Migrar ({savedRequests.filter((req) => !req.collectionId).length})</span>
               </button>
             )}
-            <div className='flex items-center gap-1'>
+
+            <div className='flex items-center bg-gray-50 dark:bg-gray-700/50 rounded-lg p-1 gap-1 border border-gray-200 dark:border-gray-600'>
               <button
                 onClick={() => setIsHistoryOpen(true)}
-                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer'
+                className='p-2.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-gray-600 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 group'
                 title={t('history.title')}
+                aria-label={t('history.title')}
               >
-                <FiClock size={16} />
+                <FiClock size={18} className='group-hover:scale-110 transition-transform duration-200' />
               </button>
+
               <button
                 onClick={() => setProxySettingsOpen(true)}
-                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer'
+                className='p-2.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-gray-600 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 group'
                 title={t('proxy.settings')}
+                aria-label={t('proxy.settings')}
               >
-                <FiSettings size={16} />
+                <FiSettings size={18} className='group-hover:rotate-90 transition-transform duration-200' />
               </button>
-              <LanguageSelector />
-              <ThemeToggle />
+
+              <div className='w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1'></div>
+
+              <div className='flex items-center gap-1'>
+                <LanguageSelector />
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </header>
@@ -769,11 +779,11 @@ function App() {
           onNewTab={() => createNewTab()}
         />
 
-        {/* Conteúdo Principal */}
-        <main className='flex-1 min-h-0 p-1'>
+        {/* Conteúdo Principal com melhor espaçamento */}
+        <main className='flex-1 min-h-0 p-4'>
           <PanelGroup
             direction='vertical'
-            className='bg-white rounded-lg shadow-sm border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700'
+            className='bg-white rounded-xl shadow-lg border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700 overflow-hidden backdrop-blur-sm'
           >
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
               {getActiveTab() && (
@@ -798,9 +808,14 @@ function App() {
                 />
               )}
             </Panel>
-            <PanelResizeHandle className='h-1 bg-gray-100 hover:bg-blue-500 data-[resize-handle-state=drag]:bg-blue-500 transition-colors border-y border-gray-200' />
+            <PanelResizeHandle
+              className='h-px bg-gray-200 hover:bg-blue-500 dark:bg-gray-600 dark:hover:bg-blue-400 data-[resize-handle-state=drag]:bg-blue-500 dark:data-[resize-handle-state=drag]:bg-blue-400 transition-all duration-300 cursor-ns-resize relative group
+              before:content-[""] before:absolute before:inset-x-0 before:-inset-y-2 before:bg-transparent hover:before:bg-blue-50/50 dark:hover:before:bg-blue-900/20 before:transition-all before:duration-300
+              after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-12 after:h-1 after:bg-blue-500/0 hover:after:bg-blue-500/70 dark:hover:after:bg-blue-400/70 after:rounded-full after:transition-all after:duration-300 after:shadow-sm
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800'
+            />
             <Panel defaultSize={50} minSize={20} className='overflow-hidden'>
-              <div className='h-full p-3'>
+              <div className='h-full p-6 bg-gray-50/50 dark:bg-gray-800/50'>
                 {getActiveTab() && (
                   <ResponseDisplay
                     response={getActiveTab()!.response || null}

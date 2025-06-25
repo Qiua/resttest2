@@ -89,45 +89,56 @@ export const LanguageSelector: React.FC = () => {
     <div className='relative' ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex items-center space-x-2 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors'
+        className='flex items-center space-x-2 px-3 py-2.5 text-sm bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-md hover:bg-gray-50 dark:hover:bg-gray-500 hover:border-blue-300 dark:hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-300 shadow-sm hover:shadow-md group'
         title={t('language.select')}
+        aria-label={t('language.select')}
+        aria-expanded={isOpen}
       >
-        <FiGlobe className='w-4 h-4 text-gray-600 dark:text-gray-400' />
+        <FiGlobe className='w-4 h-4 text-gray-600 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300' />
         <currentLanguage.FlagComponent
           style={{
             width: '20px',
             height: '15px',
-            borderRadius: '2px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+            borderRadius: '3px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
+          className='transition-transform duration-300 group-hover:scale-105'
         />
-        <span className='text-gray-700 dark:text-gray-300 hidden sm:block'>{currentLanguage.name}</span>
-        <FiChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className='text-gray-700 dark:text-gray-300 hidden sm:block group-hover:text-blue-600 dark:group-hover:text-blue-400 font-medium transition-colors duration-300'>
+          {currentLanguage.name}
+        </span>
+        <FiChevronDown
+          className={`w-4 h-4 text-gray-400 transition-all duration-300 ${
+            isOpen ? 'rotate-180 text-blue-500' : 'group-hover:text-blue-500'
+          }`}
+        />
       </button>
 
       {isOpen && (
-        <div className='absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-50 overflow-hidden'>
+        <div className='absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl z-50 overflow-hidden backdrop-blur-sm animate-in slide-in-from-top-2 duration-200'>
           {languages.map((language) => (
             <button
               key={language.code}
               onClick={() => changeLanguage(language.code)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 text-sm text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+              className={`w-full flex items-center space-x-3 px-4 py-3 text-sm text-left hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 group ${
                 currentLanguage.code === language.code
-                  ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                  : 'text-gray-700 dark:text-gray-300'
+                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-l-4 border-blue-500'
+                  : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
               }`}
+              role='menuitem'
             >
               <language.FlagComponent
                 style={{
                   width: '20px',
                   height: '15px',
-                  borderRadius: '2px',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  borderRadius: '3px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 }}
+                className='transition-transform duration-200 group-hover:scale-105'
               />
-              <span className='font-medium'>{language.name}</span>
+              <span className='font-medium flex-1'>{language.name}</span>
               {currentLanguage.code === language.code && (
-                <span className='ml-auto text-blue-600 dark:text-blue-400'>✓</span>
+                <span className='text-blue-600 dark:text-blue-400 font-bold transition-all duration-200'>✓</span>
               )}
             </button>
           ))}

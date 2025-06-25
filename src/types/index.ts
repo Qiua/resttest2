@@ -130,3 +130,27 @@ export interface TabsState {
   tabs: RequestTab[]
   activeTabId: string | null
 }
+
+// Request History - histórico de requisições executadas
+export interface HistoryEntry {
+  id: string
+  timestamp: string
+  method: string
+  url: string
+  auth: AuthState
+  headers: KeyValuePair[]
+  params: Parameter[]
+  body: BodyState
+  response: ApiResponse
+  duration: number // Tempo de resposta em ms
+  status: 'success' | 'error'
+  error?: string
+}
+
+// Configurações do histórico
+export interface HistoryConfig {
+  maxEntries: number // Máximo de entradas mantidas no histórico
+  autoSave: boolean // Se deve salvar automaticamente
+  includeRequestBody: boolean // Se deve incluir o corpo da requisição
+  includeResponseBody: boolean // Se deve incluir o corpo da resposta
+}

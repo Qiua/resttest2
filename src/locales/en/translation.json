@@ -255,5 +255,29 @@
       "configureServer": "In production, configure CORS on the target server",
       "backendProxy": "Or implement a proxy server in the backend"
     }
+  },
+  "history": {
+    "title": "Request History",
+    "empty": "No requests in history",
+    "emptyDescription": "Executed requests will appear here",
+    "searchPlaceholder": "Search by URL, method or status...",
+    "showStats": "Show statistics",
+    "recreateRequest": "Recreate request",
+    "removeEntry": "Remove entry",
+    "clearAll": "Clear all",
+    "exportJson": "Export as JSON",
+    "exportCsv": "Export as CSV",
+    "filters": {
+      "allMethods": "All methods",
+      "allStatus": "All status",
+      "success": "Success",
+      "error": "Error"
+    },
+    "stats": {
+      "totalRequests": "Total Requests",
+      "successRate": "Success Rate",
+      "avgResponseTime": "Average Time",
+      "methodsUsed": "Methods Used"
+    }
   }
 }

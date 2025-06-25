@@ -235,6 +235,30 @@
     "confirmCloseTab": "Tem certeza que deseja fechar esta aba?",
     "modified": "Modificado"
   },
+  "history": {
+    "title": "Histórico de Requisições",
+    "empty": "Nenhuma requisição no histórico",
+    "emptyDescription": "As requisições executadas aparecerão aqui",
+    "searchPlaceholder": "Buscar por URL, método ou status...",
+    "showStats": "Mostrar estatísticas",
+    "recreateRequest": "Recriar requisição",
+    "removeEntry": "Remover entrada",
+    "clearAll": "Limpar tudo",
+    "exportJson": "Exportar como JSON",
+    "exportCsv": "Exportar como CSV",
+    "filters": {
+      "allMethods": "Todos os métodos",
+      "allStatus": "Todos os status",
+      "success": "Sucesso",
+      "error": "Erro"
+    },
+    "stats": {
+      "totalRequests": "Total de Requisições",
+      "successRate": "Taxa de Sucesso",
+      "avgResponseTime": "Tempo Médio",
+      "methodsUsed": "Métodos Usados"
+    }
+  },
   "proxy": {
     "settings": "Configurações de Proxy",
     "corsWarning": "Aviso de CORS",

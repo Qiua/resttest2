@@ -19,7 +19,7 @@
 // src/App.tsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiRefreshCw, FiSettings } from 'react-icons/fi'
+import { FiRefreshCw, FiSettings, FiClock } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
@@ -33,9 +33,11 @@ import { ProxySettings } from './components/ProxySettings'
 import { ConfirmModal } from './components/ConfirmModal'
 import { PromptModal } from './components/PromptModal'
 import { NotificationModal } from './components/NotificationModal'
-import { type SavedRequest, type Workspace, type Collection } from './types'
+import { RequestHistory } from './components/RequestHistory'
+import { type SavedRequest, type Workspace, type Collection, type HistoryEntry } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useRequestTabs } from './hooks/useRequestTabs'
+import { useRequestHistory } from './hooks/useRequestHistory'
 import { useModal } from './hooks/useModal'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 
@@ -54,6 +56,20 @@ function App() {
     setTabResponse,
     getActiveTab,
   } = useRequestTabs()
+
+  // Sistema de histórico de requisições
+  const {
+    history,
+    addToHistory,
+    isHistoryOpen,
+    setIsHistoryOpen,
+    recreateTabFromHistory,
+    clearHistory,
+    removeEntry,
+    exportHistory,
+    searchHistory,
+    getStats,
+  } = useRequestHistory()
 
   // Estados das Requisições Salvas (mantido para compatibilidade)
   const [savedRequests, setSavedRequests] = useLocalStorage<SavedRequest[]>('savedRequests', [])
@@ -247,6 +263,12 @@ function App() {
     createNewTab(request)
   }
 
+  // Função para lidar com requisições do histórico
+  const handleRequestFromHistory = (historyEntry: HistoryEntry) => {
+    const newTab = recreateTabFromHistory(historyEntry)
+    createNewTab(newTab)
+  }
+
   const handleDeleteCollection = async (collectionId: string) => {
     const confirmed = await modal.showConfirm({
       title: t('messages.confirmDeleteCollection'),
@@ -367,6 +389,9 @@ function App() {
   const handleSubmit = async () => {
     const activeTab = getActiveTab()
     if (!activeTab) return
+
+    // Iniciar medição de tempo para o histórico
+    const startTime = performance.now()
 
     // Definir estado de loading na aba
     setTabResponse(activeTab.id, null, true, null)
@@ -503,6 +528,22 @@ function App() {
         false,
         null
       )
+
+      // Adicionar ao histórico
+      const endTime = performance.now()
+      const duration = Math.round(endTime - startTime)
+      addToHistory(
+        activeTab,
+        {
+          status: result.status,
+          statusText: result.statusText,
+          headers: JSON.stringify(result.headers, null, 2),
+          body: responseBody,
+          contentType: contentType,
+        },
+        duration,
+        'success'
+      )
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         const contentType = err.response.headers['content-type'] || ''
@@ -526,8 +567,41 @@ function App() {
           false,
           null
         )
+
+        // Adicionar ao histórico
+        const endTime = performance.now()
+        const duration = Math.round(endTime - startTime)
+        addToHistory(
+          activeTab,
+          {
+            status: err.response.status,
+            statusText: err.response.statusText,
+            headers: JSON.stringify(err.response.headers, null, 2),
+            body: errorBody,
+            contentType: contentType,
+          },
+          duration,
+          'error'
+        )
       } else {
         setTabResponse(activeTab.id, null, false, t('common.unexpectedError'))
+
+        // Adicionar ao histórico mesmo em caso de erro genérico
+        const endTime = performance.now()
+        const duration = Math.round(endTime - startTime)
+        addToHistory(
+          activeTab,
+          {
+            status: 0,
+            statusText: 'Network Error',
+            headers: '{}',
+            body: t('common.unexpectedError'),
+            contentType: 'text/plain',
+          },
+          duration,
+          'error',
+          t('common.unexpectedError')
+        )
       }
     }
   }
@@ -667,6 +741,13 @@ function App() {
             )}
             <div className='flex items-center gap-1'>
               <button
+                onClick={() => setIsHistoryOpen(true)}
+                className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer'
+                title={t('history.title')}
+              >
+                <FiClock size={16} />
+              </button>
+              <button
                 onClick={() => setProxySettingsOpen(true)}
                 className='p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer'
                 title={t('proxy.settings')}
@@ -781,6 +862,19 @@ function App() {
         title={modal.notificationModal.options.title}
         message={modal.notificationModal.options.message}
         type={modal.notificationModal.options.type}
+      />
+
+      {/* Request History Modal */}
+      <RequestHistory
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        history={history}
+        onRecreateRequest={handleRequestFromHistory}
+        onClearHistory={clearHistory}
+        onRemoveEntry={removeEntry}
+        onExportHistory={exportHistory}
+        searchHistory={searchHistory}
+        getStats={getStats}
       />
     </div>
   )

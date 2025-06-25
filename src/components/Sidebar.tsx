@@ -18,7 +18,7 @@
 // src/components/Sidebar.tsx
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiMenu, FiX, FiFolder, FiGlobe, FiLayers, FiSettings } from 'react-icons/fi'
+import { FiMenu, FiX, FiFolder, FiGlobe, FiLayers, FiClock } from 'react-icons/fi'
 import { SettingsMenu } from './SettingsMenu'
 import type { Workspace, SavedRequest, Environment } from '../types'
 
@@ -83,17 +83,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <FiMenu className="w-5 h-5" />
         </button>
 
-        {/* Tools Icon */}
+        {/* Separador */}
+        <div className="w-6 h-px bg-gray-600 dark:bg-gray-700"></div>
+
+        {/* History Icon (Tools) */}
         <button
           onClick={onHistoryOpen}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
-          title={t('settings.tools')}
+          title={t('history.title')}
         >
-          <FiSettings className="w-5 h-5" />
+          <FiClock className="w-5 h-5" />
         </button>
-
-        {/* Separador */}
-        <div className="w-6 h-px bg-gray-600 dark:bg-gray-700"></div>
 
         {/* Workspace Icon */}
         <button

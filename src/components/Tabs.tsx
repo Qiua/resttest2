@@ -19,7 +19,7 @@
 import React from 'react'
 
 interface Tab {
-  label: string
+  label: string | React.ReactNode
   content: React.ReactNode
 }
 interface TabsProps {
@@ -36,7 +36,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
         <nav className='flex' aria-label='Tabs'>
           {tabs.map((tab, index) => (
             <button
-              key={tab.label}
+              key={index}
               type='button'
               onClick={() => setActiveTab(index)}
               className={`${

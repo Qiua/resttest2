@@ -17,6 +17,7 @@
 */
 // src/features/SavedRequests.tsx
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { SavedRequest } from '../types'
 
 interface SavedRequestsProps {
@@ -27,10 +28,11 @@ interface SavedRequestsProps {
 }
 
 export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onSave, onLoad, onDelete }) => {
+  const { t } = useTranslation()
   const [selectedId, setSelectedId] = useState<string>('')
 
   const handleSave = () => {
-    const name = prompt('Digite um nome para esta requisição:')
+    const name = prompt(t('request.form.saveRequest') + ':')
     if (name) {
       onSave(name)
     }
@@ -43,7 +45,7 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
   }
 
   const handleDelete = () => {
-    if (selectedId && confirm('Tem certeza que deseja deletar esta requisição?')) {
+    if (selectedId && confirm(t('sidebar.deleteRequest') + '?')) {
       onDelete(selectedId)
       setSelectedId('')
     }
@@ -57,7 +59,7 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
         onChange={(e) => setSelectedId(e.target.value)}
         className='text-sm border border-gray-300 rounded px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]'
       >
-        <option value=''>Selecionar requisição...</option>
+        <option value=''>{t('sidebar.selectWorkspace')}</option>
         {savedRequests.map((req) => (
           <option key={req.id} value={req.id}>
             {req.name} ({req.method})
@@ -72,20 +74,20 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
           disabled={!selectedId}
           className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500'
         >
-          Carregar
+          {t('common.load')}
         </button>
         <button
           onClick={handleSave}
           className='px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'
         >
-          Salvar
+          {t('common.save')}
         </button>
         <button
           onClick={handleDelete}
           disabled={!selectedId}
           className='px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500'
         >
-          Deletar
+          {t('common.delete')}
         </button>
       </div>
     </div>

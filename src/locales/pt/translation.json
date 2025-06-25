@@ -1,0 +1,163 @@
+{
+  "common": {
+    "save": "Salvar",
+    "send": "Send",
+    "copy": "Copiar",
+    "download": "Baixar",
+    "delete": "Deletar",
+    "add": "Adicionar",
+    "create": "Criar",
+    "search": "Buscar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "open": "Abrir",
+    "loading": "Carregando",
+    "error": "Erro",
+    "success": "Sucesso",
+    "info": "Info",
+    "general": "Geral",
+    "none": "Nenhum",
+    "present": "Presente",
+    "absent": "Ausente",
+    "unknown": "Desconhecido",
+    "load": "Carregar"
+  },
+  "app": {
+    "title": "REST Test 2.0",
+    "description": "Testador de APIs REST profissional"
+  },
+  "sidebar": {
+    "collections": "Coleções",
+    "workspace": "Área de Trabalho",
+    "selectWorkspace": "Selecionar área de trabalho...",
+    "newCollection": "Nova coleção",
+    "newWorkspace": "Criar novo área de trabalho",
+    "noCollections": "Nenhuma coleção encontrada",
+    "noCollectionsDescription": "Crie sua primeira coleção para organizar suas requisições",
+    "noRequests": "Nenhuma requisição nesta coleção",
+    "addRequest": "Adicionar requisição",
+    "deleteCollection": "Deletar coleção",
+    "deleteRequest": "Deletar requisição",
+    "selectWorkspaceToView": "Selecione uma área de trabalho para ver as coleções",
+    "openSidebar": "Abrir barra lateral",
+    "closeSidebar": "Fechar barra lateral"
+  },
+  "request": {
+    "form": {
+      "url": "Digite a URL da API",
+      "sending": "Enviando...",
+      "saveRequest": "Salvar requisição"
+    },
+    "tabs": {
+      "params": "Parâmetros",
+      "auth": "Auth",
+      "headers": "Headers",
+      "body": "Body"
+    },
+    "params": {
+      "title": "Parâmetros da Requisição",
+      "addParam": "Adicionar Parâmetro",
+      "addFile": "Adicionar Arquivo",
+      "noParams": "Adicione parâmetros na aba Parâmetros para visualizar o corpo da requisição aqui.",
+      "keyPlaceholder": "Nome do Parâmetro",
+      "valuePlaceholder": "Valor do Parâmetro",
+      "filePlaceholder": "Selecione um arquivo"
+    },
+    "auth": {
+      "title": "Autenticação",
+      "type": "Tipo de Autenticação",
+      "none": "Nenhuma",
+      "basic": "Basic Auth",
+      "bearer": "Bearer Token",
+      "apiKey": "API Key",
+      "username": "Usuário",
+      "password": "Senha",
+      "token": "Token",
+      "apiKeyHeader": "Nome do Header da API Key",
+      "apiKeyValue": "Valor da API Key",
+      "usernameHelp": "Digite seu nome de usuário",
+      "passwordHelp": "Digite sua senha",
+      "tokenHelp": "Digite seu token de acesso",
+      "apiKeyHeaderHelp": "Digite o nome do header (ex: X-API-Key)",
+      "apiKeyValueHelp": "Digite o valor da API Key"
+    },
+    "headers": {
+      "title": "HTTP Headers",
+      "addHeader": "Adicionar Header",
+      "noHeaders": "Nenhum header personalizado adicionado",
+      "keyPlaceholder": "Nome do Header",
+      "valuePlaceholder": "Valor do Header"
+    },
+    "body": {
+      "title": "Corpo da Requisição",
+      "type": "Tipo do Corpo",
+      "formData": "Form Data",
+      "json": "JSON",
+      "xml": "XML",
+      "text": "Texto",
+      "preview": "Preview do Form Data",
+      "noFormData": "Nenhum dado de formulário para visualizar",
+      "jsonPlaceholder": "Digite o JSON aqui...",
+      "xmlPlaceholder": "Digite o XML aqui...",
+      "textPlaceholder": "Digite o texto aqui..."
+    }
+  },
+  "response": {
+    "title": "Resposta",
+    "noResponse": "Nenhuma resposta ainda",
+    "noResponseDescription": "A resposta da sua requisição aparecerá aqui.",
+    "sending": "Enviando requisição...",
+    "error": "Erro na Requisição",
+    "tabs": {
+      "response": "Response",
+      "headers": "Headers",
+      "raw": "Raw",
+      "info": "Info"
+    },
+    "toolbar": {
+      "copyResponse": "Copiar resposta",
+      "downloadResponse": "Baixar resposta",
+      "copyHeaders": "Copiar headers",
+      "copyAll": "Copiar Tudo",
+      "searchInResponse": "Buscar na resposta...",
+      "rawData": "Dados brutos",
+      "copyCompleteResponse": "Copiar resposta completa"
+    },
+    "info": {
+      "generalInfo": "Informações Gerais",
+      "status": "Status",
+      "size": "Tamanho",
+      "responseTime": "Tempo de resposta",
+      "contentType": "Content-Type",
+      "timestamp": "Timestamp",
+      "headers": "Headers",
+      "totalHeaders": "Total de headers",
+      "server": "Servidor",
+      "encoding": "Codificação",
+      "cacheControl": "Cache-Control",
+      "securityHeaders": "Headers de Segurança",
+      "headersFound": "headers encontrados"
+    },
+    "size": {
+      "bytes": "Bytes",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    }
+  },
+  "migration": {
+    "title": "Migrar Requisições",
+    "description": "Migrar requisições antigas para collections",
+    "migrate": "Migrar"
+  },
+  "theme": {
+    "toggle": "Alternar tema",
+    "light": "Modo claro",
+    "dark": "Modo escuro"
+  },
+  "language": {
+    "select": "Selecionar idioma",
+    "portuguese": "Português",
+    "english": "English"
+  }
+}

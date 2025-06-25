@@ -17,6 +17,7 @@
 */
 // src/features/RequestForm.tsx
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiSave, FiPlus, FiFile, FiChevronDown } from 'react-icons/fi'
 import { Tabs } from '../components/Tabs'
 import {
@@ -65,6 +66,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   onSave,
   loading,
 }) => {
+  const { t } = useTranslation()
   // Estado para controlar dropdown de métodos
   const [methodDropdownOpen, setMethodDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -126,18 +128,14 @@ export const RequestForm: React.FC<RequestFormProps> = ({
     if (validParams.length === 0) {
       return (
         <div className='p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300'>
-          <p>
-            Adicione parâmetros na aba <strong>Parâmetros</strong> para visualizar o corpo da requisição aqui.
-          </p>
+          <p>{t('request.params.noParams')}</p>
         </div>
       )
     }
 
     return (
       <div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-sm border border-gray-200 dark:border-gray-600'>
-        <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-3'>
-          Preview do corpo da requisição (form-data):
-        </h4>
+        <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-3'>{t('request.body.preview')}:</h4>
         <div className='space-y-2 font-mono text-xs'>
           {validParams.map((param) => (
             <div
@@ -165,7 +163,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
   // CORREÇÃO: O conteúdo de cada seção foi movido para a propriedade 'content' da sua respectiva aba.
   const requestTabs = [
     {
-      label: 'Parâmetros',
+      label: t('request.tabs.params'),
       content: (
         <div className='space-y-2'>
           {safeParams.map((param) =>
@@ -184,8 +182,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                   setParams(safeParams.map((p) => (p.id === updated.id ? updated : p)))
                 }
                 removeItem={() => setParams(safeParams.filter((p) => p.id !== param.id))}
-                keyPlaceholder='Parâmetro'
-                valuePlaceholder='Valor'
+                keyPlaceholder={t('request.params.keyPlaceholder')}
+                valuePlaceholder={t('request.params.valuePlaceholder')}
               />
             )
           )}
@@ -196,7 +194,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
             >
               <FiPlus className='w-4 h-4' />
-              Adicionar Parâmetro
+              {t('request.params.addParam')}
             </button>
             <button
               type='button'
@@ -204,14 +202,14 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2'
             >
               <FiFile className='w-4 h-4' />
-              Adicionar Arquivo
+              {t('request.params.addFile')}
             </button>
           </div>
         </div>
       ),
     },
     {
-      label: 'Body',
+      label: t('request.tabs.body'),
       content: (
         <div className='space-y-4 h-full flex flex-col'>
           <div className='flex items-center gap-x-6 gap-y-2 flex-wrap'>
@@ -228,7 +226,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 htmlFor='body-type-none'
                 className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
               >
-                Form-Data / x-www-form-urlencoded
+                {t('request.body.formData')}
               </label>
             </div>
             <div className='flex items-center'>
@@ -244,7 +242,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 htmlFor='body-type-json'
                 className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
               >
-                JSON
+                {t('request.body.json')}
               </label>
             </div>
             <div className='flex items-center'>
@@ -260,7 +258,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 htmlFor='body-type-text'
                 className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
               >
-                Text
+                {t('request.body.text')}
               </label>
             </div>
             <div className='flex items-center'>
@@ -276,7 +274,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                 htmlFor='body-type-xml'
                 className='ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'
               >
-                XML
+                {t('request.body.xml')}
               </label>
             </div>
           </div>{' '}
@@ -285,7 +283,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               <textarea
                 value={safeBody.content}
                 onChange={(e) => setBody({ ...safeBody, content: e.target.value })}
-                placeholder={`Digite o conteúdo ${safeBody.type.toUpperCase()} aqui...`}
+                placeholder={t(`request.body.${safeBody.type}Placeholder`)}
                 className='w-full h-full resize-none outline-none font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                 spellCheck={false}
               />
@@ -297,40 +295,46 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       ),
     },
     {
-      label: 'Autenticação',
+      label: t('request.tabs.auth'),
       content: (
         <div className='space-y-4'>
           <div className='flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700'>
-            <label className='text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]'>Tipo:</label>
+            <label className='text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]'>
+              {t('request.auth.type')}:
+            </label>
             <select
               value={auth.type}
               onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
               className='px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-600 text-gray-900 dark:text-white'
             >
-              <option value='none'>Nenhuma autenticação</option>
-              <option value='basic'>Basic Auth</option>
-              <option value='bearer'>Bearer Token</option>
-              <option value='api-key'>API Key</option>
+              <option value='none'>{t('request.auth.none')}</option>
+              <option value='basic'>{t('request.auth.basic')}</option>
+              <option value='bearer'>{t('request.auth.bearer')}</option>
+              <option value='api-key'>{t('request.auth.apiKey')}</option>
             </select>
           </div>
 
           {auth.type === 'basic' && (
             <div className='grid grid-cols-2 gap-4'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Username</label>
+                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                  {t('request.auth.username')}
+                </label>
                 <input
                   type='text'
-                  placeholder='Digite o username'
+                  placeholder={t('request.auth.usernameHelp')}
                   value={auth.username || ''}
                   onChange={(e) => setAuth({ ...auth, username: e.target.value })}
                   className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
                 />
               </div>
               <div>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Password</label>
+                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                  {t('request.auth.password')}
+                </label>
                 <input
                   type='password'
-                  placeholder='Digite a senha'
+                  placeholder={t('request.auth.passwordHelp')}
                   value={auth.password || ''}
                   onChange={(e) => setAuth({ ...auth, password: e.target.value })}
                   className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
@@ -341,10 +345,12 @@ export const RequestForm: React.FC<RequestFormProps> = ({
 
           {auth.type === 'bearer' && (
             <div>
-              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Bearer Token</label>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+                {t('request.auth.token')}
+              </label>
               <input
                 type='text'
-                placeholder='Digite o token Bearer'
+                placeholder={t('request.auth.tokenHelp')}
                 value={auth.token || ''}
                 onChange={(e) => setAuth({ ...auth, token: e.target.value })}
                 className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
@@ -356,11 +362,11 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             <div className='space-y-4'>
               <div>
                 <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-                  Nome do Header
+                  {t('request.auth.apiKeyHeader')}
                 </label>
                 <input
                   type='text'
-                  placeholder='ex: X-API-Key, Authorization'
+                  placeholder={t('request.auth.apiKeyHeaderHelp')}
                   value={auth.apiKeyHeader || ''}
                   onChange={(e) => setAuth({ ...auth, apiKeyHeader: e.target.value })}
                   className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
@@ -368,11 +374,11 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               </div>
               <div>
                 <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-                  Valor da API Key
+                  {t('request.auth.apiKeyValue')}
                 </label>
                 <input
                   type='text'
-                  placeholder='Digite o valor da API Key'
+                  placeholder={t('request.auth.apiKeyValueHelp')}
                   value={auth.apiKeyValue || ''}
                   onChange={(e) => setAuth({ ...auth, apiKeyValue: e.target.value })}
                   className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
@@ -384,24 +390,24 @@ export const RequestForm: React.FC<RequestFormProps> = ({
       ),
     },
     {
-      label: 'Headers',
+      label: t('request.tabs.headers'),
       content: (
         <div className='space-y-3'>
           <div className='flex items-center justify-between'>
-            <h3 className='text-sm font-medium text-gray-700 dark:text-gray-300'>HTTP Headers</h3>
+            <h3 className='text-sm font-medium text-gray-700 dark:text-gray-300'>{t('request.headers.title')}</h3>
             <button
               type='button'
               onClick={addHeader}
               className='px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-1'
             >
               <FiPlus className='w-4 h-4' />
-              Adicionar Header
+              {t('request.headers.addHeader')}
             </button>
           </div>
 
           {headers.length === 0 ? (
             <div className='text-center py-8 text-gray-500 dark:text-gray-400 text-sm border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg'>
-              Nenhum header personalizado adicionado
+              {t('request.headers.noHeaders')}
             </div>
           ) : (
             <div className='space-y-2'>
@@ -413,8 +419,8 @@ export const RequestForm: React.FC<RequestFormProps> = ({
                     setHeaders(headers.map((h) => (h.id === updated.id ? updated : h)))
                   }
                   removeItem={() => setHeaders(headers.filter((h) => h.id !== header.id))}
-                  keyPlaceholder='Nome do Header'
-                  valuePlaceholder='Valor do Header'
+                  keyPlaceholder={t('request.headers.keyPlaceholder')}
+                  valuePlaceholder={t('request.headers.valuePlaceholder')}
                 />
               ))}
             </div>
@@ -473,7 +479,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           className='flex-1 px-3 py-2 text-sm border-t border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
-          placeholder='Digite a URL da API'
+          placeholder={t('request.form.url')}
         />
         <div className='flex'>
           <button
@@ -481,14 +487,14 @@ export const RequestForm: React.FC<RequestFormProps> = ({
             disabled={loading}
             className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]'
           >
-            {loading ? 'Enviando...' : 'Send'}
+            {loading ? t('request.form.sending') : t('common.send')}
           </button>
           {onSave && (
             <button
               type='button'
               onClick={onSave}
               className='px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              title='Salvar requisição'
+              title={t('request.form.saveRequest')}
             >
               <FiSave className='w-4 h-4' />
             </button>

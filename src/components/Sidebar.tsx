@@ -17,6 +17,7 @@
 */
 // src/components/Sidebar.tsx
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiPlus, FiFolderPlus, FiFolder, FiFile, FiTrash2, FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
 import type { Workspace, SavedRequest } from '../types'
 
@@ -47,6 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onDeleteCollection,
   onDeleteRequest,
 }) => {
+  const { t } = useTranslation()
   const [expandedCollections, setExpandedCollections] = useState<string[]>([])
 
   const toggleCollection = (collectionId: string) => {
@@ -80,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           onClick={onToggle}
           className='text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200'
-          title='Abrir sidebar'
+          title={t('sidebar.openSidebar')}
         >
           <FiMenu className='w-5 h-5' />
         </button>
@@ -93,11 +95,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Header do Sidebar */}
       <div className='p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'>
         <div className='flex items-center justify-between mb-3'>
-          <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>Collections</h2>
+          <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>{t('sidebar.collections')}</h2>
           <button
             onClick={onToggle}
             className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
-            title='Fechar sidebar'
+            title={t('sidebar.closeSidebar')}
           >
             <FiX className='w-5 h-5' />
           </button>
@@ -106,11 +108,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Seletor de Workspace */}
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>Workspace</label>
+            <label className='text-sm font-medium text-gray-700 dark:text-gray-300'>{t('sidebar.workspace')}</label>
             <button
               onClick={onNewWorkspace}
               className='p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
-              title='Criar novo workspace'
+              title={t('sidebar.newWorkspace')}
             >
               <FiPlus className='w-4 h-4' />
             </button>
@@ -120,7 +122,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => onWorkspaceSelect(e.target.value)}
             className='w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
           >
-            <option value=''>Selecionar workspace...</option>
+            <option value=''>{t('sidebar.selectWorkspace')}</option>
             {workspaces.map((workspace) => (
               <option key={workspace.id} value={workspace.id}>
                 {workspace.name}
@@ -148,8 +150,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {activeWorkspaceData.collections.length === 0 ? (
                 <div className='text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg'>
                   <FiFolder className='w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600' />
-                  <p className='text-sm mb-2'>Nenhuma collection encontrada</p>
-                  <p className='text-xs'>Crie sua primeira collection para organizar suas requisições</p>
+                  <p className='text-sm mb-2'>{t('sidebar.noCollections')}</p>
+                  <p className='text-xs'>{t('sidebar.noCollectionsDescription')}</p>
                 </div>
               ) : (
                 activeWorkspaceData.collections.map((collection) => (
@@ -179,7 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             onNewRequest(collection.id)
                           }}
                           className='p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors'
-                          title='Adicionar requisição'
+                          title={t('sidebar.addRequest')}
                         >
                           <FiPlus className='w-4 h-4' />
                         </button>
@@ -189,7 +191,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             onDeleteCollection(collection.id)
                           }}
                           className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors'
-                          title='Deletar collection'
+                          title={t('sidebar.deleteCollection')}
                         >
                           <FiTrash2 className='w-4 h-4' />
                         </button>
@@ -225,7 +227,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   onDeleteRequest(request.id)
                                 }}
                                 className='p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all'
-                                title='Deletar requisição'
+                                title={t('sidebar.deleteRequest')}
                               >
                                 <FiTrash2 className='w-4 h-4' />
                               </button>
@@ -242,7 +244,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <div className='text-center py-8 text-gray-500 dark:text-gray-400'>
             <FiFolder className='w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600' />
-            <p className='text-sm'>Selecione um workspace para ver as collections</p>
+            <p className='text-sm'>{t('sidebar.selectWorkspaceToView')}</p>
           </div>
         )}
       </div>

@@ -59,6 +59,10 @@ export interface ApiResponse {
   headers: string
   body: string
   contentType?: string
+  // Informações de timing e tamanho
+  size?: number
+  time?: number
+  timestamp?: number
 }
 // Representa o estado de uma requisição, incluindo método, URL, autenticação, cabeçalhos e parâmetros
 export interface RequestState {

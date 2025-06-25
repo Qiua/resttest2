@@ -1,0 +1,163 @@
+{
+  "common": {
+    "save": "Save",
+    "send": "Send",
+    "copy": "Copy",
+    "download": "Download",
+    "delete": "Delete",
+    "add": "Add",
+    "create": "Create",
+    "search": "Search",
+    "cancel": "Cancel",
+    "close": "Close",
+    "open": "Open",
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success",
+    "info": "Info",
+    "general": "General",
+    "none": "None",
+    "present": "Present",
+    "absent": "Absent",
+    "unknown": "Unknown",
+    "load": "Load"
+  },
+  "app": {
+    "title": "REST Test 2.0",
+    "description": "Professional REST API Tester"
+  },
+  "sidebar": {
+    "collections": "Collections",
+    "workspace": "Workspace",
+    "selectWorkspace": "Select workspace...",
+    "newCollection": "New Collection",
+    "newWorkspace": "Create new workspace",
+    "noCollections": "No collections found",
+    "noCollectionsDescription": "Create your first collection to organize your requests",
+    "noRequests": "No requests in this collection",
+    "addRequest": "Add request",
+    "deleteCollection": "Delete collection",
+    "deleteRequest": "Delete request",
+    "selectWorkspaceToView": "Select a workspace to view collections",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar"
+  },
+  "request": {
+    "form": {
+      "url": "Enter API URL",
+      "sending": "Sending...",
+      "saveRequest": "Save request"
+    },
+    "tabs": {
+      "params": "Parameters",
+      "auth": "Auth",
+      "headers": "Headers",
+      "body": "Body"
+    },
+    "params": {
+      "title": "Request Parameters",
+      "addParam": "Add Parameter",
+      "addFile": "Add File",
+      "noParams": "Add parameters in the Parameters tab to preview the request body here.",
+      "keyPlaceholder": "Parameter Name",
+      "valuePlaceholder": "Parameter Value",
+      "filePlaceholder": "Select a file"
+    },
+    "auth": {
+      "title": "Authentication",
+      "type": "Authentication Type",
+      "none": "None",
+      "basic": "Basic Auth",
+      "bearer": "Bearer Token",
+      "apiKey": "API Key",
+      "username": "Username",
+      "password": "Password",
+      "token": "Token",
+      "apiKeyHeader": "API Key Header Name",
+      "apiKeyValue": "API Key Value",
+      "usernameHelp": "Enter your username",
+      "passwordHelp": "Enter your password",
+      "tokenHelp": "Enter your access token",
+      "apiKeyHeaderHelp": "Enter header name (e.g. X-API-Key)",
+      "apiKeyValueHelp": "Enter API Key value"
+    },
+    "headers": {
+      "title": "HTTP Headers",
+      "addHeader": "Add Header",
+      "noHeaders": "No custom headers added",
+      "keyPlaceholder": "Header Name",
+      "valuePlaceholder": "Header Value"
+    },
+    "body": {
+      "title": "Request Body",
+      "type": "Body Type",
+      "formData": "Form Data",
+      "json": "JSON",
+      "xml": "XML",
+      "text": "Text",
+      "preview": "Form Data Preview",
+      "noFormData": "No form data to preview",
+      "jsonPlaceholder": "Enter JSON here...",
+      "xmlPlaceholder": "Enter XML here...",
+      "textPlaceholder": "Enter text here..."
+    }
+  },
+  "response": {
+    "title": "Response",
+    "noResponse": "No response yet",
+    "noResponseDescription": "Your request response will appear here.",
+    "sending": "Sending request...",
+    "error": "Request Error",
+    "tabs": {
+      "response": "Response",
+      "headers": "Headers",
+      "raw": "Raw",
+      "info": "Info"
+    },
+    "toolbar": {
+      "copyResponse": "Copy response",
+      "downloadResponse": "Download response",
+      "copyHeaders": "Copy headers",
+      "copyAll": "Copy All",
+      "searchInResponse": "Search in response...",
+      "rawData": "Raw data",
+      "copyCompleteResponse": "Copy complete response"
+    },
+    "info": {
+      "generalInfo": "General Information",
+      "status": "Status",
+      "size": "Size",
+      "responseTime": "Response time",
+      "contentType": "Content-Type",
+      "timestamp": "Timestamp",
+      "headers": "Headers",
+      "totalHeaders": "Total headers",
+      "server": "Server",
+      "encoding": "Encoding",
+      "cacheControl": "Cache-Control",
+      "securityHeaders": "Security Headers",
+      "headersFound": "headers found"
+    },
+    "size": {
+      "bytes": "Bytes",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    }
+  },
+  "migration": {
+    "title": "Migrate Requests",
+    "description": "Migrate old requests to collections",
+    "migrate": "Migrate"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light mode",
+    "dark": "Dark mode"
+  },
+  "language": {
+    "select": "Select language",
+    "portuguese": "Português",
+    "english": "English"
+  }
+}

@@ -18,6 +18,7 @@
 
 // src/App.tsx
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiRefreshCw } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
@@ -25,6 +26,7 @@ import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
+import { LanguageSelector } from './components/LanguageSelector'
 import {
   type KeyValuePair,
   type Parameter,
@@ -38,6 +40,7 @@ import {
 import { useLocalStorage } from './hooks/useLocalStorage'
 
 function App() {
+  const { t } = useTranslation()
   // Estado da Requisição Atual
   const [method, setMethod] = useState('GET')
   const [url, setUrl] = useState('https://httpbin.org/get')
@@ -81,7 +84,7 @@ function App() {
 
   // Funções para manipular workspaces e collections
   const handleNewWorkspace = () => {
-    const name = prompt('Nome do novo workspace:')
+    const name = prompt(t('sidebar.newWorkspace') + ':')
     if (!name?.trim()) return
 
     const newWorkspace: Workspace = {
@@ -102,7 +105,7 @@ function App() {
   }
 
   const handleNewCollection = (workspaceId: string) => {
-    const name = prompt('Nome da nova collection:')
+    const name = prompt(t('sidebar.newCollection') + ':')
     if (!name?.trim()) return
 
     const newCollection: Collection = {
@@ -128,13 +131,13 @@ function App() {
   }
 
   const handleNewRequest = (collectionId?: string) => {
-    const name = prompt('Nome da nova requisição:')
+    const name = prompt(t('sidebar.addRequest') + ':')
     if (!name?.trim()) return
 
     // Se não foi especificada uma collection, usa a primeira disponível
     const targetWorkspace = workspaces.find((w) => w.id === activeWorkspace)
     if (!targetWorkspace || targetWorkspace.collections.length === 0) {
-      alert('Crie uma collection primeiro!')
+      alert(t('sidebar.newCollection') + ' primeiro!')
       return
     }
 
@@ -508,7 +511,10 @@ function App() {
                 Migrar ({savedRequests.filter((req) => !req.collectionId).length})
               </button>
             )}
-            <ThemeToggle />
+            <div className='flex items-center space-x-3'>
+              <LanguageSelector />
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 

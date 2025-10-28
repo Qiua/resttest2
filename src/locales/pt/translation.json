@@ -1,7 +1,7 @@
 {
   "common": {
     "save": "Salvar",
-    "send": "Send",
+    "send": "Enviar",
     "copy": "Copiar",
     "download": "Baixar",
     "delete": "Deletar",
@@ -22,7 +22,8 @@
     "present": "Presente",
     "absent": "Ausente",
     "unknown": "Desconhecido",
-    "load": "Carregar"
+    "load": "Carregar",
+    "clear": "Limpar"
   },
   "messages": {
     "createCollectionFirst": "Crie uma coleção primeiro!",

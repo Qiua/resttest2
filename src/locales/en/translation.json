@@ -22,7 +22,8 @@
     "present": "Present",
     "absent": "Absent",
     "unknown": "Unknown",
-    "load": "Load"
+    "load": "Load",
+    "clear": "Clear"
   },
   "messages": {
     "createCollectionFirst": "Create a collection first!",

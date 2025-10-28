@@ -1,113 +1,113 @@
-# REST Test 2.0 - Um Cliente de API Moderno
+# REST Test 2.0 - A Modern API Client
 
-![Screenshot da Aplicação](public/assets/demo/rest-test-2-screen-final.gif)
+![App Screenshot](public/assets/demo/rest-test-2-screen-final.gif)
 
 Project Demo - [https://resttest2.netlify.app/](https://resttest2.netlify.app/)
 
-Este é um fork do maravilhoso projeto https://github.com/jeroen/resttesttest
+This is a fork of the wonderful project https://github.com/jeroen/resttesttest
 
-Um cliente de API web simples, rápido e moderno para fazer requisições HTTP e inspecionar respostas. Este projeto é uma refatoração completa de uma aplicação legada, agora construída com uma stack de tecnologias de ponta, incluindo React, Vite e Tailwind CSS.
+A simple, fast, and modern web API client for making HTTP requests and inspecting responses. This project is a complete refactor of a legacy application, now built with a cutting-edge tech stack including React, Vite, and Tailwind CSS.
 
-## 🚀 Sobre o Projeto
+## 🚀 About the Project
 
-Este projeto nasceu da necessidade de modernizar uma ferramenta interna de teste de APIs. O objetivo era criar uma base de código robusta, performática e com uma excelente experiência de desenvolvimento, pronta para futuras expansões e contribuições da comunidade open source.
+This project was born from the need to modernize an internal API testing tool. The goal was to create a robust, high-performance codebase with an excellent developer experience, ready for future expansion and open source contributions.
 
-### ✨ Funcionalidades Principais
+### ✨ Main Features
 
-- **Múltiplos Métodos HTTP:** Suporte completo para GET, POST, PUT, DELETE, PATCH, e mais.
-- **Painéis Redimensionáveis:** Layout inspirado em ferramentas profissionais como Postman e Insomnia, com painéis de requisição e resposta ajustáveis.
-- **Interface com Abas:** Organize os detalhes da sua requisição (Parâmetros, Autenticação, Headers) e da resposta (Corpo, Headers) em abas intuitivas.
-- **Autenticação Flexível:** Suporte integrado para:
+- **Multiple HTTP Methods:** Full support for GET, POST, PUT, DELETE, PATCH, and more.
+- **Resizable Panels:** Layout inspired by professional tools like Postman and Insomnia, with adjustable request and response panels.
+- **Tabbed Interface:** Organize request details (Parameters, Authentication, Headers) and response (Body, Headers) in intuitive tabs.
+- **Flexible Authentication:** Integrated support for:
   - Basic Auth
   - Bearer Token
-  - API Key em Headers
-- **Envio de Arquivos:** Suporte para requisições `multipart/form-data`.
-- **Syntax Highlighting:** Visualização agradável e colorida para respostas em formato JSON.
-- **Salvar e Carregar Requisições:** Guarde suas requisições mais usadas no `localStorage` do navegador para reutilizá-las facilmente.
-- **Sistema de Ambientes:** Defina variáveis como `{{baseUrl}}` que podem ser reutilizadas em diferentes contextos (desenvolvimento, produção, etc.).
-- **Gerenciamento de Coleções:** Organize suas requisições em workspaces e coleções para melhor estruturação.
-- **Histórico de Requisições:** Mantenha um registro automático das requisições realizadas com estatísticas detalhadas.
-- **Configurações de Proxy:** Contorne limitações de CORS com suporte a diferentes tipos de proxy.
+  - API Key in Headers
+- **File Uploads:** Support for `multipart/form-data` requests.
+- **Syntax Highlighting:** Pleasant, colorful visualization for JSON responses.
+- **Save and Load Requests:** Store your most used requests in the browser's `localStorage` for easy reuse.
+- **Environment System:** Define variables like `{{baseUrl}}` to reuse in different contexts (development, production, etc.).
+- **Collection Management:** Organize your requests into workspaces and collections for better structure.
+- **Request History:** Keep an automatic log of requests with detailed statistics.
+- **Proxy Settings:** Work around CORS limitations with support for different proxy types.
 
-### 🛠️ Construído Com
+### 🛠️ Built With
 
-- **[React](https://reactjs.org/)** - A biblioteca para construir a interface de usuário.
-- **[TypeScript](https://www.typescriptlang.org/)** - Para um código mais seguro e manutenível.
-- **[Vite](https://vitejs.dev/)** - Ferramenta de build extremamente rápida.
-- **[Tailwind CSS](https://tailwindcss.com/)** - Framework CSS utilitário para uma estilização moderna e customizável.
-- **[Axios](https://axios-http.com/)** - Cliente HTTP para fazer as requisições.
-- **[React Resizable Panels](https://react-resizable-panels.com/)** - Para os painéis de layout redimensionáveis.
-- **[React Syntax Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)** - Para o realce de sintaxe do JSON.
+- **[React](https://reactjs.org/)** - The library for building user interfaces.
+- **[TypeScript](https://www.typescriptlang.org/)** - For safer, more maintainable code.
+- **[Vite](https://vitejs.dev/)** - Extremely fast build tool.
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework for modern, customizable styling.
+- **[Axios](https://axios-http.com/)** - HTTP client for making requests.
+- **[React Resizable Panels](https://react-resizable-panels.com/)** - For resizable layout panels.
+- **[React Syntax Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)** - For JSON syntax highlighting.
 
-## 🏁 Começando
+## 🏁 Getting Started
 
-Para ter uma cópia do projeto rodando localmente, siga estes passos simples.
+To get a local copy of the project running, follow these simple steps.
 
-### Pré-requisitos
+### Prerequisites
 
-Você precisa ter o Node.js e o npm (ou yarn/pnpm) instalados na sua máquina.
+You need Node.js and npm (or yarn/pnpm) installed on your machine.
 
 - [Node.js](https://nodejs.org/)
 
-### Instalação
+### Installation
 
-1.  Clone o repositório:
+1.  Clone the repository:
     ```sh
     git clone [https://github.com/Qiua/resttesttest.git](https://github.com/Qiua/resttesttest.git)
     ```
-2.  Navegue até a pasta do projeto:
+2.  Navigate to the project folder:
     ```sh
     cd resttesttest
     ```
-3.  Instale as dependências:
+3.  Install dependencies:
     ```sh
     npm install
     ```
-4.  Inicie o servidor de desenvolvimento:
-    `sh
-npm run dev
-`
-    A aplicação estará disponível em `http://localhost:5173` (ou a porta indicada no seu terminal).
+4.  Start the development server:
+    ```sh
+    npm run dev
+    ```
+    The app will be available at `http://localhost:5173` (or the port shown in your terminal).
 
 ## 🗺️ Roadmap
 
-Temos várias ideias para o futuro! Sinta-se à vontade para pegar uma delas e contribuir.
+We have lots of ideas for the future! Feel free to pick one and contribute.
 
-- [x] ~~Implementar um sistema de "Coleções" para agrupar requisições.~~
-- [x] ~~Adicionar gerenciamento de "Ambientes" (ex: desenvolvimento, produção).~~
-- [x] ~~Criar um histórico de requisições recentes.~~
-- [x] ~~Implementar sistema de workspaces para organização.~~
-- [x] ~~Adicionar suporte a configurações de proxy/CORS.~~
-- [x] ~~Criar sistema de importação/exportação de dados.~~
-- [x] ~~Implementar internacionalização (i18n) - Português/Inglês.~~
-- [x] ~~Adicionar sistema de abas para múltiplas requisições.~~
-- [x] ~~Implementar temas claro/escuro.~~
-- [x] ~~Adicionar modais de confirmação e notificação.~~
-- [ ] Suporte para mais tipos de autenticação (ex: OAuth 2.0).
-- [ ] Melhorar a visualização de outros tipos de resposta (HTML, XML).
-- [ ] Implementar testes automatizados de requisições.
-- [ ] Adicionar documentação automática de APIs.
-- [ ] Criar templates de requisições comuns.
+- [x] ~~Implement a "Collections" system to group requests.~~
+- [x] ~~Add environment management (e.g., development, production).~~
+- [x] ~~Create a recent request history.~~
+- [x] ~~Implement workspace system for organization.~~
+- [x] ~~Add support for proxy/CORS settings.~~
+- [x] ~~Create import/export data system.~~
+- [x] ~~Implement internationalization (i18n) - Portuguese/English.~~
+- [x] ~~Add tab system for multiple requests.~~
+- [x] ~~Implement light/dark themes.~~
+- [x] ~~Add confirmation and notification modals.~~
+- [ ] Support for more authentication types (e.g., OAuth 2.0).
+- [ ] Improve visualization for other response types (HTML, XML).
+- [ ] Implement automated request tests.
+- [ ] Add automatic API documentation.
+- [ ] Create templates for common requests.
 
-### 📖 Documentação Adicional
+### 📖 Additional Documentation
 
-- [**Guia de Ambientes**](ENVIRONMENTS.md) - Como usar o sistema de variáveis e ambientes
-- [**Guia de Proxy**](CORS-PROXY-GUIDE.md) - Configuração de proxy para contornar CORS
+- [**Environment Guide**](ENVIRONMENTS.md) - How to use the variable and environment system
+- [**Proxy Guide**](CORS-PROXY-GUIDE.md) - Proxy configuration to work around CORS
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Contribuições são o que fazem a comunidade open source um lugar incrível para aprender, inspirar e criar. Qualquer contribuição que você fizer será **muito bem-vinda**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contribution you make will be **very welcome**.
 
-Se você tem uma sugestão para melhorar o projeto, por favor, faça um fork do repositório e crie um pull request. Você também pode simplesmente abrir uma issue com a tag "enhancement".
+If you have a suggestion to improve the project, please fork the repository and create a pull request. You can also simply open an issue with the "enhancement" tag.
 
-1.  Faça um **Fork** do projeto.
-2.  Crie sua **Feature Branch** (`git checkout -b feature/FuncionalidadeIncrivel`).
-3.  Faça o **Commit** de suas mudanças (`git commit -m 'Adiciona FuncionalidadeIncrivel'`).
-4.  Faça o **Push** para a Branch (`git push origin feature/FuncionalidadeIncrivel`).
-5.  Abra um **Pull Request**.
+1.  **Fork** the project.
+2.  Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
+3.  **Commit** your changes (`git commit -m 'Add AmazingFeature'`).
+4.  **Push** to the branch (`git push origin feature/AmazingFeature`).
+5.  Open a **Pull Request**.
 
-## 📄 Licença
+## 📄 License
 
-Distribuído sob a Licença GPL-3.0-or-later. Veja `LICENSE.txt` para mais informações.
+Distributed under the GPL-3.0-or-later License. See `LICENSE.txt` for more information.
 
 ---

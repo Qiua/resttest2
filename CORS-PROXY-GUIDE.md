@@ -1,122 +1,124 @@
-# Sistema de Proxy CORS - REST Test 2.0
+# CORS Proxy System - REST Test 2.0
 
-## 🚀 Solução Completa para Problemas de CORS
+## 🚀 Complete Solution for CORS Issues
 
-O REST Test 2.0 inclui um sistema completo para resolver problemas de CORS durante o desenvolvimento e testes de APIs.
+REST Test 2.0 includes a comprehensive system to solve CORS problems during API development and testing.
 
-## 🎯 Como Usar
+## 🎯 How to Use
 
-### 1. Identificação Automática de CORS
+### 1. Automatic CORS Detection
 
-- A aplicação detecta automaticamente URLs que podem ter problemas de CORS
-- Exibe avisos visuais quando necessário
-- Sugere configuração de proxy
+- The app automatically detects URLs that may have CORS issues
+- Displays visual warnings when needed
+- Suggests proxy configuration
 
-### 2. Configuração de Proxy
+### 2. Proxy Configuration
 
-#### Acesso às Configurações
+#### Accessing Settings
 
-- Clique no ícone de configurações (⚙️) no header da aplicação
-- Ou clique em "Configurar" no aviso de CORS que aparece automaticamente
+- Click the settings icon (⚙️) in the app header
+- Or click "Configure" in the CORS warning that appears automatically
 
-#### Opções Disponíveis
+#### Available Options
 
-**1. Proxy Local (Vite) - RECOMENDADO**
+**1. Local Proxy (Vite) - RECOMMENDED**
 
-- ✅ Proxy local configurado no Vite
-- ✅ Melhor performance
-- ✅ Sem limitações de rate limiting
-- ✅ Ideal para desenvolvimento
+- ✅ Local proxy configured in Vite
+- ✅ Best performance
+- ✅ No rate limiting
+- ✅ Ideal for development
 
 **2. CORS Anywhere**
 
-- ⚠️ Proxy público com limitações
-- ⚠️ Requer ativação de demo
-- ⚠️ Rate limiting aplicado
+- ⚠️ Public proxy with limitations
+- ⚠️ Requires demo activation
+- ⚠️ Rate limiting applied
 
 **3. AllOrigins**
 
-- ✅ Proxy público gratuito
-- ⚠️ Dados podem ser logados
-- ✅ Sem necessidade de ativação
+- ✅ Free public proxy
+- ⚠️ Data may be logged
+- ✅ No activation required
 
-**4. Proxy Personalizado**
+**4. Custom Proxy**
 
-- ✅ Configure seu próprio servidor proxy
-- ✅ Controle total sobre privacidade
-- ✅ Sem limitações
+- ✅ Set up your own proxy server
+- ✅ Full privacy control
+- ✅ No limitations
 
-### 3. Importação da Collection do Postman
+### 3. Importing the Postman Collection
 
-Para testar com a collection anexada:
+To test with the attached collection:
 
-1. **Importe a Collection**:
-   - Clique no ícone de link externo na barra lateral
-   - Vá para a aba "Importar"
-   - Selecione o arquivo `New Collection.postman_collection.json`
-   - A aplicação detectará automaticamente o formato Postman
+1. **Import the Collection**:
 
-2. **Configure o Proxy**:
-   - Como as URLs da ANATEL terão problemas de CORS, configure um proxy
-   - Recomendado: Use "Proxy Local (Vite)" para melhor performance
+   - Click the external link icon in the sidebar
+   - Go to the "Import" tab
+   - Select the file `New Collection.postman_collection.json`
+   - The app will automatically detect the Postman format
 
-3. **Teste as Requisições**:
-   - Selecione uma requisição importada
-   - Execute e veja os resultados sem erros de CORS
+2. **Configure the Proxy**:
 
-## 🔧 Configuração Avançada
+   - As ANATEL URLs will have CORS issues, configure a proxy
+   - Recommended: Use "Local Proxy (Vite)" for best performance
 
-### Proxy Local do Vite
+3. **Test Requests**:
+   - Select an imported request
+   - Execute and see results without CORS errors
 
-O arquivo `vite.config.ts` já está configurado com proxies para:
+## 🔧 Advanced Configuration
+
+### Vite Local Proxy
+
+The `vite.config.ts` file is already set up with proxies for:
 
 - `/api/anatel/*` → `https://sistemas.anatel.gov.br/*`
-- `/api/cors-proxy/*` → Para outras URLs via CORS Anywhere
+- `/api/cors-proxy/*` → For other URLs via CORS Anywhere
 
-### URLs Suportadas Automaticamente
+### Automatically Supported URLs
 
-- `sistemas.anatel.gov.br` → Automaticamente roteado via `/api/anatel`
-- Outras URLs → Via proxy genérico configurado
+- `sistemas.anatel.gov.br` → Automatically routed via `/api/anatel`
+- Other URLs → Via generic proxy configuration
 
-## 📋 Exemplos de Uso
+## 📋 Usage Examples
 
-### Exemplo 1: URL da ANATEL
-
-```
-URL Original: https://sistemas.anatel.gov.br/areaarea/N_ConsultaLocalidade/Tela.asp
-Com Proxy Local: /api/anatel/areaarea/N_ConsultaLocalidade/Tela.asp
-```
-
-### Exemplo 2: API Externa
+### Example 1: ANATEL URL
 
 ```
-URL Original: https://api.exemplo.com/dados
-Com AllOrigins: https://api.allorigins.win/get?url=https%3A//api.exemplo.com/dados
+Original URL: https://sistemas.anatel.gov.br/areaarea/N_ConsultaLocalidade/Tela.asp
+With Local Proxy: /api/anatel/areaarea/N_ConsultaLocalidade/Tela.asp
 ```
 
-## 🛡️ Segurança e Privacidade
+### Example 2: External API
 
-### Proxy Local (Recomendado)
+```
+Original URL: https://api.example.com/data
+With AllOrigins: https://api.allorigins.win/get?url=https%3A//api.example.com/data
+```
 
-- ✅ Dados não saem do seu ambiente de desenvolvimento
-- ✅ Nenhum logging externo
-- ✅ Máxima privacidade
+## 🛡️ Security and Privacy
 
-### Proxies Públicos
+### Local Proxy (Recommended)
 
-- ⚠️ Dados podem ser registrados pelos serviços
-- ⚠️ Use apenas para desenvolvimento
-- ⚠️ Não envie dados sensíveis
+- ✅ Data stays in your development environment
+- ✅ No external logging
+- ✅ Maximum privacy
 
-## 🚀 Em Produção
+### Public Proxies
 
-### Para Resolver CORS Definitivamente:
+- ⚠️ Data may be logged by services
+- ⚠️ Use only for development
+- ⚠️ Do not send sensitive data
 
-1. **Configure CORS no Servidor**: Adicione headers CORS apropriados na API
-2. **Proxy Backend**: Implemente proxy no seu servidor backend
-3. **Same-Origin**: Hospede frontend e backend no mesmo domínio
+## 🚀 In Production
 
-### Headers CORS Necessários:
+### To Solve CORS Definitively:
+
+1. **Configure CORS on the Server**: Add appropriate CORS headers to the API
+2. **Backend Proxy**: Implement a proxy on your backend server
+3. **Same-Origin**: Host frontend and backend on the same domain
+
+### Required CORS Headers:
 
 ```
 Access-Control-Allow-Origin: *
@@ -124,27 +126,27 @@ Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
 Access-Control-Allow-Headers: Content-Type, Authorization
 ```
 
-## 🐛 Solução de Problemas
+## 🐛 Troubleshooting
 
-### Erro: "blocked by CORS policy"
+### Error: "blocked by CORS policy"
 
-1. Verifique se o proxy está habilitado
-2. Teste diferentes opções de proxy
-3. Use o botão "Testar" para verificar funcionamento
+1. Check if the proxy is enabled
+2. Test different proxy options
+3. Use the "Test" button to check functionality
 
-### Proxy não funciona
+### Proxy Not Working
 
-1. Teste a conectividade com o botão "Testar"
-2. Verifique se a URL está formatada corretamente
-3. Para CORS Anywhere, ative a demo em: https://cors-anywhere.herokuapp.com/corsdemo
+1. Test connectivity with the "Test" button
+2. Check if the URL is formatted correctly
+3. For CORS Anywhere, activate the demo at: https://cors-anywhere.herokuapp.com/corsdemo
 
-### Problemas de Performance
+### Performance Issues
 
-1. Use o Proxy Local (Vite) sempre que possível
-2. Evite proxies públicos para grande volume de requisições
-3. Configure proxy personalizado se necessário
+1. Always use Local Proxy (Vite) when possible
+2. Avoid public proxies for high request volume
+3. Set up a custom proxy if needed
 
-## 📚 Links Úteis
+## 📚 Useful Links
 
 - [CORS Anywhere Demo](https://cors-anywhere.herokuapp.com/corsdemo)
 - [AllOrigins Docs](https://allorigins.win/)

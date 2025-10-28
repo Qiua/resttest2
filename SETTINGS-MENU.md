@@ -1,70 +1,70 @@
-# 🎛️ Menu de Configurações na Sidebar
+# 🎛️ Settings Menu in the Sidebar
 
-## Implementação Realizada
+## Implementation Overview
 
-Criou-se um menu de configurações centralizado na sidebar que organiza todas as funcionalidades de configuração da aplicação em um local acessível e intuitivo.
+A centralized settings menu was created in the sidebar, organizing all configuration features of the application in one accessible and intuitive location.
 
-## Funcionalidades Implementadas
+## Implemented Features
 
-### 📋 Novo Componente: SettingsMenu
+### 📋 New Component: SettingsMenu
 
-**Localização**: `src/components/SettingsMenu.tsx`
+**Location**: `src/components/SettingsMenu.tsx`
 
-O componente centraliza todas as configurações em um menu expansível, organizado em seções:
+The component centralizes all settings in an expandable menu, organized into sections:
 
-#### 🌍 Seção de Ambientes
+#### 🌍 Environment Section
 
-- **Seletor de Ambiente**: Dropdown para alternar entre ambientes configurados
-- **Gerenciar Ambientes**: Acesso direto ao modal de gerenciamento
-- **Indicador Visual**: Mostra ambiente ativo e quantidade de variáveis
+- **Environment Selector**: Dropdown to switch between configured environments
+- **Manage Environments**: Direct access to the management modal
+- **Visual Indicator**: Shows active environment and variable count
 
-#### 🎨 Seção de Interface
+#### 🎨 Interface Section
 
-- **Seletor de Idioma**: Troca entre português e inglês
-- **Toggle de Tema**: Alternância entre tema claro e escuro
-- **Preservação dos Componentes**: Mantém funcionalidades existentes
+- **Language Selector**: Switch between Portuguese and English
+- **Theme Toggle**: Switch between light and dark themes
+- **Component Preservation**: Maintains existing functionalities
 
-#### 🔧 Seção de Ferramentas
+#### 🔧 Tools Section
 
-- **Histórico de Requisições**: Acesso ao modal de histórico
-- **Configurações de Proxy**: Acesso às configurações de CORS/proxy
-- **Import/Export**: Funcionalidades de importação e exportação
+- **Request History**: Access to the history modal
+- **Proxy Settings**: Access to CORS/proxy settings
+- **Import/Export**: Import and export functionalities
 
-### 🔄 Reorganização da Interface
+### 🔄 Interface Reorganization
 
-#### Sidebar Aprimorada
+#### Enhanced Sidebar
 
-- **Menu de Configurações**: Posicionado antes das collections
-- **Design Consistente**: Segue o padrão visual das collections
-- **Experiência Expansível**: Menu colapsável para economizar espaço
+- **Settings Menu**: Positioned before collections
+- **Consistent Design**: Follows the visual pattern of collections
+- **Expandable Experience**: Collapsible menu to save space
 
-#### Header Simplificado
+#### Simplified Header
 
-- **Limpeza Visual**: Removidos controles de configuração
-- **Foco na Funcionalidade**: Mantém apenas migração de requests antigos
-- **Melhor Organização**: Interface mais limpa e focada
+- **Visual Cleanup**: Configuration controls removed
+- **Functionality Focus**: Only migration of old requests remains
+- **Better Organization**: Cleaner and more focused interface
 
-## Benefícios da Implementação
+## Implementation Benefits
 
-### ✅ Melhor UX/UI
+### ✅ Improved UX/UI
 
-- **Organização Centralizada**: Todas as configurações em um local
-- **Acesso Rápido**: Disponível sempre que a sidebar estiver aberta
-- **Interface Limpa**: Header menos poluído e mais focado
+- **Centralized Organization**: All settings in one place
+- **Quick Access**: Always available when the sidebar is open
+- **Clean Interface**: Less cluttered header, more focus
 
-### ✅ Melhor Acessibilidade
+### ✅ Better Accessibility
 
-- **Localização Intuitiva**: Configurações onde o usuário espera encontrar
-- **Visibilidade Consistente**: Sempre acessível na sidebar
-- **Organização Lógica**: Agrupamento por categoria de funcionalidade
+- **Intuitive Location**: Settings where users expect to find them
+- **Consistent Visibility**: Always accessible in the sidebar
+- **Logical Organization**: Grouped by functionality category
 
-### ✅ Escalabilidade
+### ✅ Scalability
 
-- **Fácil Expansão**: Estrutura preparada para novas configurações
-- **Componentização**: Seções organizadas e reutilizáveis
-- **Manutenibilidade**: Código organizado e bem estruturado
+- **Easy Expansion**: Structure ready for new settings
+- **Componentization**: Organized and reusable sections
+- **Maintainability**: Well-structured and organized code
 
-## Estrutura Técnica
+## Technical Structure
 
 ### Props Interface
 
@@ -83,34 +83,34 @@ interface SettingsMenuProps {
 }
 ```
 
-### Integração com Sidebar
+### Sidebar Integration
 
-- **Props Estendidas**: Sidebar recebe props de configurações
-- **Passagem de Callbacks**: Funções delegadas do App.tsx
-- **Posicionamento**: Menu inserido antes das collections
+- **Extended Props**: Sidebar receives settings props
+- **Callback Passing**: Functions delegated from App.tsx
+- **Positioning**: Menu inserted before collections
 
-### Internacionalização
+### Internationalization
 
-- **Traduções Adicionadas**: Chaves para português e inglês
-- **Seções Traduzidas**: Títulos e descrições localizados
-- **Compatibilidade**: Funciona com sistema i18n existente
+- **Additional Translations**: Keys for Portuguese and English
+- **Translated Sections**: Localized titles and descriptions
+- **Compatibility**: Works with existing i18n system
 
-## Arquivos Modificados
+## Modified Files
 
-### Novos Arquivos
+### New Files
 
-- `src/components/SettingsMenu.tsx` - Componente principal do menu
+- `src/components/SettingsMenu.tsx` - Main menu component
 
-### Arquivos Atualizados
+### Updated Files
 
-- `src/components/Sidebar.tsx` - Integração do menu de configurações
-- `src/App.tsx` - Props estendidas e header simplificado
-- `src/locales/en/translation.json` - Traduções em inglês
-- `src/locales/pt/translation.json` - Traduções em português
+- `src/components/Sidebar.tsx` - Settings menu integration
+- `src/App.tsx` - Extended props and simplified header
+- `src/locales/en/translation.json` - English translations
+- `src/locales/pt/translation.json` - Portuguese translations
 
-## Traduções Adicionadas
+## Additional Translations
 
-### Inglês (`en/translation.json`)
+### English (`en/translation.json`)
 
 ```json
 "settings": {
@@ -124,7 +124,7 @@ interface SettingsMenuProps {
 }
 ```
 
-### Português (`pt/translation.json`)
+### Portuguese (`pt/translation.json`)
 
 ```json
 "settings": {
@@ -138,42 +138,42 @@ interface SettingsMenuProps {
 }
 ```
 
-## Qualidade e Padrões
+## Quality and Standards
 
-### ✅ Verificações Realizadas
+### ✅ Checks Performed
 
-- **TypeScript**: Sem erros de tipo
-- **ESLint**: Código seguindo padrões
-- **Prettier**: Formatação consistente
-- **Testes de Qualidade**: `npm run quality` passou
+- **TypeScript**: No type errors
+- **ESLint**: Code follows standards
+- **Prettier**: Consistent formatting
+- **Quality Tests**: `npm run quality` passed
 
-### ✅ Padrões Seguidos
+### ✅ Standards Followed
 
-- **Componentização**: Componente reutilizável e bem estruturado
-- **Props Interface**: Tipagem clara e bem definida
-- **Styling**: Classes Tailwind CSS consistentes
-- **Internacionalização**: Suporte completo ao i18n
+- **Componentization**: Reusable and well-structured component
+- **Props Interface**: Clear and well-defined typing
+- **Styling**: Consistent Tailwind CSS classes
+- **Internationalization**: Full i18n support
 
-## Impacto na Experiência do Usuário
+## User Experience Impact
 
-### Antes
+### Before
 
-- Configurações espalhadas pelo header
-- Interface cluttered com muitos controles
-- Difícil localização de funcionalidades
+- Settings scattered across the header
+- Cluttered interface with many controls
+- Hard to locate features
 
-### Depois
+### After
 
-- Menu organizado e centralizado na sidebar
-- Header limpo e focado
-- Acesso intuitivo e bem organizado às configurações
-- Melhor uso do espaço disponível
+- Organized and centralized menu in the sidebar
+- Clean and focused header
+- Intuitive and well-organized access to settings
+- Better use of available space
 
-## Próximos Passos Possíveis
+## Possible Next Steps
 
-1. **Configurações Avançadas**: Adicionar mais opções de personalização
-2. **Seções Adicionais**: Expandir com novas categorias conforme necessário
-3. **Atalhos de Teclado**: Implementar shortcuts para acesso rápido
-4. **Configurações Persistentes**: Salvar preferências de menu expandido/colapsado
+1. **Advanced Settings**: Add more customization options
+2. **Additional Sections**: Expand with new categories as needed
+3. **Keyboard Shortcuts**: Implement shortcuts for quick access
+4. **Persistent Settings**: Save expanded/collapsed menu preferences
 
-A implementação do menu de configurações na sidebar representa uma melhoria significativa na organização e usabilidade da aplicação, criando uma experiência mais profissional e intuitiva para os usuários.
+The implementation of the settings menu in the sidebar represents a significant improvement in the organization and usability of the application, creating a more professional and intuitive experience for users.

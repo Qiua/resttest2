@@ -1,87 +1,87 @@
-# 🌍 Sistema de Ambientes (Environments)
+# 🌍 Environment System
 
-O REST Test 2.0 agora inclui um sistema robusto de ambientes que permite definir variáveis que podem ser reutilizadas em suas requisições. Isso é especialmente útil para gerenciar diferentes contextos como desenvolvimento, homologação e produção.
+REST Test 2.0 now includes a robust environment system that lets you define variables to reuse in your requests. This is especially useful for managing different contexts like development, staging, and production.
 
-## 🚀 Como Usar
+## 🚀 How to Use
 
-### 1. Acessando o Gerenciador de Ambientes
+### 1. Accessing the Environment Manager
 
-Na barra superior da aplicação, você encontrará:
+In the application's top bar, you'll find:
 
-- **Seletor de Ambiente**: Um dropdown que mostra o ambiente ativo atual
-- **Botão de Gerenciar**: Clique para abrir o modal de gerenciamento completo
+- **Environment Selector**: A dropdown showing the current active environment
+- **Manage Button**: Click to open the full management modal
 
-### 2. Criando um Ambiente
+### 2. Creating an Environment
 
-1. Clique no botão "Gerenciar Ambientes" no seletor
-2. No modal que abrir, clique em "Novo Ambiente"
-3. Defina um nome descritivo (ex: "Desenvolvimento", "Produção")
-4. Adicione uma descrição opcional
-5. Clique em "Salvar"
+1. Click the "Manage Environments" button in the selector
+2. In the modal, click "New Environment"
+3. Enter a descriptive name (e.g., "Development", "Production")
+4. Optionally add a description
+5. Click "Save"
 
-### 3. Adicionando Variáveis
+### 3. Adding Variables
 
-Para cada ambiente, você pode definir variáveis:
+For each environment, you can define variables:
 
-1. Selecione o ambiente desejado
-2. Na seção "Variáveis", clique em "Nova Variável"
-3. Defina:
-   - **Nome**: O nome da variável (ex: `baseUrl`, `apiKey`)
-   - **Valor**: O valor correspondente
-   - **Descrição**: Uma descrição opcional
-   - **Secreta**: Marque se for uma informação sensível (será mascarada na interface)
+1. Select the desired environment
+2. In the "Variables" section, click "New Variable"
+3. Define:
+   - **Name**: The variable name (e.g., `baseUrl`, `apiKey`)
+   - **Value**: The corresponding value
+   - **Description**: An optional description
+   - **Secret**: Mark if it's sensitive (will be masked in the UI)
 
-### 4. Usando Variáveis nas Requisições
+### 4. Using Variables in Requests
 
-As variáveis são utilizadas com a sintaxe `{{nomeVariavel}}`. Elas podem ser usadas em:
+Variables use the syntax `{{variableName}}`. They can be used in:
 
 - **URL**: `{{baseUrl}}/api/users`
 - **Headers**: `Authorization: Bearer {{authToken}}`
-- **Parâmetros**: Chave ou valor de parâmetros de formulário
-- **Body**: Em qualquer parte do corpo da requisição
-- **Autenticação**: Tokens, usuários, senhas, etc.
+- **Parameters**: Key or value in form parameters
+- **Body**: Anywhere in the request body
+- **Authentication**: Tokens, usernames, passwords, etc.
 
-## 📝 Exemplos Práticos
+## 📝 Practical Examples
 
-### Ambiente de Desenvolvimento
+### Development Environment
 
 ```
-Nome: Desenvolvimento
-Descrição: Servidor local de desenvolvimento
+Name: Development
+Description: Local development server
 
-Variáveis:
+Variables:
 - baseUrl: http://localhost:3000
 - apiKey: dev-api-key-123
 - authToken: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 ```
 
-### Ambiente de Produção
+### Production Environment
 
 ```
-Nome: Produção
-Descrição: Servidor de produção
+Name: Production
+Description: Production server
 
-Variáveis:
-- baseUrl: https://api.minhaempresa.com
+Variables:
+- baseUrl: https://api.mycompany.com
 - apiKey: prod-api-key-xyz
 - authToken: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 ```
 
-### Exemplos de Uso nas Requisições
+### Usage Examples in Requests
 
-**URL da Requisição:**
+**Request URL:**
 
 ```
 {{baseUrl}}/api/v1/users
 ```
 
-**Header de Autorização:**
+**Authorization Header:**
 
 ```
 Authorization: Bearer {{authToken}}
 ```
 
-**Body JSON:**
+**JSON Body:**
 
 ```json
 {
@@ -93,85 +93,85 @@ Authorization: Bearer {{authToken}}
 }
 ```
 
-## 🔄 Funcionalidades Avançadas
+## 🔄 Advanced Features
 
-### Duplicação de Ambientes
+### Environment Duplication
 
-- Útil para criar variações de um ambiente existente
-- Mantém todas as variáveis, permitindo edições pontuais
+- Useful for creating variations of an existing environment
+- Keeps all variables, allowing targeted edits
 
-### Importação e Exportação
+### Import and Export
 
-- **Exportar Ambiente**: Baixa um arquivo JSON com as configurações
-- **Exportar Todos**: Baixa todos os ambientes em um único arquivo
-- **Importar**: Carrega ambientes de arquivos JSON exportados anteriormente
+- **Export Environment**: Downloads a JSON file with the settings
+- **Export All**: Downloads all environments in a single file
+- **Import**: Loads environments from previously exported JSON files
 
-### Variáveis Secretas
+### Secret Variables
 
-- Variáveis marcadas como "secretas" têm seus valores mascarados na interface
-- Útil para tokens, senhas e outras informações sensíveis
-- Os valores são utilizados normalmente nas requisições
+- Variables marked as "secret" have their values masked in the UI
+- Useful for tokens, passwords, and other sensitive info
+- Values are used normally in requests
 
-### Ambiente Global
+### Global Environment
 
-- Um ambiente especial que está sempre ativo
-- Suas variáveis são resolvidas mesmo quando outro ambiente está selecionado
-- Útil para configurações que se aplicam a todos os contextos
+- A special environment that's always active
+- Its variables are resolved even when another environment is selected
+- Useful for settings that apply to all contexts
 
-## 🔧 Resolução de Variáveis
+## 🔧 Variable Resolution
 
-A resolução de variáveis segue esta ordem de prioridade:
+Variable resolution follows this priority order:
 
-1. **Ambiente Ativo**: Variáveis do ambiente selecionado têm prioridade máxima
-2. **Ambiente Global**: Usado como fallback se a variável não existir no ambiente ativo
-3. **Texto Original**: Se a variável não for encontrada, o texto `{{variavel}}` permanece inalterado
+1. **Active Environment**: Variables from the selected environment have highest priority
+2. **Global Environment**: Used as fallback if the variable doesn't exist in the active environment
+3. **Original Text**: If the variable isn't found, the text `{{variable}}` remains unchanged
 
-## 💡 Dicas e Boas Práticas
+## 💡 Tips and Best Practices
 
-### Nomenclatura de Variáveis
+### Variable Naming
 
-- Use nomes descritivos: `baseUrl` em vez de `url`
-- Mantenha consistência entre ambientes
-- Use camelCase para melhor legibilidade
+- Use descriptive names: `baseUrl` instead of `url`
+- Keep consistency across environments
+- Use camelCase for readability
 
-### Organização
+### Organization
 
-- Crie ambientes para cada contexto (dev, test, staging, prod)
-- Use descrições claras para documentar o propósito
-- Mantenha o número de variáveis gerenciável
+- Create environments for each context (dev, test, staging, prod)
+- Use clear descriptions to document the purpose
+- Keep the number of variables manageable
 
-### Segurança
+### Security
 
-- Marque informações sensíveis como "secretas"
-- Não compartilhe arquivos de ambiente com tokens reais
-- Use variáveis específicas para dados sensíveis
+- Mark sensitive info as "secret"
+- Don't share environment files with real tokens
+- Use specific variables for sensitive data
 
-### Workflow Eficiente
+### Efficient Workflow
 
-1. Configure todos os ambientes antes de criar requisições
-2. Use o seletor rápido para alternar entre contextos
-3. Teste suas requisições em diferentes ambientes
-4. Exporte configurações para backup e compartilhamento
+1. Set up all environments before creating requests
+2. Use the quick selector to switch contexts
+3. Test your requests in different environments
+4. Export settings for backup and sharing
 
-## 🔍 Resolução de Problemas
+## 🔍 Troubleshooting
 
-### Variável não está sendo substituída
+### Variable Not Being Replaced
 
-- Verifique se o nome está correto (case-sensitive)
-- Confirme que o ambiente correto está ativo
-- Verifique se a variável existe no ambiente selecionado
+- Check if the name is correct (case-sensitive)
+- Confirm the correct environment is active
+- Make sure the variable exists in the selected environment
 
-### Caracteres especiais
+### Special Characters
 
-- Variáveis com espaços ou caracteres especiais devem usar nomes simples
-- Prefira `apiKey` em vez de `api key` ou `api-key`
+- Variables with spaces or special characters should use simple names
+- Prefer `apiKey` over `api key` or `api-key`
 
 ### Performance
 
-- O sistema resolve variáveis em tempo real
-- Não há limite prático para o número de variáveis
-- Ambientes são persistidos no localStorage do navegador
+- The system resolves variables in real time
+- No practical limit to the number of variables
+- Environments are persisted in the browser's localStorage
 
 ---
 
-O sistema de ambientes torna o REST Test 2.0 uma ferramenta ainda mais poderosa para desenvolvimento e teste de APIs, permitindo uma experiência fluida ao trabalhar com múltiplos contextos e configurações.
+The environment system makes REST Test 2.0 an even more powerful tool for API development and testing, enabling a smooth experience when working with multiple contexts and configurations.

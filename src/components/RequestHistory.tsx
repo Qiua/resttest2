@@ -17,8 +17,9 @@
 */
 
 // src/components/RequestHistory.tsx
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { List, type ListImperativeAPI } from 'react-window'
 import {
   FiClock,
   FiSearch,
@@ -90,7 +91,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
 
   const stats = useMemo(() => getStats(), [getStats])
 
-  const getMethodColor = (method: string) => {
+  const getMethodColor = useCallback((method: string) => {
     switch (method.toUpperCase()) {
       case 'GET':
         return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900'
@@ -105,21 +106,21 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
       default:
         return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900'
     }
-  }
+  }, [])
 
-  const getStatusColor = (status: number) => {
+  const getStatusColor = useCallback((status: number) => {
     if (status >= 200 && status < 300) return 'text-green-600 dark:text-green-400'
     if (status >= 400) return 'text-red-600 dark:text-red-400'
     if (status >= 300) return 'text-yellow-600 dark:text-yellow-400'
     return 'text-gray-600 dark:text-gray-400'
-  }
+  }, [])
 
-  const formatDuration = (ms: number) => {
+  const formatDuration = useCallback((ms: number) => {
     if (ms < 1000) return `${ms}ms`
     return `${(ms / 1000).toFixed(2)}s`
-  }
+  }, [])
 
-  const formatTimestamp = (timestamp: string) => {
+  const formatTimestamp = useCallback((timestamp: string) => {
     const date = new Date(timestamp)
     const now = new Date()
     const diff = now.getTime() - date.getTime()
@@ -128,9 +129,81 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
     if (diff < 3600000) return `${Math.floor(diff / 60000)}min atrás`
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}h atrás`
     return date.toLocaleDateString()
-  }
+  }, [])
 
   const uniqueMethods = Array.from(new Set(history.map(entry => entry.method)))
+
+  // Ref para a lista virtual
+  const listRef = useRef<ListImperativeAPI>(null)
+
+  // Altura de cada item da lista
+  const ITEM_HEIGHT = 88
+
+  // Componente de linha para o virtual scrolling
+  const Row = ({
+    index,
+    style,
+  }: {
+    ariaAttributes: { 'aria-posinset': number; 'aria-setsize': number; role: 'listitem' }
+    index: number
+    style: React.CSSProperties
+  }) => {
+    const entry = filteredHistory[index]
+
+    return (
+      <div style={style} className="border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors h-full">
+          <div className="flex items-center justify-between h-full">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {/* Method Badge */}
+              <span className={`px-2 py-1 rounded-md text-xs font-bold ${getMethodColor(entry.method)}`}>
+                {entry.method}
+              </span>
+
+              {/* URL */}
+              <div className="flex-1 min-w-0">
+                <div className="truncate text-sm font-medium text-gray-900 dark:text-white">{entry.url}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className={`text-xs font-medium ${getStatusColor(entry.response.status)}`}>
+                    {entry.response.status} {entry.response.statusText}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatDuration(entry.duration)}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatTimestamp(entry.timestamp)}</span>
+                </div>
+              </div>
+
+              {/* Status Icon */}
+              <div className="flex items-center">
+                {entry.status === 'success' ? (
+                  <FiCheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                ) : (
+                  <FiXCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                )}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-1 ml-3">
+              <button
+                onClick={() => onRecreateRequest(entry)}
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+                title={t('history.recreateRequest')}
+              >
+                <FiPlay className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => onRemoveEntry(entry.id)}
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors text-red-600 dark:text-red-400"
+                title={t('history.removeEntry')}
+              >
+                <FiTrash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!isOpen) return null
 
@@ -264,7 +337,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
         </div>
 
         {/* History List */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-hidden">
           {filteredHistory.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400">
               <FiClock className="w-12 h-12 mb-4" />
@@ -272,63 +345,14 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
               <p className="text-sm">{t('history.emptyDescription')}</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredHistory.map(entry => (
-                <div key={entry.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {/* Method Badge */}
-                      <span className={`px-2 py-1 rounded-md text-xs font-bold ${getMethodColor(entry.method)}`}>
-                        {entry.method}
-                      </span>
-
-                      {/* URL */}
-                      <div className="flex-1 min-w-0">
-                        <div className="truncate text-sm font-medium text-gray-900 dark:text-white">{entry.url}</div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs font-medium ${getStatusColor(entry.response.status)}`}>
-                            {entry.response.status} {entry.response.statusText}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatDuration(entry.duration)}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatTimestamp(entry.timestamp)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Status Icon */}
-                      <div className="flex items-center">
-                        {entry.status === 'success' ? (
-                          <FiCheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        ) : (
-                          <FiXCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-1 ml-3">
-                      <button
-                        onClick={() => onRecreateRequest(entry)}
-                        className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
-                        title={t('history.recreateRequest')}
-                      >
-                        <FiPlay className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => onRemoveEntry(entry.id)}
-                        className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors text-red-600 dark:text-red-400"
-                        title={t('history.removeEntry')}
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <List
+              listRef={listRef}
+              rowCount={filteredHistory.length}
+              rowHeight={ITEM_HEIGHT}
+              rowComponent={Row}
+              rowProps={{}}
+              className="scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent"
+            />
           )}
         </div>
       </div>

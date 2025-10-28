@@ -21,11 +21,14 @@ import './index.css'
 import './i18n' // Inicializar i18n
 import App from './App.tsx'
 import { ThemeProvider } from './contexts/ThemeContext.tsx'
+import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )

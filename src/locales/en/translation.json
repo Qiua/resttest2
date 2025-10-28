@@ -67,6 +67,11 @@
       "sending": "Sending...",
       "saveRequest": "Save request"
     },
+    "errors": {
+      "urlRequired": "Please enter a valid URL",
+      "invalidUrl": "Invalid URL. Check the format (e.g., https://api.example.com)",
+      "requestFailed": "Failed to send request"
+    },
     "tabs": {
       "params": "Parameters",
       "auth": "Auth",
@@ -308,9 +313,11 @@
     "secret": "Secret",
     "duplicate": "Duplicate Environment",
     "duplicateName": "Enter name for duplicated environment",
+    "enterNewName": "Enter name for the new environment",
     "export": "Export Environment",
     "exportAll": "Export All Environments",
     "import": "Import Environment",
+    "importSuccess": "Environment imported successfully!",
     "importError": "Error importing environment file",
     "delete": "Delete Environment",
     "selectEnvironmentDescription": "Select an environment to view and edit its variables"

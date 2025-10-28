@@ -19,8 +19,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/dompurify": "^3.0.5",
+    "@types/react-window": "^1.8.8",
     "axios": "^1.10.0",
     "country-flag-icons": "^1.5.19",
+    "dompurify": "^3.3.0",
     "i18next": "^25.2.1",
     "i18next-browser-languagedetector": "^8.2.0",
     "react": "^19.1.0",
@@ -28,7 +31,9 @@
     "react-i18next": "^15.5.3",
     "react-icons": "^5.5.0",
     "react-resizable-panels": "^3.0.3",
-    "react-syntax-highlighter": "^16.0.0"
+    "react-syntax-highlighter": "^16.0.0",
+    "react-window": "^2.2.2",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

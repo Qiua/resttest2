@@ -17,7 +17,7 @@
 */
 
 // src/App.tsx
-import { useState } from 'react'
+import { useState, useRef, lazy, Suspense, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiRefreshCw } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
@@ -27,14 +27,10 @@ import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
 import { WorkspacePanel } from './components/WorkspacePanel'
 import { RequestTabs } from './components/RequestTabs'
-import { EnvironmentManager } from './components/EnvironmentManager'
-import { ImportExportModal } from './components/ImportExportModal'
-import { ProxySettings } from './components/ProxySettings'
 import { ConfirmModal } from './components/ConfirmModal'
 import { PromptModal } from './components/PromptModal'
 import { NotificationModal } from './components/NotificationModal'
-import { InterfaceSettings } from './components/InterfaceSettings'
-import { RequestHistory } from './components/RequestHistory'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { type SavedRequest, type Workspace, type Collection, type HistoryEntry } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useRequestTabs } from './hooks/useRequestTabs'
@@ -42,9 +38,38 @@ import { useRequestHistory } from './hooks/useRequestHistory'
 import { useEnvironments } from './hooks/useEnvironments'
 import { useModal } from './hooks/useModal'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
+import { validateUrl } from './schemas'
+import { logger } from './utils/logger'
+
+// Lazy load heavy components for better performance
+const EnvironmentManager = lazy(() =>
+  import('./components/EnvironmentManager').then(module => ({ default: module.EnvironmentManager })),
+)
+const ImportExportModal = lazy(() =>
+  import('./components/ImportExportModal').then(module => ({ default: module.ImportExportModal })),
+)
+const ProxySettings = lazy(() =>
+  import('./components/ProxySettings').then(module => ({ default: module.ProxySettings })),
+)
+const InterfaceSettings = lazy(() =>
+  import('./components/InterfaceSettings').then(module => ({ default: module.InterfaceSettings })),
+)
+const RequestHistory = lazy(() =>
+  import('./components/RequestHistory').then(module => ({ default: module.RequestHistory })),
+)
+
+// Loading fallback component for lazy-loaded modals
+const LoadingFallback: React.FC = () => (
+  <div className="flex items-center justify-center p-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+  </div>
+)
 
 function App() {
   const { t } = useTranslation()
+
+  // Ref para controlar AbortController e evitar race conditions
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   // Sistema de tabs para gerenciar múltiplas requisições
   const {
@@ -97,15 +122,15 @@ function App() {
     },
   ])
 
-  // Estado da Sidebar
+  // Sidebar States
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false)
   const [activeWorkspace, setActiveWorkspace] = useState<string>('default')
 
-  // Hook para modais
+  // Modals Hooks
   const modal = useModal()
 
-  // Sistema de ambientes (environments)
+  // Environments System
   const {
     environments,
     activeEnvironmentId,
@@ -138,6 +163,9 @@ function App() {
 
   // Estado das Configurações de Interface
   const [interfaceSettingsOpen, setInterfaceSettingsOpen] = useState(false)
+
+  // Memoize active workspace to avoid recalculation
+  const currentWorkspace = useMemo(() => workspaces.find(w => w.id === activeWorkspace), [workspaces, activeWorkspace])
 
   // Funções para manipular workspaces e collections
   const handleNewWorkspace = async () => {
@@ -200,8 +228,7 @@ function App() {
     if (!name) return
 
     // Se não foi especificada uma collection, usa a primeira disponível
-    const targetWorkspace = workspaces.find(w => w.id === activeWorkspace)
-    if (!targetWorkspace || targetWorkspace.collections.length === 0) {
+    if (!currentWorkspace || currentWorkspace.collections.length === 0) {
       modal.showNotification({
         title: t('common.error'),
         message: t('messages.createCollectionFirst'),
@@ -210,7 +237,7 @@ function App() {
       return
     }
 
-    const targetCollectionId = collectionId || targetWorkspace.collections[0].id
+    const targetCollectionId = collectionId || currentWorkspace.collections[0].id
 
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
@@ -318,8 +345,7 @@ function App() {
     })
     if (!name) return
 
-    const targetWorkspace = workspaces.find(w => w.id === activeWorkspace)
-    if (!targetWorkspace || targetWorkspace.collections.length === 0) {
+    if (!currentWorkspace || currentWorkspace.collections.length === 0) {
       modal.showNotification({
         title: t('common.error'),
         message: t('messages.createCollectionFirst'),
@@ -328,7 +354,7 @@ function App() {
       return
     }
 
-    const targetCollectionId = targetWorkspace.collections[0].id // Usa a primeira collection
+    const targetCollectionId = currentWorkspace.collections[0].id // Usa a primeira collection
 
     const newRequest: SavedRequest = {
       id: crypto.randomUUID(),
@@ -372,16 +398,44 @@ function App() {
     })
   }
 
-  // Função para enviar a requisição
-  const handleSubmit = async () => {
+  // Função para enviar a requisição (optimized with useCallback)
+  const handleSubmit = useCallback(async () => {
     const activeTab = getActiveTab()
     if (!activeTab) return
+
+    // Resolver variáveis de ambiente na URL
+    const resolvedUrl = resolveVariables(activeTab.url)
+
+    // Validação de URL usando Zod schema
+    const urlValidation = validateUrl(resolvedUrl)
+    if (!urlValidation.success) {
+      modal.showNotification({
+        title: t('common.error'),
+        message: urlValidation.error || t('request.errors.invalidUrl'),
+        type: 'error',
+      })
+      setTabResponse(activeTab.id, null, false, null)
+      logger.warn('Invalid URL provided', {
+        url: resolvedUrl,
+        error: urlValidation.error,
+        tabId: activeTab.id,
+      })
+      return
+    }
+
+    // Cancelar requisição anterior se existir (prevenir race conditions)
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+
+    // Criar novo AbortController
+    const controller = new AbortController()
+    abortControllerRef.current = controller
 
     // Iniciar medição de tempo para o histórico
     const startTime = performance.now()
 
-    // Resolver variáveis de ambiente na URL e outros campos
-    const resolvedUrl = resolveVariables(activeTab.url)
+    // Resolver variáveis de ambiente nos outros campos
     const resolvedHeaders = activeTab.headers.map(h => ({
       ...h,
       key: resolveVariables(h.key),
@@ -479,6 +533,16 @@ function App() {
       // Aplicar proxy se configurado (usando URL resolvida)
       const finalUrl = applyProxy(resolvedUrl, proxyConfig)
 
+      logger.debug('Sending HTTP request', {
+        method: activeTab.method,
+        url: finalUrl,
+        hasProxy: proxyConfig.type !== 'none',
+        proxyType: proxyConfig.type,
+        hasAuth: activeTab.auth.type !== 'none',
+        authType: activeTab.auth.type,
+        bodyType: activeTab.body.type,
+      })
+
       // Configurar axios para o proxy (usando headers resolvidos)
       const axiosConfig = configureAxiosForProxy(
         {
@@ -486,6 +550,8 @@ function App() {
           url: finalUrl,
           headers: finalHeaders,
           data,
+          signal: controller.signal, // Adicionar signal para cancelamento
+          timeout: 30000, // 30s timeout
           auth:
             resolvedAuth.type === 'basic'
               ? {
@@ -526,6 +592,15 @@ function App() {
       // Adicionar ao histórico
       const endTime = performance.now()
       const duration = Math.round(endTime - startTime)
+
+      logger.info('HTTP request successful', {
+        method: activeTab.method,
+        url: resolvedUrl,
+        status: result.status,
+        duration,
+        responseSize: responseBody.length,
+      })
+
       addToHistory(
         activeTab,
         {
@@ -539,6 +614,16 @@ function App() {
         'success',
       )
     } catch (err) {
+      // Verificar se foi cancelamento (não é erro real)
+      if (axios.isCancel(err)) {
+        logger.debug('HTTP request cancelled', {
+          method: activeTab.method,
+          url: resolvedUrl,
+        })
+        setTabResponse(activeTab.id, null, false, null)
+        return
+      }
+
       if (err instanceof AxiosError && err.response) {
         const contentType = err.response.headers['content-type'] || ''
         let errorBody = err.response.data
@@ -565,6 +650,14 @@ function App() {
         // Adicionar ao histórico
         const endTime = performance.now()
         const duration = Math.round(endTime - startTime)
+
+        logger.warn('HTTP request failed with response', {
+          method: activeTab.method,
+          url: resolvedUrl,
+          status: err.response.status,
+          duration,
+        })
+
         addToHistory(
           activeTab,
           {
@@ -578,7 +671,15 @@ function App() {
           'error',
         )
       } else {
-        setTabResponse(activeTab.id, null, false, t('common.unexpectedError'))
+        const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError')
+
+        logger.error('HTTP request failed', err instanceof Error ? err : new Error(String(err)), {
+          method: activeTab.method,
+          url: resolvedUrl,
+          errorMessage,
+        })
+
+        setTabResponse(activeTab.id, null, false, errorMessage)
 
         // Adicionar ao histórico mesmo em caso de erro genérico
         const endTime = performance.now()
@@ -589,16 +690,16 @@ function App() {
             status: 0,
             statusText: 'Network Error',
             headers: '{}',
-            body: t('common.unexpectedError'),
+            body: errorMessage,
             contentType: 'text/plain',
           },
           duration,
           'error',
-          t('common.unexpectedError'),
+          errorMessage,
         )
       }
     }
-  }
+  }, [resolveVariables, setTabResponse, addToHistory, proxyConfig, t, modal, getActiveTab])
 
   // Função para migrar requests antigos para o sistema de collections
   const migrateOldRequests = () => {
@@ -606,10 +707,9 @@ function App() {
 
     if (requestsToMigrate.length === 0) return
 
-    const targetWorkspace = workspaces.find(w => w.id === activeWorkspace)
-    if (!targetWorkspace || targetWorkspace.collections.length === 0) return
+    if (!currentWorkspace || currentWorkspace.collections.length === 0) return
 
-    const targetCollectionId = targetWorkspace.collections[0].id
+    const targetCollectionId = currentWorkspace.collections[0].id
 
     const migratedRequests = requestsToMigrate.map(req => ({
       ...req,
@@ -837,25 +937,27 @@ function App() {
           >
             <Panel defaultSize={50} minSize={20} className="overflow-hidden">
               {getActiveTab() && (
-                <RequestForm
-                  method={getActiveTab()!.method}
-                  setMethod={method => updateTab(activeTabId!, { method })}
-                  url={getActiveTab()!.url}
-                  setUrl={url => updateTab(activeTabId!, { url })}
-                  auth={getActiveTab()!.auth}
-                  setAuth={auth => updateTab(activeTabId!, { auth })}
-                  headers={getActiveTab()!.headers}
-                  setHeaders={headers => updateTab(activeTabId!, { headers })}
-                  params={getActiveTab()!.params}
-                  setParams={params => updateTab(activeTabId!, { params })}
-                  body={getActiveTab()!.body}
-                  setBody={body => updateTab(activeTabId!, { body })}
-                  onSubmit={handleSubmit}
-                  onSave={handleSaveCurrentRequest}
-                  loading={getActiveTab()!.loading || false}
-                  proxyConfig={proxyConfig}
-                  onProxySettings={() => setProxySettingsOpen(true)}
-                />
+                <ErrorBoundary>
+                  <RequestForm
+                    method={getActiveTab()!.method}
+                    setMethod={method => updateTab(activeTabId!, { method })}
+                    url={getActiveTab()!.url}
+                    setUrl={url => updateTab(activeTabId!, { url })}
+                    auth={getActiveTab()!.auth}
+                    setAuth={auth => updateTab(activeTabId!, { auth })}
+                    headers={getActiveTab()!.headers}
+                    setHeaders={headers => updateTab(activeTabId!, { headers })}
+                    params={getActiveTab()!.params}
+                    setParams={params => updateTab(activeTabId!, { params })}
+                    body={getActiveTab()!.body}
+                    setBody={body => updateTab(activeTabId!, { body })}
+                    onSubmit={handleSubmit}
+                    onSave={handleSaveCurrentRequest}
+                    loading={getActiveTab()!.loading || false}
+                    proxyConfig={proxyConfig}
+                    onProxySettings={() => setProxySettingsOpen(true)}
+                  />
+                </ErrorBoundary>
               )}
             </Panel>
             <PanelResizeHandle
@@ -867,11 +969,13 @@ function App() {
             <Panel defaultSize={50} minSize={20} className="overflow-hidden">
               <div className="h-full p-6 bg-gray-50/50 dark:bg-gray-800/50">
                 {getActiveTab() && (
-                  <ResponseDisplay
-                    response={getActiveTab()!.response || null}
-                    loading={getActiveTab()!.loading || false}
-                    error={getActiveTab()!.error || null}
-                  />
+                  <ErrorBoundary>
+                    <ResponseDisplay
+                      response={getActiveTab()!.response || null}
+                      loading={getActiveTab()!.loading || false}
+                      error={getActiveTab()!.error || null}
+                    />
+                  </ErrorBoundary>
                 )}
               </div>
             </Panel>
@@ -880,44 +984,54 @@ function App() {
       </div>
 
       {/* Modal de Gerenciamento de Ambientes */}
-      <EnvironmentManager
-        isOpen={environmentManagerOpen}
-        onClose={() => setEnvironmentManagerOpen(false)}
-        environments={environments}
-        activeEnvironmentId={activeEnvironmentId}
-        onCreateEnvironment={createEnvironment}
-        onUpdateEnvironment={updateEnvironment}
-        onDeleteEnvironment={deleteEnvironment}
-        onDuplicateEnvironment={duplicateEnvironment}
-        onSetActiveEnvironment={setActiveEnvironment}
-        onAddVariable={addVariable}
-        onUpdateVariable={updateVariable}
-        onDeleteVariable={deleteVariable}
-        onImportEnvironment={importEnvironment}
-        onExportEnvironment={exportEnvironment}
-        onExportAllEnvironments={handleExportAllEnvironments}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <EnvironmentManager
+          isOpen={environmentManagerOpen}
+          onClose={() => setEnvironmentManagerOpen(false)}
+          environments={environments}
+          activeEnvironmentId={activeEnvironmentId}
+          onCreateEnvironment={createEnvironment}
+          onUpdateEnvironment={updateEnvironment}
+          onDeleteEnvironment={deleteEnvironment}
+          onDuplicateEnvironment={duplicateEnvironment}
+          onSetActiveEnvironment={setActiveEnvironment}
+          onAddVariable={addVariable}
+          onUpdateVariable={updateVariable}
+          onDeleteVariable={deleteVariable}
+          onImportEnvironment={importEnvironment}
+          onExportEnvironment={exportEnvironment}
+          onExportAllEnvironments={handleExportAllEnvironments}
+          onShowPrompt={modal.showPrompt}
+          onShowNotification={modal.showNotification}
+        />
+      </Suspense>
 
       {/* Modal de Importação/Exportação */}
-      <ImportExportModal
-        isOpen={importExportModalOpen}
-        onClose={() => setImportExportModalOpen(false)}
-        workspaces={workspaces}
-        onWorkspaceImported={handleWorkspaceImported}
-        onCollectionImported={handleCollectionImported}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <ImportExportModal
+          isOpen={importExportModalOpen}
+          onClose={() => setImportExportModalOpen(false)}
+          workspaces={workspaces}
+          onWorkspaceImported={handleWorkspaceImported}
+          onCollectionImported={handleCollectionImported}
+        />
+      </Suspense>
 
       {/* Modal de Configurações de Proxy */}
-      <ProxySettings
-        isOpen={proxySettingsOpen}
-        onClose={() => setProxySettingsOpen(false)}
-        proxyConfig={proxyConfig}
-        onConfigChange={setProxyConfig}
-        currentUrl={getActiveTab()?.url || ''}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <ProxySettings
+          isOpen={proxySettingsOpen}
+          onClose={() => setProxySettingsOpen(false)}
+          proxyConfig={proxyConfig}
+          onConfigChange={setProxyConfig}
+          currentUrl={getActiveTab()?.url || ''}
+        />
+      </Suspense>
 
       {/* Modal de Configurações de Interface */}
-      <InterfaceSettings isOpen={interfaceSettingsOpen} onClose={() => setInterfaceSettingsOpen(false)} />
+      <Suspense fallback={<LoadingFallback />}>
+        <InterfaceSettings isOpen={interfaceSettingsOpen} onClose={() => setInterfaceSettingsOpen(false)} />
+      </Suspense>
 
       {/* Modais do Sistema */}
       <ConfirmModal
@@ -952,17 +1066,19 @@ function App() {
       />
 
       {/* Request History Modal */}
-      <RequestHistory
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        history={history}
-        onRecreateRequest={handleRequestFromHistory}
-        onClearHistory={clearHistory}
-        onRemoveEntry={removeEntry}
-        onExportHistory={exportHistory}
-        searchHistory={searchHistory}
-        getStats={getStats}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <RequestHistory
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          history={history}
+          onRecreateRequest={handleRequestFromHistory}
+          onClearHistory={clearHistory}
+          onRemoveEntry={removeEntry}
+          onExportHistory={exportHistory}
+          searchHistory={searchHistory}
+          getStats={getStats}
+        />
+      </Suspense>
     </div>
   )
 }

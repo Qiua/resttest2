@@ -35,6 +35,7 @@ import { Tabs } from '../components/Tabs'
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus as codeStyle } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import DOMPurify from 'dompurify'
 
 interface ResponseDisplayProps {
   response: ApiResponse | null
@@ -55,6 +56,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0)
   const [matches, setMatches] = useState<number[]>([])
   const [caseSensitive, setCaseSensitive] = useState(false)
+  const [renderHtml, setRenderHtml] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
 
   // Atualizar matches quando o termo de busca mudar
@@ -194,6 +196,15 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
     return 'text'
   }
 
+  // Função para sanitizar HTML contra XSS
+  const sanitizeHtml = (html: string): string => {
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'code', 'pre', 'span', 'div'],
+      ALLOWED_ATTR: ['href', 'title', 'class'],
+      ALLOW_DATA_ATTR: false,
+    })
+  }
+
   // Função para calcular o tamanho em bytes de forma legível
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
@@ -282,6 +293,17 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {language.toUpperCase()} • {formatBytes(responseSize)}
               </span>
+              {language === 'html' && (
+                <label className="flex items-center gap-2 ml-4 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={renderHtml}
+                    onChange={e => setRenderHtml(e.target.checked)}
+                    className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                  />
+                  <span>Renderizar HTML (sanitizado)</span>
+                </label>
+              )}
             </div>
             <div className="flex space-x-2">
               <button
@@ -411,6 +433,23 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                     ? highlightText(formatJson(response.body), searchTerm, currentMatchIndex)
                     : highlightText(response.body, searchTerm, currentMatchIndex)}
                 </pre>
+              </div>
+            ) : language === 'html' && renderHtml ? (
+              // Versão HTML renderizada e sanitizada
+              <div className="h-full overflow-auto">
+                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-md p-3 mb-4">
+                  <div className="flex items-start gap-2">
+                    <FiInfo className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-amber-800 dark:text-amber-200">
+                      <strong>Aviso de Segurança:</strong> O HTML foi sanitizado automaticamente com DOMPurify para
+                      prevenir ataques XSS. Scripts e conteúdo potencialmente perigoso foram removidos.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="bg-white dark:bg-gray-900 rounded-md p-4 border border-gray-200 dark:border-gray-700"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(response.body) }}
+                />
               </div>
             ) : (
               // Versão normal com syntax highlighting

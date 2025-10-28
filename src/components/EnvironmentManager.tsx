@@ -35,6 +35,7 @@ import {
   FiCheck,
 } from 'react-icons/fi'
 import type { Environment, EnvironmentVariable } from '../types'
+import { logger } from '../utils/logger'
 
 interface EnvironmentManagerProps {
   isOpen: boolean
@@ -52,6 +53,13 @@ interface EnvironmentManagerProps {
   onImportEnvironment: (environment: Environment) => void
   onExportEnvironment: (id: string) => void
   onExportAllEnvironments: () => void
+  onShowPrompt: (options: {
+    title: string
+    message: string
+    placeholder?: string
+    initialValue?: string
+  }) => Promise<string | null>
+  onShowNotification: (options: { title: string; message: string; type?: 'success' | 'error' | 'info' }) => void
 }
 
 interface VariableFormData {
@@ -77,6 +85,8 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
   onImportEnvironment,
   onExportEnvironment,
   onExportAllEnvironments,
+  onShowPrompt,
+  onShowNotification,
 }) => {
   const { t } = useTranslation()
   const [selectedEnvironmentId, setSelectedEnvironmentId] = useState<string | null>(null)
@@ -147,36 +157,61 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
   }
 
   // Handle duplicate environment
-  const handleDuplicateEnvironment = (env: Environment) => {
-    const newName = prompt(t('environments.duplicateName'), `${env.name} Copy`)
+  const handleDuplicateEnvironment = async (env: Environment) => {
+    const newName = await onShowPrompt({
+      title: t('environments.duplicateName'),
+      message: t('environments.enterNewName'),
+      placeholder: t('environments.namePlaceholder'),
+      initialValue: `${env.name} Copy`,
+    })
     if (newName) {
       onDuplicateEnvironment(env.id, newName)
     }
   }
 
   // Handle file import
-  const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = e => {
-      try {
-        const content = e.target?.result as string
-        const data = JSON.parse(content)
+    try {
+      const content = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = e => resolve(e.target?.result as string)
+        reader.onerror = () => reject(new Error('Failed to read file'))
+        reader.readAsText(file)
+      })
 
-        if (Array.isArray(data)) {
-          // Multiple environments
-          data.forEach(env => onImportEnvironment(env))
-        } else {
-          // Single environment
-          onImportEnvironment(data)
-        }
-      } catch {
-        alert(t('environments.importError'))
+      const data = JSON.parse(content)
+
+      if (Array.isArray(data)) {
+        // Multiple environments
+        data.forEach(env => onImportEnvironment(env))
+        onShowNotification({
+          title: t('common.success'),
+          message: t('environments.importSuccess'),
+          type: 'success',
+        })
+      } else {
+        // Single environment
+        onImportEnvironment(data)
+        onShowNotification({
+          title: t('common.success'),
+          message: t('environments.importSuccess'),
+          type: 'success',
+        })
       }
+    } catch (error) {
+      logger.error('Failed to import environment', error instanceof Error ? error : new Error(String(error)), {
+        hasFile: !!file,
+        fileName: file?.name,
+      })
+      onShowNotification({
+        title: t('common.error'),
+        message: t('environments.importError'),
+        type: 'error',
+      })
     }
-    reader.readAsText(file)
 
     // Reset input
     if (fileInputRef.current) {

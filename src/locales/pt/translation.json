@@ -67,6 +67,11 @@
       "sending": "Enviando...",
       "saveRequest": "Salvar requisição"
     },
+    "errors": {
+      "urlRequired": "Por favor, insira uma URL válida",
+      "invalidUrl": "URL inválida. Verifique o formato (ex: https://api.exemplo.com)",
+      "requestFailed": "Falha ao enviar requisição"
+    },
     "tabs": {
       "params": "Parâmetros",
       "auth": "Auth",
@@ -308,9 +313,11 @@
     "secret": "Secreta",
     "duplicate": "Duplicar Ambiente",
     "duplicateName": "Digite o nome para o ambiente duplicado",
+    "enterNewName": "Digite o nome para o novo ambiente",
     "export": "Exportar Ambiente",
     "exportAll": "Exportar Todos os Ambientes",
     "import": "Importar Ambiente",
+    "importSuccess": "Ambiente importado com sucesso!",
     "importError": "Erro ao importar arquivo de ambiente",
     "delete": "Deletar Ambiente",
     "selectEnvironmentDescription": "Selecione um ambiente para visualizar e editar suas variáveis"

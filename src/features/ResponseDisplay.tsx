@@ -33,9 +33,16 @@ import {
 import type { ApiResponse } from '../types'
 import { Tabs } from '../components/Tabs'
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus as codeStyle } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json'
+import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup'
 import DOMPurify from 'dompurify'
+
+// Register only the languages we need
+SyntaxHighlighter.registerLanguage('json', json)
+SyntaxHighlighter.registerLanguage('xml', markup)
+SyntaxHighlighter.registerLanguage('html', markup)
 
 interface ResponseDisplayProps {
   response: ApiResponse | null

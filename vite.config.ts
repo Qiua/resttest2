@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    exclude: ['react-syntax-highlighter/dist/esm/async-languages/prism'],
+  },
   server: {
     proxy: {
       // Proxy para APIs que geralmente têm problemas de CORS

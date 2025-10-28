@@ -1,7 +1,5 @@
 # REST Test 2.0 - Um Cliente de API Moderno
 
-![Screenshot da Aplicação](public/assets/demo/rest-test-2-screen-final.gif)
-
 Project Demo - [https://resttest2.netlify.app/](https://resttest2.netlify.app/)
 
 Este é um fork do maravilhoso projeto https://github.com/jeroen/resttesttest
@@ -88,11 +86,12 @@ Temos várias ideias para o futuro! Sinta-se à vontade para pegar uma delas e c
 - [ ] Implementar testes automatizados de requisições.
 - [ ] Adicionar documentação automática de APIs.
 - [ ] Criar templates de requisições comuns.
+- [ ] Novo vídeo de demonstração.
 
 ### 📖 Documentação Adicional
 
-- [**Guia de Ambientes**](ENVIRONMENTS.md) - Como usar o sistema de variáveis e ambientes
-- [**Guia de Proxy**](CORS-PROXY-GUIDE.md) - Configuração de proxy para contornar CORS
+- [**Guia de Ambientes**](docs/ENVIRONMENTS.pt-BR.md) - Como usar o sistema de variáveis e ambientes
+- [**Guia de Proxy**](docs/CORS-PROXY-GUIDE.pt-BR.md) - Configuração de proxy para contornar CORS
 
 ## 🤝 Contribuindo
 

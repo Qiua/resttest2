@@ -1,7 +1,5 @@
 # REST Test 2.0 - A Modern API Client
 
-![App Screenshot](public/assets/demo/rest-test-2-screen-final.gif)
-
 Project Demo - [https://resttest2.netlify.app/](https://resttest2.netlify.app/)
 
 This is a fork of the wonderful project https://github.com/jeroen/resttesttest
@@ -88,6 +86,7 @@ We have lots of ideas for the future! Feel free to pick one and contribute.
 - [ ] Implement automated request tests.
 - [ ] Add automatic API documentation.
 - [ ] Create templates for common requests.
+- [ ] New demonstration video.
 
 ### 📖 Additional Documentation
 

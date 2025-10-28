@@ -31,12 +31,16 @@ import { ConfirmModal } from './components/ConfirmModal'
 import { PromptModal } from './components/PromptModal'
 import { NotificationModal } from './components/NotificationModal'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { SkipToContent } from './components/SkipToContent'
+import { LiveRegion } from './components/LiveRegion'
 import { type SavedRequest, type Workspace, type Collection, type HistoryEntry } from './types'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useRequestTabs } from './hooks/useRequestTabs'
 import { useRequestHistory } from './hooks/useRequestHistory'
 import { useEnvironments } from './hooks/useEnvironments'
 import { useModal } from './hooks/useModal'
+import { useLiveRegion } from './hooks/useLiveRegion'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { type ProxyConfig, applyProxy, configureAxiosForProxy } from './utils/corsProxy'
 import { validateUrl } from './schemas'
 import { logger } from './utils/logger'
@@ -166,6 +170,48 @@ function App() {
 
   // Memoize active workspace to avoid recalculation
   const currentWorkspace = useMemo(() => workspaces.find(w => w.id === activeWorkspace), [workspaces, activeWorkspace])
+
+  // Live region para anúncios de acessibilidade
+  const liveRegion = useLiveRegion()
+
+  // Atalhos de teclado
+  useKeyboardShortcuts([
+    {
+      key: 'n',
+      ctrlKey: true,
+      callback: () => createNewTab(),
+      description: t('a11y.newTab'),
+    },
+    {
+      key: 'Enter',
+      ctrlKey: true,
+      callback: () => {
+        const activeTab = getActiveTab()
+        if (activeTab && !activeTab.loading) {
+          handleSubmit()
+        }
+      },
+      description: t('a11y.sendRequest'),
+    },
+    {
+      key: 's',
+      ctrlKey: true,
+      callback: () => handleSaveCurrentRequest(),
+      description: t('a11y.saveRequest'),
+    },
+    {
+      key: 'b',
+      ctrlKey: true,
+      callback: () => setSidebarOpen(prev => !prev),
+      description: t('a11y.toggleSidebar'),
+    },
+    {
+      key: 'h',
+      ctrlKey: true,
+      callback: () => setIsHistoryOpen(true),
+      description: 'Open history',
+    },
+  ])
 
   // Funções para manipular workspaces e collections
   const handleNewWorkspace = async () => {
@@ -452,6 +498,9 @@ function App() {
     // Definir estado de loading na aba
     setTabResponse(activeTab.id, null, true, null)
 
+    // Anunciar início da requisição
+    liveRegion.announce(t('a11y.requestLoading'), 'polite')
+
     const tempHeaders = new Headers()
     let data: string | FormData | URLSearchParams | undefined
 
@@ -613,6 +662,9 @@ function App() {
         duration,
         'success',
       )
+
+      // Anunciar sucesso da requisição
+      liveRegion.announce(`${t('a11y.requestSuccess')}. Status ${result.status} ${result.statusText}`, 'polite')
     } catch (err) {
       // Verificar se foi cancelamento (não é erro real)
       if (axios.isCancel(err)) {
@@ -670,6 +722,12 @@ function App() {
           duration,
           'error',
         )
+
+        // Anunciar erro HTTP
+        liveRegion.announce(
+          `${t('a11y.requestError')}. Status ${err.response.status} ${err.response.statusText}`,
+          'assertive',
+        )
       } else {
         const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError')
 
@@ -680,6 +738,9 @@ function App() {
         })
 
         setTabResponse(activeTab.id, null, false, errorMessage)
+
+        // Anunciar erro da requisição
+        liveRegion.announce(`${t('a11y.requestError')}: ${errorMessage}`, 'assertive')
 
         // Adicionar ao histórico mesmo em caso de erro genérico
         const endTime = performance.now()
@@ -699,7 +760,7 @@ function App() {
         )
       }
     }
-  }, [resolveVariables, setTabResponse, addToHistory, proxyConfig, t, modal, getActiveTab])
+  }, [resolveVariables, setTabResponse, addToHistory, proxyConfig, t, modal, getActiveTab, liveRegion])
 
   // Função para migrar requests antigos para o sistema de collections
   const migrateOldRequests = () => {
@@ -848,6 +909,12 @@ function App() {
 
   return (
     <div className="h-screen flex bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
+      {/* Skip to content para acessibilidade */}
+      <SkipToContent />
+
+      {/* Live region para anúncios de leitores de tela */}
+      <LiveRegion message={liveRegion.message} politeness={liveRegion.politeness} />
+
       {/* Sidebar com melhor integração visual */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -894,18 +961,24 @@ function App() {
       />
 
       {/* Área Principal com responsividade */}
-      <div className="flex-1 flex flex-col min-w-0 backdrop-blur-sm">
+      <div className="flex-1 flex flex-col min-w-0 backdrop-blur-sm" role="main" aria-label={t('a11y.mainContent')}>
         {/* Header aprimorado com melhor UX */}
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700 transition-all duration-200 relative z-50">
+        <header
+          className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700 transition-all duration-200 relative z-50"
+          role="banner"
+        >
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">REST Test</h1>
-            <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800">
+            <span
+              className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+              aria-label="Version 2.0"
+            >
               v2.0
             </span>
           </div>
 
           {/* Controles do Header simplificados */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" role="toolbar" aria-label="Main actions">
             {savedRequests.some(req => !req.collectionId) && (
               <button
                 onClick={migrateOldRequests}
@@ -930,7 +1003,7 @@ function App() {
         />
 
         {/* Conteúdo Principal com melhor espaçamento */}
-        <main className="flex-1 min-h-0 p-4">
+        <main id="main-content" tabIndex={-1} className="flex-1 min-h-0 p-4 focus:outline-none">
           <PanelGroup
             direction="vertical"
             className="bg-white rounded-xl shadow-lg border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700 overflow-hidden backdrop-blur-sm"

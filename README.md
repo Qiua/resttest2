@@ -88,10 +88,22 @@ We have lots of ideas for the future! Feel free to pick one and contribute.
 - [ ] Create templates for common requests.
 - [ ] New demonstration video.
 
-### 📖 Additional Documentation
+### 📖 Documentation & Implementation Guides
 
-- [**Environment Guide**](ENVIRONMENTS.md) - How to use the variable and environment system
-- [**Proxy Guide**](CORS-PROXY-GUIDE.md) - Proxy configuration to work around CORS
+This repository now contains several implementation and design documents that explain the major subsystems and recent engineering work. See the files below for details:
+
+- [Environment Guide](docs/ENVIRONMENTS.md) — Environment variables and usage guide
+- [Proxy Guide](docs/CORS-PROXY-GUIDE.md) — Proxy configuration and CORS guidance
+- [Accessibility Implementation](docs/ACCESSIBILITY-IMPLEMENTATION.md) — Accessibility (A11y) details, ARIA, keyboard support and live regions
+- [Testing Infrastructure](docs/TESTING-INFRASTRUCTURE.md) — Test setup (Vitest), mocks and test guidelines
+- [Virtual Scrolling Implementation](docs/VIRTUAL-SCROLLING-IMPLEMENTATION.md) — Virtual scrolling approach for large lists (RequestHistory)
+- [Critical Fixes Implemented](docs/CRITICAL-FIXES-IMPLEMENTED.md) — Important fixes (e.g., syntax highlighter / build fixes)
+- [Modernization Guide](docs/MODERNIZATION-GUIDE.md) — High-level notes about the refactor and architecture decisions
+- [i18n Validation Report](docs/i18n-validation.md) — Report of the i18n audit and added keys
+- [.github/TEST-RESULTS.md](.github/TEST-RESULTS.md) — Test run summary and CI notes
+- [.github/copilot-instructions.md](.github/copilot-instructions.md) — Project-specific Copilot / contributor hints
+
+Also check `docs/` for any supplementary materials and `src/test/` for test setup helpers. These documents live in the repository root and the `.github/` folder so they can be viewed directly on GitHub.
 
 ## 🤝 Contributing
 

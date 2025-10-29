@@ -88,10 +88,22 @@ Temos várias ideias para o futuro! Sinta-se à vontade para pegar uma delas e c
 - [ ] Criar templates de requisições comuns.
 - [ ] Novo vídeo de demonstração.
 
-### 📖 Documentação Adicional
+### 📖 Documentação & Guias de Implementação
 
-- [**Guia de Ambientes**](docs/ENVIRONMENTS.pt-BR.md) - Como usar o sistema de variáveis e ambientes
-- [**Guia de Proxy**](docs/CORS-PROXY-GUIDE.pt-BR.md) - Configuração de proxy para contornar CORS
+Este repositório contém vários documentos de implementação e design que explicam os principais subsistemas e o trabalho de engenharia recente. Veja os arquivos abaixo para detalhes:
+
+- [Guia de Ambientes](docs/ENVIRONMENTS.pt-BR.md) — Como usar o sistema de variáveis e ambientes
+- [Guia de Proxy](docs/CORS-PROXY-GUIDE.pt-BR.md) — Configuração de proxy para contornar CORS
+- [Implementação de Acessibilidade](docs/ACCESSIBILITY-IMPLEMENTATION.md) — Detalhes sobre A11y, ARIA, suporte a teclado e live regions
+- [Infraestrutura de Testes](docs/TESTING-INFRASTRUCTURE.md) — Configuração de testes (Vitest), mocks e diretrizes
+- [Implementação de Scroll Virtual](docs/VIRTUAL-SCROLLING-IMPLEMENTATION.md) — Abordagem de virtual scrolling para listas grandes (RequestHistory)
+- [Correções Críticas Implementadas](docs/CRITICAL-FIXES-IMPLEMENTED.md) — Correções importantes (ex.: realce de sintaxe / build)
+- [Guia de Modernização](docs/MODERNIZATION-GUIDE.md) — Notas de alto nível sobre a refatoração e decisões arquiteturais
+- [Relatório de i18n](docs/i18n-validation.md) — Resultado da auditoria i18n e chaves adicionadas
+- [.github/TEST-RESULTS.md](.github/TEST-RESULTS.md) — Sumário das execuções de teste e notas de CI
+- [.github/copilot-instructions.md](.github/copilot-instructions.md) — Dicas para contribuições e uso do Copilot
+
+Também verifique o diretório `docs/` para materiais suplementares e `src/test/` para helpers de setup de testes. Estes documentos estão no diretório `docs/` e na pasta `.github/`, acessíveis diretamente no GitHub.
 
 ## 🤝 Contribuindo
 

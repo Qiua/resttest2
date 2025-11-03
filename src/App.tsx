@@ -21,10 +21,12 @@ import { useState, useRef, lazy, Suspense, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiRefreshCw } from 'react-icons/fi'
 import axios, { AxiosError } from 'axios'
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { RequestForm } from './features/RequestForm'
 import { ResponseDisplay } from './features/ResponseDisplay'
 import { Sidebar } from './components/Sidebar'
+import DockLayout from 'rc-dock'
+import 'rc-dock/dist/rc-dock.css'
+import './styles/dock.css'
 import { WorkspacePanel } from './components/WorkspacePanel'
 import { RequestTabs } from './components/RequestTabs'
 import { ConfirmModal } from './components/ConfirmModal'
@@ -915,50 +917,6 @@ function App() {
       {/* Live region para anúncios de leitores de tela */}
       <LiveRegion message={liveRegion.message} politeness={liveRegion.politeness} />
 
-      {/* Sidebar com melhor integração visual */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
-        workspaces={workspaces}
-        activeWorkspace={activeWorkspace}
-        onWorkspaceSelect={handleWorkspaceSelect}
-        onRequestSelect={handleRequestSelect}
-        onNewWorkspace={handleNewWorkspace}
-        onNewCollection={handleNewCollection}
-        onNewRequest={handleNewRequest}
-        onDeleteCollection={handleDeleteCollection}
-        onDeleteRequest={handleDeleteRequestFromSidebar}
-        onDeleteWorkspace={handleDeleteWorkspace}
-        onImportExport={handleImportExportModal}
-        // Settings props
-        environments={environments}
-        activeEnvironmentId={activeEnvironmentId}
-        onEnvironmentSelect={setActiveEnvironment}
-        onManageEnvironments={() => setEnvironmentManagerOpen(true)}
-        onHistoryOpen={() => setIsHistoryOpen(true)}
-        onProxySettingsOpen={() => setProxySettingsOpen(true)}
-        onInterfaceSettingsOpen={() => setInterfaceSettingsOpen(true)}
-        // Workspace panel props
-        isWorkspacePanelOpen={workspacePanelOpen}
-        onWorkspacePanelToggle={() => setWorkspacePanelOpen(!workspacePanelOpen)}
-      />
-
-      {/* Workspace Panel */}
-      <WorkspacePanel
-        isOpen={workspacePanelOpen}
-        onClose={() => setWorkspacePanelOpen(false)}
-        workspaces={workspaces}
-        activeWorkspace={activeWorkspace}
-        onWorkspaceSelect={handleWorkspaceSelect}
-        onRequestSelect={handleRequestSelect}
-        onNewWorkspace={handleNewWorkspace}
-        onNewCollection={handleNewCollection}
-        onNewRequest={handleNewRequest}
-        onDeleteCollection={handleDeleteCollection}
-        onDeleteRequest={handleDeleteRequestFromSidebar}
-        onDeleteWorkspace={handleDeleteWorkspace}
-        onImportExport={handleImportExportModal}
-      />
 
       {/* Área Principal com responsividade */}
       <div className="flex-1 flex flex-col min-w-0 backdrop-blur-sm" role="main" aria-label={t('a11y.mainContent')}>
@@ -1004,80 +962,184 @@ function App() {
 
         {/* Conteúdo Principal com melhor espaçamento */}
         <main id="main-content" tabIndex={-1} className="flex-1 min-h-0 p-4 focus:outline-none">
-          <PanelGroup
-            direction="vertical"
-            className="bg-white rounded-xl shadow-lg border border-gray-200 h-full dark:bg-gray-800 dark:border-gray-700 overflow-hidden backdrop-blur-sm"
-          >
-            <Panel defaultSize={50} minSize={20} className="overflow-hidden">
-              {getActiveTab() && (
-                <ErrorBoundary>
-                  <RequestForm
-                    method={getActiveTab()!.method}
-                    setMethod={method => updateTab(activeTabId!, { method })}
-                    url={getActiveTab()!.url}
-                    setUrl={url => updateTab(activeTabId!, { url })}
-                    auth={getActiveTab()!.auth}
-                    setAuth={auth => updateTab(activeTabId!, { auth })}
-                    headers={getActiveTab()!.headers}
-                    setHeaders={headers => updateTab(activeTabId!, { headers })}
-                    params={getActiveTab()!.params}
-                    setParams={params => updateTab(activeTabId!, { params })}
-                    body={getActiveTab()!.body}
-                    setBody={body => updateTab(activeTabId!, { body })}
-                    onSubmit={handleSubmit}
-                    onSave={handleSaveCurrentRequest}
-                    loading={getActiveTab()!.loading || false}
-                    proxyConfig={proxyConfig}
-                    onProxySettings={() => setProxySettingsOpen(true)}
-                  />
-                </ErrorBoundary>
-              )}
-            </Panel>
-            <PanelResizeHandle
-              className='h-px bg-gray-200 hover:bg-blue-500 dark:bg-gray-600 dark:hover:bg-blue-400 data-[resize-handle-state=drag]:bg-blue-500 dark:data-[resize-handle-state=drag]:bg-blue-400 transition-all duration-300 cursor-ns-resize relative group
-              before:content-[""] before:absolute before:inset-x-0 before:-inset-y-2 before:bg-transparent hover:before:bg-blue-50/50 dark:hover:before:bg-blue-900/20 before:transition-all before:duration-300
-              after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-12 after:h-1 after:bg-blue-500/0 hover:after:bg-blue-500/70 dark:hover:after:bg-blue-400/70 after:rounded-full after:transition-all after:duration-300 after:shadow-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800'
-            />
-            <Panel defaultSize={50} minSize={20} className="overflow-hidden">
-              <div className="h-full p-6 bg-gray-50/50 dark:bg-gray-800/50">
-                {getActiveTab() && (
-                  <ErrorBoundary>
-                    <ResponseDisplay
-                      response={getActiveTab()!.response || null}
-                      loading={getActiveTab()!.loading || false}
-                      error={getActiveTab()!.error || null}
-                    />
-                  </ErrorBoundary>
-                )}
-              </div>
-            </Panel>
-          </PanelGroup>
+          <div className="w-full h-full relative">
+            {getActiveTab() && (
+              <DockLayout
+                defaultLayout={{
+                  dockbox: {
+                    mode: 'horizontal',
+                    children: [
+                      {
+                        tabs: [
+                          {
+                            id: 'sidebar',
+                            title: 'Sidebar',
+                            content: (
+                              <Sidebar
+                                isOpen={sidebarOpen}
+                                onToggle={() => setSidebarOpen(!sidebarOpen)}
+                                workspaces={workspaces}
+                                activeWorkspace={activeWorkspace}
+                                onWorkspaceSelect={handleWorkspaceSelect}
+                                onRequestSelect={handleRequestSelect}
+                                onNewWorkspace={handleNewWorkspace}
+                                onNewCollection={handleNewCollection}
+                                onNewRequest={handleNewRequest}
+                                onDeleteCollection={handleDeleteCollection}
+                                onDeleteRequest={handleDeleteRequestFromSidebar}
+                                onDeleteWorkspace={handleDeleteWorkspace}
+                                onImportExport={handleImportExportModal}
+                                // Settings props
+                                environments={environments}
+                                activeEnvironmentId={activeEnvironmentId}
+                                onEnvironmentSelect={setActiveEnvironment}
+                                onManageEnvironments={() => setEnvironmentManagerOpen(true)}
+                                onHistoryOpen={() => setIsHistoryOpen(true)}
+                                onProxySettingsOpen={() => setProxySettingsOpen(true)}
+                                onInterfaceSettingsOpen={() => setInterfaceSettingsOpen(true)}
+                                // Workspace panel props
+                                isWorkspacePanelOpen={workspacePanelOpen}
+                                onWorkspacePanelToggle={() => setWorkspacePanelOpen(!workspacePanelOpen)}
+                              />
+                            ),
+                          },
+                          {
+                            id: 'workspace',
+                            title: 'Workspace',
+                            content: (
+                              <WorkspacePanel
+                                isOpen={workspacePanelOpen}
+                                onClose={() => setWorkspacePanelOpen(false)}
+                                workspaces={workspaces}
+                                activeWorkspace={activeWorkspace}
+                                onWorkspaceSelect={handleWorkspaceSelect}
+                                onRequestSelect={handleRequestSelect}
+                                onNewWorkspace={handleNewWorkspace}
+                                onNewCollection={handleNewCollection}
+                                onNewRequest={handleNewRequest}
+                                onDeleteCollection={handleDeleteCollection}
+                                onDeleteRequest={handleDeleteRequestFromSidebar}
+                                onDeleteWorkspace={handleDeleteWorkspace}
+                                onImportExport={handleImportExportModal}
+                              />
+                            ),
+                          },
+                          {
+                            id: 'history',
+                            title: 'History',
+                            content: (
+                              <RequestHistory
+                                isOpen={isHistoryOpen}
+                                onClose={() => setIsHistoryOpen(false)}
+                                history={history}
+                                onRecreateRequest={handleRequestFromHistory}
+                                onClearHistory={clearHistory}
+                                onRemoveEntry={removeEntry}
+                                onExportHistory={exportHistory}
+                                searchHistory={searchHistory}
+                                getStats={getStats}
+                              />
+                            ),
+                          },
+                          {
+                            id: 'environments',
+                            title: 'Environments',
+                            content: (
+                              <EnvironmentManager
+                                isOpen={environmentManagerOpen}
+                                onClose={() => setEnvironmentManagerOpen(false)}
+                                environments={environments}
+                                activeEnvironmentId={activeEnvironmentId}
+                                onCreateEnvironment={createEnvironment}
+                                onUpdateEnvironment={updateEnvironment}
+                                onDeleteEnvironment={deleteEnvironment}
+                                onDuplicateEnvironment={duplicateEnvironment}
+                                onSetActiveEnvironment={setActiveEnvironment}
+                                onAddVariable={addVariable}
+                                onUpdateVariable={updateVariable}
+                                onDeleteVariable={deleteVariable}
+                                onImportEnvironment={importEnvironment}
+                                onExportEnvironment={exportEnvironment}
+                                onExportAllEnvironments={handleExportAllEnvironments}
+                                onShowPrompt={modal.showPrompt}
+                                onShowNotification={modal.showNotification}
+                              />
+                            ),
+                          },
+                        ],
+                      },
+                      {
+                        dockbox: {
+                          mode: 'vertical',
+                          children: [
+                            {
+                              tabs: [
+                                {
+                                  id: 'request',
+                                  title: 'Request',
+                                  content: (
+                                    <ErrorBoundary>
+                                      <RequestForm
+                                        method={getActiveTab()!.method}
+                                        setMethod={method => updateTab(activeTabId!, { method })}
+                                        url={getActiveTab()!.url}
+                                        setUrl={url => updateTab(activeTabId!, { url })}
+                                        auth={getActiveTab()!.auth}
+                                        setAuth={auth => updateTab(activeTabId!, { auth })}
+                                        headers={getActiveTab()!.headers}
+                                        setHeaders={headers => updateTab(activeTabId!, { headers })}
+                                        params={getActiveTab()!.params}
+                                        setParams={params => updateTab(activeTabId!, { params })}
+                                        body={getActiveTab()!.body}
+                                        setBody={body => updateTab(activeTabId!, { body })}
+                                        onSubmit={handleSubmit}
+                                        onSave={handleSaveCurrentRequest}
+                                        loading={getActiveTab()!.loading || false}
+                                        proxyConfig={proxyConfig}
+                                        onProxySettings={() => setProxySettingsOpen(true)}
+                                      />
+                                    </ErrorBoundary>
+                                  ),
+                                },
+                              ],
+                            },
+                            {
+                              tabs: [
+                                {
+                                  id: 'response',
+                                  title: 'Response',
+                                  content: (
+                                    <div className="h-full p-6 bg-gray-50/50 dark:bg-gray-800/50">
+                                      <ErrorBoundary>
+                                        <ResponseDisplay
+                                          response={getActiveTab()!.response || null}
+                                          loading={getActiveTab()!.loading || false}
+                                          error={getActiveTab()!.error || null}
+                                        />
+                                      </ErrorBoundary>
+                                    </div>
+                                  ),
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                }}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              />
+            )}
+          </div>
         </main>
       </div>
-
-      {/* Modal de Gerenciamento de Ambientes */}
-      <Suspense fallback={<LoadingFallback />}>
-        <EnvironmentManager
-          isOpen={environmentManagerOpen}
-          onClose={() => setEnvironmentManagerOpen(false)}
-          environments={environments}
-          activeEnvironmentId={activeEnvironmentId}
-          onCreateEnvironment={createEnvironment}
-          onUpdateEnvironment={updateEnvironment}
-          onDeleteEnvironment={deleteEnvironment}
-          onDuplicateEnvironment={duplicateEnvironment}
-          onSetActiveEnvironment={setActiveEnvironment}
-          onAddVariable={addVariable}
-          onUpdateVariable={updateVariable}
-          onDeleteVariable={deleteVariable}
-          onImportEnvironment={importEnvironment}
-          onExportEnvironment={exportEnvironment}
-          onExportAllEnvironments={handleExportAllEnvironments}
-          onShowPrompt={modal.showPrompt}
-          onShowNotification={modal.showNotification}
-        />
-      </Suspense>
 
       {/* Modal de Importação/Exportação */}
       <Suspense fallback={<LoadingFallback />}>
@@ -1137,21 +1199,6 @@ function App() {
         message={modal.notificationModal.options.message}
         type={modal.notificationModal.options.type}
       />
-
-      {/* Request History Modal */}
-      <Suspense fallback={<LoadingFallback />}>
-        <RequestHistory
-          isOpen={isHistoryOpen}
-          onClose={() => setIsHistoryOpen(false)}
-          history={history}
-          onRecreateRequest={handleRequestFromHistory}
-          onClearHistory={clearHistory}
-          onRemoveEntry={removeEntry}
-          onExportHistory={exportHistory}
-          searchHistory={searchHistory}
-          getStats={getStats}
-        />
-      </Suspense>
     </div>
   )
 }

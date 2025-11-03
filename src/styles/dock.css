@@ -1,0 +1,19 @@
+/* src/styles/dock.css */
+.dock-bar {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #d0d0d0;
+  }
+
+  .dock-tab {
+    background-color: #e0e0e0;
+    border-right: 1px solid #d0d0d0;
+  }
+
+  .dock-tab-active {
+    background-color: #ffffff;
+    border-bottom: none;
+  }
+
+  .dock-panel {
+    border: 1px solid #d0d0d0;
+  }

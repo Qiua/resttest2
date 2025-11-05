@@ -121,9 +121,7 @@ describe('LiveRegion', () => {
 
     vi.advanceTimersByTime(500)
 
-    act(() => {
-      rerender(<LiveRegion message="Second message" clearAfter={1000} />)
-    })
+    rerender(<LiveRegion message="Second message" clearAfter={1000} />)
 
     vi.advanceTimersByTime(500)
 

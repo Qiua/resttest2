@@ -805,10 +805,9 @@ function App() {
     )
 
     // Remove os requests antigos ou marca como migrados
+    const migratedIds = new Set(requestsToMigrate.map(req => req.id))
     setSavedRequests(prev =>
-      prev.map(req =>
-        requestsToMigrate.find(migrated => migrated.id === req.id) ? { ...req, collectionId: targetCollectionId } : req,
-      ),
+      prev.map(req => (migratedIds.has(req.id) ? { ...req, collectionId: targetCollectionId } : req)),
     )
   }
 

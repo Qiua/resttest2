@@ -23,6 +23,8 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
+    "@sentry/browser": "^10.65.0",
+    "@sentry/react": "^10.65.0",
     "@types/dompurify": "^3.0.5",
     "@types/react-window": "^1.8.8",
     "axios": "^1.10.0",

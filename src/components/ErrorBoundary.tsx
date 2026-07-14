@@ -18,6 +18,7 @@
 // src/components/ErrorBoundary.tsx
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { FiAlertTriangle, FiRefreshCw, FiHome, FiCopy } from 'react-icons/fi'
+import * as Sentry from '@sentry/react'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -58,8 +59,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       errorInfo,
     })
 
-    // TODO: Send error to logging service in production
-    // logErrorToService(error, errorInfo)
+    // Send error to logging service in production
+    if (!import.meta.env.DEV) {
+      Sentry.withScope(scope => {
+        scope.setExtras(errorInfo as Record<string, unknown>)
+        Sentry.captureException(error)
+      })
+    }
   }
 
   handleReset = (): void => {

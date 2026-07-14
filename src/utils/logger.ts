@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 // src/utils/logger.ts
+import * as Sentry from '@sentry/react'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
@@ -98,8 +99,14 @@ class Logger {
       console.warn(this.formatMessage(entry), context)
     }
 
-    // TODO: Send to monitoring service in production
-    // this.sendToMonitoring(entry)
+    // Send to monitoring service in production
+    if (!this.isDevelopment) {
+      Sentry.withScope(scope => {
+        scope.setLevel('warning')
+        if (context) scope.setContext('additional', context)
+        Sentry.captureMessage(message)
+      })
+    }
   }
 
   error(message: string, error?: Error, context?: Record<string, unknown>): void {
@@ -114,8 +121,17 @@ class Logger {
       })
     }
 
-    // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
-    // this.sendToErrorTracking(entry)
+    // Send to error tracking service
+    if (!this.isDevelopment) {
+      Sentry.withScope(scope => {
+        if (context) scope.setContext('additional', context)
+        if (error) {
+          Sentry.captureException(error)
+        } else {
+          Sentry.captureMessage(message, 'error')
+        }
+      })
+    }
   }
 
   /**

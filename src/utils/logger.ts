@@ -72,6 +72,29 @@ class Logger {
     return true
   }
 
+  private sendToMonitoring(entry: LogEntry): void {
+    if (this.isDevelopment) {
+      return
+    }
+
+    // Use monitoring service from environment
+    const monitoringUrl = import.meta.env.VITE_MONITORING_URL
+    if (!monitoringUrl) {
+      return
+    }
+
+    fetch(monitoringUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(entry),
+    }).catch(() => {
+      // Silently fail if monitoring service is down
+      // We don't want to log this error using the logger itself to avoid infinite loops
+    })
+  }
+
   debug(message: string, context?: Record<string, unknown>): void {
     const entry = this.createLogEntry('debug', message, context)
 
@@ -98,8 +121,7 @@ class Logger {
       console.warn(this.formatMessage(entry), context)
     }
 
-    // TODO: Send to monitoring service in production
-    // this.sendToMonitoring(entry)
+    this.sendToMonitoring(entry)
   }
 
   error(message: string, error?: Error, context?: Record<string, unknown>): void {

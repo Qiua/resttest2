@@ -1,0 +1,3 @@
+## 2024-07-18 - Sidebar Accessibility Improvements
+**Learning:** Icon-only buttons in navigation regions (like sidebars) frequently lack `aria-label`s. In React apps using `react-i18next`, reusing the translation function used for `title` attributes (e.g. `title={t("my.title")}`) is a highly effective way to add localized `aria-label`s without duplicating strings. Furthermore, state-toggling buttons must have `aria-expanded` reflecting their state (e.g. `aria-expanded={isOpen}`) to communicate the current UI state to screen readers.
+**Action:** When adding or auditing icon-only buttons, systematically verify both `aria-label` (reusing i18n keys) and `aria-expanded` (linked to component state) are present.

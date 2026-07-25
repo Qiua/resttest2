@@ -188,6 +188,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={() => onRecreateRequest(entry)}
                 className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
                 title={t('history.recreateRequest')}
+                aria-label={t('history.recreateRequest')}
               >
                 <FiPlay className="w-4 h-4" />
               </button>
@@ -195,6 +196,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={() => onRemoveEntry(entry.id)}
                 className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors text-red-600 dark:text-red-400"
                 title={t('history.removeEntry')}
+                aria-label={t('history.removeEntry')}
               >
                 <FiTrash2 className="w-4 h-4" />
               </button>
@@ -225,12 +227,15 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
               onClick={() => setShowStats(!showStats)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
               title={t('history.showStats')}
+              aria-label={t('history.showStats')}
             >
               <FiBarChart className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              aria-label={t('common.close') || 'Close'}
+              title={t('common.close') || 'Close'}
             >
               <FiX className="w-4 h-4" />
             </button>
@@ -312,6 +317,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={() => onExportHistory('json')}
                 className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
                 title={t('history.exportJson')}
+                aria-label={t('history.exportJson')}
               >
                 <FiDownload className="w-3 h-3" />
                 JSON
@@ -320,6 +326,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={() => onExportHistory('csv')}
                 className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
                 title={t('history.exportCsv')}
+                aria-label={t('history.exportCsv')}
               >
                 <FiDownload className="w-3 h-3" />
                 CSV
@@ -328,6 +335,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={onClearHistory}
                 className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
                 title={t('history.clearAll')}
+                aria-label={t('history.clearAll')}
               >
                 <FiTrash2 className="w-3 h-3" />
                 {t('common.clear')}

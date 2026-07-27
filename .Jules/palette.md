@@ -1,0 +1,3 @@
+## 2026-07-27 - Adding ARIA labels alongside title attributes for icon-only buttons
+**Learning:** Screen readers might ignore `title` attributes or read them inconsistently. While `title` provides a tooltip on hover for mouse users, `aria-label` provides reliable, explicit text for screen reader users. Relying purely on `title` for icon-only buttons leaves screen reader users guessing the button's purpose.
+**Action:** Always ensure that icon-only buttons have an explicit `aria-label` (or `aria-labelledby`) attribute that describes the button's function, regardless of whether a `title` attribute is present.

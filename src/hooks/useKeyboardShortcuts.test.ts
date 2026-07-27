@@ -47,7 +47,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -69,7 +69,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -91,7 +91,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -119,7 +119,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -147,14 +147,14 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
       {
         key: 's',
         ctrlKey: true,
         shiftKey: true,
-        callback: callbacks.withShift,
+        callback: callbacks.withShift as () => void,
         description: 'Save',
       },
     ]
@@ -190,7 +190,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -220,7 +220,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
         preventDefault: true,
       },
@@ -246,7 +246,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
         preventDefault: false,
       },
@@ -272,7 +272,7 @@ describe('useKeyboardShortcuts', () => {
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]

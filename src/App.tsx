@@ -613,7 +613,7 @@ function App() {
       )
 
       const result = await axios(axiosConfig)
-      const contentType = result.headers['content-type'] || ''
+      const contentType = String(result.headers['content-type'] || '')
       let responseBody = result.data
 
       // Se a resposta for JSON, formata com indentação.
@@ -677,7 +677,7 @@ function App() {
       }
 
       if (err instanceof AxiosError && err.response) {
-        const contentType = err.response.headers['content-type'] || ''
+        const contentType = String(err.response.headers['content-type'] || '')
         let errorBody = err.response.data
 
         if (contentType.includes('application/json') && typeof errorBody === 'object') {

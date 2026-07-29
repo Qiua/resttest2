@@ -18,7 +18,7 @@
 // src/features/RequestForm.tsx
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FiSave, FiPlus, FiFile, FiChevronDown, FiAlertTriangle, FiSettings } from 'react-icons/fi'
+import { FiSave, FiPlus, FiFile, FiChevronDown, FiAlertTriangle, FiSettings, FiLoader } from 'react-icons/fi'
 import { Tabs } from '../components/Tabs'
 import {
   type KeyValuePair,
@@ -490,8 +490,9 @@ export const RequestForm: React.FC<RequestFormProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]"
+            className="flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[80px]"
           >
+            {loading && <FiLoader className="w-4 h-4 animate-spin" />}
             {loading ? t('request.form.sending') : t('common.send')}
           </button>
           {onSave && (
@@ -500,6 +501,7 @@ export const RequestForm: React.FC<RequestFormProps> = ({
               onClick={onSave}
               className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-l-0 border-blue-600 dark:border-blue-400 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               title={t('request.form.saveRequest')}
+              aria-label={t('request.form.saveRequest')}
             >
               <FiSave className="w-4 h-4" />
             </button>

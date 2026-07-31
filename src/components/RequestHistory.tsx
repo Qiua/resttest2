@@ -225,12 +225,14 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
               onClick={() => setShowStats(!showStats)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
               title={t('history.showStats')}
+              aria-label={t('history.showStats')}
             >
               <FiBarChart className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              aria-label={t('common.close')}
             >
               <FiX className="w-4 h-4" />
             </button>

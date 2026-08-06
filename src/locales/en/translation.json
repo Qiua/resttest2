@@ -321,7 +321,8 @@
     "importSuccess": "Environment imported successfully!",
     "importError": "Error importing environment file",
     "delete": "Delete Environment",
-    "selectEnvironmentDescription": "Select an environment to view and edit its variables"
+    "selectEnvironmentDescription": "Select an environment to view and edit its variables",
+    "toggleSecretVisibility": "Toggle secret visibility"
   },
   "settings": {
     "title": "Settings",

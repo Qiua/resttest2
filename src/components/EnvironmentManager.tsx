@@ -238,6 +238,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+            aria-label={t('common.close')}
           >
             <FiX className="w-4 h-4" />
           </button>
@@ -436,6 +437,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                                       <button
                                         onClick={() => toggleSecretVisibility(variable.key)}
                                         className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        aria-label={t('environments.toggleSecretVisibility')}
                                       >
                                         {showSecrets[variable.key] ? (
                                           <FiEyeOff className="w-3 h-3" />

@@ -321,7 +321,8 @@
     "importSuccess": "Ambiente importado com sucesso!",
     "importError": "Erro ao importar arquivo de ambiente",
     "delete": "Deletar Ambiente",
-    "selectEnvironmentDescription": "Selecione um ambiente para visualizar e editar suas variáveis"
+    "selectEnvironmentDescription": "Selecione um ambiente para visualizar e editar suas variáveis",
+    "toggleSecretVisibility": "Alternar visibilidade do segredo"
   },
   "settings": {
     "title": "Configurações",

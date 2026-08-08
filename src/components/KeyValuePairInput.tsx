@@ -17,6 +17,7 @@
 */
 // src/components/KeyValuePairInput.tsx
 import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiX } from 'react-icons/fi'
 import type { KeyValuePair } from '../types'
 
@@ -31,6 +32,8 @@ interface KeyValuePairInputProps {
 
 export const KeyValuePairInput: React.FC<KeyValuePairInputProps> = memo(
   ({ item, updateItem, removeItem, keyPlaceholder = 'Chave', valuePlaceholder = 'Valor', isPassword = false }) => {
+    const { t } = useTranslation()
+
     return (
       <div className="flex items-center gap-2">
         <input
@@ -51,6 +54,8 @@ export const KeyValuePairInput: React.FC<KeyValuePairInputProps> = memo(
           type="button"
           onClick={removeItem}
           className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+          title={t('common.delete')}
+          aria-label={t('common.delete')}
         >
           <FiX className="w-4 h-4" />
         </button>

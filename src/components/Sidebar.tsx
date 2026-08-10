@@ -79,6 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={onToggle}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
           title={t('sidebar.openSidebar')}
+          aria-label={t('sidebar.openSidebar')}
         >
           <FiMenu className="w-5 h-5" />
         </button>
@@ -91,6 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={onHistoryOpen}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
           title={t('history.title')}
+          aria-label={t('history.title')}
         >
           <FiClock className="w-5 h-5" />
         </button>
@@ -102,6 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             isWorkspacePanelOpen ? 'bg-blue-600 hover:bg-blue-700' : ''
           }`}
           title={t('sidebar.workspace')}
+          aria-label={t('sidebar.workspace')}
         >
           <FiFolder className="w-5 h-5" />
         </button>
@@ -111,6 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={onManageEnvironments}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
           title={t('environments.title')}
+          aria-label={t('environments.title')}
         >
           <FiLayers className="w-5 h-5" />
         </button>
@@ -120,6 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={onInterfaceSettingsOpen}
           className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
           title={t('settings.interface')}
+          aria-label={t('settings.interface')}
         >
           <FiGlobe className="w-5 h-5" />
         </button>
@@ -137,6 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={onToggle}
             className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
             title={t('sidebar.closeSidebar')}
+            aria-label={t('sidebar.closeSidebar')}
           >
             <FiX className="w-5 h-5" />
           </button>

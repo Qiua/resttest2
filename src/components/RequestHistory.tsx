@@ -328,6 +328,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
                 onClick={onClearHistory}
                 className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
                 title={t('history.clearAll')}
+                aria-label={t('history.clearAll')}
               >
                 <FiTrash2 className="w-3 h-3" />
                 {t('common.clear')}

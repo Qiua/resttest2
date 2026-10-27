@@ -272,6 +272,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                     onClick={onExportAllEnvironments}
                     className="p-1 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded"
                     title={t('environments.exportAll')}
+                    aria-label={t('environments.exportAll')}
                   >
                     <FiDownload className="w-4 h-4" />
                   </button>

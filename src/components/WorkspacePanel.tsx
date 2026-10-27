@@ -95,6 +95,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
             onClick={onClose}
             className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
             title={t('sidebar.closeWorkspace')}
+            aria-label={t('sidebar.closeWorkspace')}
           >
             <FiX className="w-5 h-5" />
           </button>
@@ -110,6 +111,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                   onClick={onImportExport}
                   className="p-1 text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
                   title={t('importExport.title')}
+                  aria-label={t('importExport.title')}
                 >
                   <FiExternalLink className="w-4 h-4" />
                 </button>
@@ -118,6 +120,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                 onClick={onNewWorkspace}
                 className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors cursor-pointer"
                 title={t('sidebar.newWorkspace')}
+                aria-label={t('sidebar.newWorkspace')}
               >
                 <FiPlus className="w-4 h-4" />
               </button>

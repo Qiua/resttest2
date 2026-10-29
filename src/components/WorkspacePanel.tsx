@@ -129,6 +129,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                   onClick={() => onDeleteWorkspace(activeWorkspace)}
                   className="p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer"
                   title={t('sidebar.deleteWorkspace')}
+                  aria-label={t('sidebar.deleteWorkspace')}
                 >
                   <FiTrash2 className="w-4 h-4" />
                 </button>
@@ -200,6 +201,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                           }}
                           className="p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                           title={t('sidebar.addRequest')}
+                          aria-label={t('sidebar.addRequest')}
                         >
                           <FiPlus className="w-4 h-4" />
                         </button>
@@ -210,6 +212,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                           }}
                           className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                           title={t('sidebar.deleteCollection')}
+                          aria-label={t('sidebar.deleteCollection')}
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -246,6 +249,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                                 }}
                                 className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all"
                                 title={t('sidebar.deleteRequest')}
+                                aria-label={t('sidebar.deleteRequest')}
                               >
                                 <FiTrash2 className="w-4 h-4" />
                               </button>

@@ -131,7 +131,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
     return date.toLocaleDateString()
   }, [])
 
-  const uniqueMethods = Array.from(new Set(history.map(entry => entry.method)))
+  const uniqueMethods = useMemo(() => Array.from(new Set(history.map(entry => entry.method))), [history])
 
   // Ref para a lista virtual
   const listRef = useRef<ListImperativeAPI>(null)

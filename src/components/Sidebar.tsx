@@ -77,8 +77,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Toggle Sidebar Button */}
         <button
           onClick={onToggle}
-          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
           title={t('sidebar.openSidebar')}
+          aria-label={t('sidebar.openSidebar')}
         >
           <FiMenu className="w-5 h-5" />
         </button>
@@ -89,8 +90,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* History Icon (Tools) */}
         <button
           onClick={onHistoryOpen}
-          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
           title={t('history.title')}
+          aria-label={t('history.title')}
         >
           <FiClock className="w-5 h-5" />
         </button>
@@ -98,10 +100,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Workspace Icon */}
         <button
           onClick={onWorkspacePanelToggle}
-          className={`text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer ${
+          className={`text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none ${
             isWorkspacePanelOpen ? 'bg-blue-600 hover:bg-blue-700' : ''
           }`}
           title={t('sidebar.workspace')}
+          aria-label={t('sidebar.workspace')}
         >
           <FiFolder className="w-5 h-5" />
         </button>
@@ -109,8 +112,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Environment Manager Icon */}
         <button
           onClick={onManageEnvironments}
-          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
           title={t('environments.title')}
+          aria-label={t('environments.title')}
         >
           <FiLayers className="w-5 h-5" />
         </button>
@@ -118,8 +122,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Interface Settings Icon */}
         <button
           onClick={onInterfaceSettingsOpen}
-          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+          className="text-white hover:bg-gray-700 dark:hover:bg-gray-800 p-2 rounded-md transition-colors duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
           title={t('settings.interface')}
+          aria-label={t('settings.interface')}
         >
           <FiGlobe className="w-5 h-5" />
         </button>
@@ -135,8 +140,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Menu</h2>
           <button
             onClick={onToggle}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
             title={t('sidebar.closeSidebar')}
+            aria-label={t('sidebar.closeSidebar')}
           >
             <FiX className="w-5 h-5" />
           </button>

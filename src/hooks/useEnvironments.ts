@@ -237,26 +237,23 @@ export const useEnvironments = (): UseEnvironmentsReturn => {
 
   // Obter todas as variáveis disponíveis
   const getAllAvailableVariables = useCallback((): EnvironmentVariable[] => {
-    const variables: EnvironmentVariable[] = []
+    const variableMap = new Map<string, EnvironmentVariable>()
 
     // Adicionar variáveis globais
     if (globalEnvironment) {
-      variables.push(...globalEnvironment.variables)
+      globalEnvironment.variables.forEach(envVar => {
+        variableMap.set(envVar.key, envVar)
+      })
     }
 
     // Adicionar variáveis do ambiente ativo (sobrescreve globais se mesmo nome)
     if (activeEnvironment) {
       activeEnvironment.variables.forEach(envVar => {
-        const existingIndex = variables.findIndex(v => v.key === envVar.key)
-        if (existingIndex >= 0) {
-          variables[existingIndex] = envVar // Sobrescrever
-        } else {
-          variables.push(envVar)
-        }
+        variableMap.set(envVar.key, envVar)
       })
     }
 
-    return variables
+    return Array.from(variableMap.values())
   }, [activeEnvironment, globalEnvironment])
 
   // Validar nome de variável

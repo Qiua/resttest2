@@ -20,6 +20,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
+import type { KeyboardShortcut } from './useKeyboardShortcuts'
 
 describe('useKeyboardShortcuts', () => {
   let callbacks: {
@@ -43,11 +44,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should call callback when shortcut is pressed', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -65,11 +66,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should not call callback when modifier keys do not match', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -87,11 +88,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should not trigger when typing in input field', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -115,11 +116,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should not trigger when typing in textarea', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -143,18 +144,18 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should support multiple shortcuts', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
       {
         key: 's',
         ctrlKey: true,
         shiftKey: true,
-        callback: callbacks.withShift,
+        callback: callbacks.withShift as () => void,
         description: 'Save',
       },
     ]
@@ -186,11 +187,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should respect enabled flag', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]
@@ -216,11 +217,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should prevent default behavior when specified', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
         preventDefault: true,
       },
@@ -242,11 +243,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should not prevent default when preventDefault is false', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
         preventDefault: false,
       },
@@ -268,11 +269,11 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('should clean up event listeners on unmount', () => {
-    const shortcuts = [
+    const shortcuts: KeyboardShortcut[] = [
       {
         key: 'n',
         ctrlKey: true,
-        callback: callbacks.withCtrl,
+        callback: callbacks.withCtrl as () => void,
         description: 'New tab',
       },
     ]

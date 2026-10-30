@@ -78,12 +78,12 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
       filtered = searchHistory(searchTerm)
     }
 
-    if (methodFilter !== 'ALL') {
-      filtered = filtered.filter(entry => entry.method === methodFilter)
-    }
-
-    if (statusFilter !== 'ALL') {
-      filtered = filtered.filter(entry => entry.status === statusFilter)
+    if (methodFilter !== 'ALL' || statusFilter !== 'ALL') {
+      filtered = filtered.filter(entry => {
+        if (methodFilter !== 'ALL' && entry.method !== methodFilter) return false
+        if (statusFilter !== 'ALL' && entry.status !== statusFilter) return false
+        return true
+      })
     }
 
     return filtered

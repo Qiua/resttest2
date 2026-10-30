@@ -234,6 +234,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              aria-label={t('common.close')}
             >
               <FiX className="w-4 h-4" />
             </button>

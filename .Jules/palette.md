@@ -1,4 +1,4 @@
-## 2025-03-01 - Missing ARIA Labels on Icon-Only Buttons
+## 2025-03-05 - Settings Menu Accessibility
 
-**Learning:** Found an accessibility issue pattern specific to this app's components: many icon-only buttons rely on the `title` attribute for native tooltips, but lack robust screen reader announcements via `aria-label`. Relying only on `title` is often insufficient for comprehensive accessibility.
-**Action:** When adding `aria-label`s to these buttons, ensure they reuse the same `t()` translation key used by the `title` attribute to maintain consistent internationalization.
+**Learning:** Found that custom div toggles for menus (like in `SettingsMenu.tsx`) lacked ARIA attributes, semantic button tags, and keyboard focus states. Redundant `aria-label` attributes on buttons that already contain text were identified as an accessibility anti-pattern.
+**Action:** Replaced div with a semantically correct button, added missing attributes (aria-expanded), included `focus-visible` classes, and removed redundant `aria-label` attributes where the button already has visible text describing its action.

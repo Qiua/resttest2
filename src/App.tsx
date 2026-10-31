@@ -613,12 +613,12 @@ function App() {
       )
 
       const result = await axios(axiosConfig)
-      const contentType = result.headers['content-type'] || ''
+      const contentTypeStr = String(result.headers['content-type'] || '')
       let responseBody = result.data
 
       // Se a resposta for JSON, formata com indentação.
       // Se não, usa o texto como está (útil para HTML ou texto puro).
-      if (contentType.includes('application/json') && typeof responseBody === 'object') {
+      if (contentTypeStr.includes('application/json') && typeof responseBody === 'object') {
         responseBody = JSON.stringify(responseBody, null, 2)
       } else if (typeof responseBody !== 'string') {
         // Fallback para outros tipos de objeto
@@ -632,7 +632,7 @@ function App() {
           statusText: result.statusText,
           headers: JSON.stringify(result.headers, null, 2),
           body: responseBody,
-          contentType,
+          contentType: contentTypeStr,
         },
         false,
         null,
@@ -657,7 +657,7 @@ function App() {
           statusText: result.statusText,
           headers: JSON.stringify(result.headers, null, 2),
           body: responseBody,
-          contentType,
+          contentType: contentTypeStr,
         },
         duration,
         'success',
@@ -677,10 +677,10 @@ function App() {
       }
 
       if (err instanceof AxiosError && err.response) {
-        const contentType = err.response.headers['content-type'] || ''
+        const contentTypeStr = String(err.response.headers['content-type'] || '')
         let errorBody = err.response.data
 
-        if (contentType.includes('application/json') && typeof errorBody === 'object') {
+        if (contentTypeStr.includes('application/json') && typeof errorBody === 'object') {
           errorBody = JSON.stringify(errorBody, null, 2)
         } else if (typeof errorBody !== 'string') {
           errorBody = String(errorBody)
@@ -693,7 +693,7 @@ function App() {
             statusText: err.response.statusText,
             headers: JSON.stringify(err.response.headers, null, 2),
             body: errorBody,
-            contentType,
+            contentType: contentTypeStr,
           },
           false,
           null,
@@ -717,7 +717,7 @@ function App() {
             statusText: err.response.statusText,
             headers: JSON.stringify(err.response.headers, null, 2),
             body: errorBody,
-            contentType,
+            contentType: contentTypeStr,
           },
           duration,
           'error',

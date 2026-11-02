@@ -19,8 +19,7 @@
 // src/hooks/useKeyboardShortcuts.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useKeyboardShortcuts } from './useKeyboardShortcuts'
-import type { KeyboardShortcut } from './useKeyboardShortcuts'
+import { useKeyboardShortcuts, type KeyboardShortcut } from './useKeyboardShortcuts'
 
 describe('useKeyboardShortcuts', () => {
   let callbacks: {

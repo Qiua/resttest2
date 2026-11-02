@@ -68,19 +68,19 @@ const localStorageMock = (() => {
 
 // Configure globals for tests without relying on the 'global' identifier if missing types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const global: any;
-const _global = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : global;
+declare const global: any
+const _global = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : global
 
-(_global as any).localStorage = localStorageMock as Storage
+;(_global as any).localStorage = localStorageMock as Storage
 
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn()
 
 // Mock crypto.randomUUID
 if (!(_global as any).crypto) {
-  (_global as any).crypto = {} as Crypto
+  ;(_global as any).crypto = {} as Crypto
 }
-(_global as any).crypto.randomUUID = vi.fn(
+;(_global as any).crypto.randomUUID = vi.fn(
   () => `test-${Math.random().toString(36).substring(2)}-uuid` as `${string}-${string}-${string}-${string}-${string}`,
 )
 

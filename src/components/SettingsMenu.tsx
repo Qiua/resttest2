@@ -66,9 +66,11 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
   return (
     <div className="border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 mb-3">
       {/* Header do Menu de Configurações */}
-      <div
-        className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+      <button
+        className="w-full flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         onClick={toggleExpanded}
+        aria-expanded={isExpanded}
+        aria-label={t('settings.title')}
       >
         <div className="flex items-center gap-2">
           <FiSettings className="w-4 h-4 text-gray-600 dark:text-gray-300" />
@@ -79,7 +81,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
         ) : (
           <FiChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-300" />
         )}
-      </div>
+      </button>
 
       {/* Conteúdo do Menu de Configurações */}
       {isExpanded && (
@@ -139,7 +141,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
               {/* Histórico de Requisições */}
               <button
                 onClick={onHistoryOpen}
-                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-center gap-2">
                   <FiClock className="w-4 h-4" />
@@ -150,7 +152,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
               {/* Configurações de Proxy */}
               <button
                 onClick={onProxySettingsOpen}
-                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-center gap-2">
                   <FiShield className="w-4 h-4" />
@@ -161,7 +163,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
               {/* Import/Export */}
               <button
                 onClick={onImportExportOpen}
-                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+                className="w-full flex items-center justify-between p-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-center gap-2">
                   <FiExternalLink className="w-4 h-4" />

@@ -98,8 +98,7 @@ class Logger {
       console.warn(this.formatMessage(entry), context)
     }
 
-    // TODO: Send to monitoring service in production
-    // this.sendToMonitoring(entry)
+    this.sendToMonitoring(entry)
   }
 
   error(message: string, error?: Error, context?: Record<string, unknown>): void {
@@ -114,8 +113,21 @@ class Logger {
       })
     }
 
-    // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
-    // this.sendToErrorTracking(entry)
+    this.sendToErrorTracking(entry)
+  }
+
+  private sendToMonitoring(_entry: LogEntry): void {
+    if (!this.isDevelopment) {
+      // In a real application, this would send data to a monitoring service (e.g., Datadog, New Relic)
+      // fetch('/api/monitoring', { method: 'POST', body: JSON.stringify(entry) }).catch(() => {})
+    }
+  }
+
+  private sendToErrorTracking(_entry: LogEntry): void {
+    if (!this.isDevelopment) {
+      // In a real application, this would send data to an error tracking service (e.g., Sentry, LogRocket)
+      // fetch('/api/error-tracking', { method: 'POST', body: JSON.stringify(entry) }).catch(() => {})
+    }
   }
 
   /**

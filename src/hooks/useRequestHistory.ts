@@ -115,37 +115,40 @@ export const useRequestHistory = () => {
 
   // Obter estatísticas do histórico
   const getStats = useCallback(() => {
-    const totalRequests = history.length
-    const successfulRequests = history.filter(entry => entry.status === 'success').length
-    const failedRequests = history.filter(entry => entry.status === 'error').length
-    const averageResponseTime =
-      history.length > 0 ? history.reduce((acc, entry) => acc + entry.duration, 0) / history.length : 0
-
-    const methodStats = history.reduce(
+    const stats = history.reduce(
       (acc, entry) => {
-        acc[entry.method] = (acc[entry.method] || 0) + 1
-        return acc
-      },
-      {} as Record<string, number>,
-    )
+        if (entry.status === 'success') acc.successfulRequests++
+        else if (entry.status === 'error') acc.failedRequests++
 
-    const statusCodeStats = history.reduce(
-      (acc, entry) => {
+        acc.totalDuration += entry.duration
+
+        acc.methodStats[entry.method] = (acc.methodStats[entry.method] || 0) + 1
+
         const statusCode = entry.response.status.toString()
-        acc[statusCode] = (acc[statusCode] || 0) + 1
+        acc.statusCodeStats[statusCode] = (acc.statusCodeStats[statusCode] || 0) + 1
+
         return acc
       },
-      {} as Record<string, number>,
+      {
+        successfulRequests: 0,
+        failedRequests: 0,
+        totalDuration: 0,
+        methodStats: {} as Record<string, number>,
+        statusCodeStats: {} as Record<string, number>,
+      },
     )
+
+    const totalRequests = history.length
+    const averageResponseTime = totalRequests > 0 ? stats.totalDuration / totalRequests : 0
 
     return {
       totalRequests,
-      successfulRequests,
-      failedRequests,
+      successfulRequests: stats.successfulRequests,
+      failedRequests: stats.failedRequests,
       averageResponseTime,
-      methodStats,
-      statusCodeStats,
-      successRate: totalRequests > 0 ? (successfulRequests / totalRequests) * 100 : 0,
+      methodStats: stats.methodStats,
+      statusCodeStats: stats.statusCodeStats,
+      successRate: totalRequests > 0 ? (stats.successfulRequests / totalRequests) * 100 : 0,
     }
   }, [history])
 

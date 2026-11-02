@@ -18,6 +18,7 @@
 // src/components/ErrorBoundary.tsx
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { FiAlertTriangle, FiRefreshCw, FiHome, FiCopy } from 'react-icons/fi'
+import { logger } from '../utils/logger'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -46,20 +47,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error details for debugging (in development)
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.error('ErrorBoundary caught an error:', error, errorInfo)
-    }
+    // Log error using the custom logger
+    logger.error('ErrorBoundary caught an error:', error, { errorInfo })
 
     // Update state with error details
     this.setState({
       error,
       errorInfo,
     })
-
-    // TODO: Send error to logging service in production
-    // logErrorToService(error, errorInfo)
   }
 
   handleReset = (): void => {

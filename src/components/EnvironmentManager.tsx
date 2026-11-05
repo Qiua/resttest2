@@ -258,6 +258,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                     onClick={() => setShowCreateForm(true)}
                     className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded"
                     title={t('environments.createNew')}
+                    aria-label={t('environments.createNew')}
                   >
                     <FiPlus className="w-4 h-4" />
                   </button>
@@ -266,6 +267,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                     onClick={() => fileInputRef.current?.click()}
                     className="p-1 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded"
                     title={t('environments.import')}
+                    aria-label={t('environments.import')}
                   >
                     <FiUpload className="w-4 h-4" />
                   </button>
@@ -362,6 +364,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                           onClick={() => handleDuplicateEnvironment(selectedEnvironment)}
                           className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                           title={t('environments.duplicate')}
+                          aria-label={t('environments.duplicate')}
                         >
                           <FiCopy className="w-4 h-4" />
                         </button>
@@ -369,6 +372,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                           onClick={() => onExportEnvironment(selectedEnvironment.id)}
                           className="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors"
                           title={t('environments.export')}
+                          aria-label={t('environments.export')}
                         >
                           <FiDownload className="w-4 h-4" />
                         </button>
@@ -376,6 +380,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                           onClick={() => onDeleteEnvironment(selectedEnvironment.id)}
                           className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                           title={t('environments.delete')}
+                          aria-label={t('environments.delete')}
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -466,6 +471,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                                   onClick={() => handleEditVariable(variable)}
                                   className="p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                                   title={t('environments.editVariable')}
+                                  aria-label={t('environments.editVariable')}
                                 >
                                   <FiEdit3 className="w-4 h-4" />
                                 </button>
@@ -473,6 +479,7 @@ export const EnvironmentManager: React.FC<EnvironmentManagerProps> = ({
                                   onClick={() => onDeleteVariable(selectedEnvironment.id, variable.key)}
                                   className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400"
                                   title={t('environments.deleteVariable')}
+                                  aria-label={t('environments.deleteVariable')}
                                 >
                                   <FiTrash2 className="w-4 h-4" />
                                 </button>

@@ -58,6 +58,7 @@ export const SavedRequests: React.FC<SavedRequestsProps> = ({ savedRequests, onS
         value={selectedId}
         onChange={e => setSelectedId(e.target.value)}
         className="text-sm border border-gray-300 rounded px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]"
+        aria-label={t('sidebar.selectWorkspace')}
       >
         <option value="">{t('sidebar.selectWorkspace')}</option>
         {savedRequests.map(req => (

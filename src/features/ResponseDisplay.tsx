@@ -371,6 +371,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                     onClick={clearSearch}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-colors"
                     title="Limpar busca (Esc)"
+                    aria-label="Limpar busca (Esc)"
                   >
                     <FiX className="w-4 h-4" />
                   </button>
@@ -389,6 +390,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                         disabled={matches.length === 0}
                         className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors"
                         title="Anterior (Shift+Enter)"
+                        aria-label="Anterior (Shift+Enter)"
                       >
                         <FiChevronUp className="w-4 h-4" />
                       </button>
@@ -397,6 +399,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                         disabled={matches.length === 0}
                         className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 dark:border-gray-600 rounded transition-colors"
                         title="Próximo (Enter)"
+                        aria-label="Próximo (Enter)"
                       >
                         <FiChevronDown className="w-4 h-4" />
                       </button>
@@ -543,6 +546,7 @@ export const ResponseDisplay: React.FC<ResponseDisplayProps> = ({ response, load
                     onClick={() => copyToClipboard(value)}
                     className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                     title={t('response.toolbar.copyHeaders')}
+                    aria-label={t('response.toolbar.copyHeaders')}
                   >
                     <FiCopy className="w-4 h-4" />
                   </button>

@@ -93,7 +93,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('sidebar.collections')}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             title={t('sidebar.closeWorkspace')}
             aria-label={t('sidebar.closeWorkspace')}
           >
@@ -109,7 +109,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
               {onImportExport && (
                 <button
                   onClick={onImportExport}
-                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
+                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
                   title={t('importExport.title')}
                   aria-label={t('importExport.title')}
                 >
@@ -118,7 +118,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
               )}
               <button
                 onClick={onNewWorkspace}
-                className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors cursor-pointer"
+                className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 title={t('sidebar.newWorkspace')}
                 aria-label={t('sidebar.newWorkspace')}
               >
@@ -127,7 +127,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
               {onDeleteWorkspace && activeWorkspace && workspaces.length > 1 && (
                 <button
                   onClick={() => onDeleteWorkspace(activeWorkspace)}
-                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer"
+                  className="p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                   title={t('sidebar.deleteWorkspace')}
                   aria-label={t('sidebar.deleteWorkspace')}
                 >
@@ -199,7 +199,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                             e.stopPropagation()
                             onNewRequest(collection.id)
                           }}
-                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                           title={t('sidebar.addRequest')}
                           aria-label={t('sidebar.addRequest')}
                         >
@@ -210,7 +210,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                             e.stopPropagation()
                             onDeleteCollection(collection.id)
                           }}
-                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                           title={t('sidebar.deleteCollection')}
                           aria-label={t('sidebar.deleteCollection')}
                         >
@@ -247,7 +247,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                                   e.stopPropagation()
                                   onDeleteRequest(request.id)
                                 }}
-                                className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all"
+                                className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-500"
                                 title={t('sidebar.deleteRequest')}
                                 aria-label={t('sidebar.deleteRequest')}
                               >

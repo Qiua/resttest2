@@ -146,7 +146,10 @@
       "copyAll": "Copy All",
       "searchInResponse": "Search in response...",
       "rawData": "Raw data",
-      "copyCompleteResponse": "Copy complete response"
+      "copyCompleteResponse": "Copy complete response",
+      "clearSearch": "Clear search (Esc)",
+      "previousMatch": "Previous (Shift+Enter)",
+      "nextMatch": "Next (Enter)"
     },
     "info": {
       "generalInfo": "General Information",

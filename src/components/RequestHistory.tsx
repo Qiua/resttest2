@@ -186,7 +186,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
             <div className="flex items-center gap-1 ml-3">
               <button
                 onClick={() => onRecreateRequest(entry)}
-                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 title={t('history.recreateRequest')}
                 aria-label={t('history.recreateRequest')}
               >
@@ -194,7 +194,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
               </button>
               <button
                 onClick={() => onRemoveEntry(entry.id)}
-                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors text-red-600 dark:text-red-400"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors text-red-600 dark:text-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 title={t('history.removeEntry')}
                 aria-label={t('history.removeEntry')}
               >
@@ -225,7 +225,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowStats(!showStats)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               title={t('history.showStats')}
               aria-label={t('history.showStats')}
             >
@@ -233,7 +233,7 @@ export const RequestHistory: React.FC<RequestHistoryProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-label={t('common.close')}
             >
               <FiX className="w-4 h-4" />

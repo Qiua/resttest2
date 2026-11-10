@@ -7,3 +7,8 @@
 
 **Learning:** Found that custom div toggles for menus (like in `SettingsMenu.tsx`) lacked ARIA attributes, semantic button tags, and keyboard focus states. Redundant `aria-label` attributes on buttons that already contain text were identified as an accessibility anti-pattern.
 **Action:** Replaced div with a semantically correct button, added missing attributes (aria-expanded), included `focus-visible` classes, and removed redundant `aria-label` attributes where the button already has visible text describing its action.
+
+## 2025-03-05 - Keyboard Focus Missing on Icon Buttons
+
+**Learning:** Found several icon-only buttons in `src/components/RequestHistory.tsx` and `src/components/WorkspacePanel.tsx` that lacked keyboard focus states, making it impossible for keyboard users to know which element was focused.
+**Action:** Always ensure interactive elements like buttons have visible focus states using the `focus-visible` pseudo-class (e.g., `focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`) to support keyboard navigation without affecting mouse users.

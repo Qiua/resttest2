@@ -180,8 +180,17 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                   >
                     {/* Header da Collection */}
                     <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                      role="button"
+                      tabIndex={0}
+                      aria-expanded={expandedCollections.includes(collection.id)}
+                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg"
                       onClick={() => toggleCollection(collection.id)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          toggleCollection(collection.id)
+                        }
+                      }}
                     >
                       <div className="flex items-center gap-2">
                         <FiChevronRight
@@ -230,8 +239,16 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                           collection.requests.map(request => (
                             <div
                               key={request.id}
-                              className="flex items-center justify-between p-3 hover:bg-white dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0 group transition-colors"
+                              role="button"
+                              tabIndex={0}
+                              className="flex items-center justify-between p-3 hover:bg-white dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0 group transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                               onClick={() => onRequestSelect(request)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  onRequestSelect(request)
+                                }
+                              }}
                             >
                               <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <span
@@ -247,7 +264,7 @@ export const WorkspacePanel: React.FC<WorkspacePanelProps> = ({
                                   e.stopPropagation()
                                   onDeleteRequest(request.id)
                                 }}
-                                className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 transition-all"
+                                className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                 title={t('sidebar.deleteRequest')}
                                 aria-label={t('sidebar.deleteRequest')}
                               >
